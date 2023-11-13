@@ -24,11 +24,11 @@ extern "C" {
 
 typedef enum _ImageXferCommands
 {
-    IMAGE_XFER_NTSC_EIA_100AMP_100SAT = 0,      
-    IMAGE_XFER_NTSC_EIA_75AMP_100SAT,           
+    IMAGE_XFER_NTSC_EIA_100AMP_100SAT = 0,
+    IMAGE_XFER_NTSC_EIA_75AMP_100SAT,
     IMAGE_XFER_BLACK,
     IMAGE_XFER_WHITE,
-    IMAGE_XFER_GRAY_INCREASING, 
+    IMAGE_XFER_GRAY_INCREASING,
     IMAGE_XFER_LIST_TERMINATOR                  // Always keep this guy last
 } ImageXferCommands;
 

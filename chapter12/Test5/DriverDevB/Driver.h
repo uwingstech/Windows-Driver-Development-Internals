@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:Driver.h                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.h
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 #pragma once
 
@@ -12,7 +12,7 @@ extern "C"
 #include <NTDDK.h>
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #define PAGEDCODE code_seg("PAGE")
 #define LOCKEDCODE code_seg()
@@ -26,21 +26,21 @@ extern "C"
 
 typedef struct _DEVICE_EXTENSION {
 	PDEVICE_OBJECT pDevice;
-	UNICODE_STRING ustrDeviceName;	//Éè±¸Ãû³Æ
+	UNICODE_STRING ustrDeviceName;	//è®¾å¤‡åç§°
 	PDEVICE_OBJECT TargetDevice;
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
-typedef struct _MyDriver_RW_CONTEXT 
+typedef struct _MyDriver_RW_CONTEXT
 {
-    PMDL              NewMdl;			//ĞÂMDL
-	PMDL              PreviousMdl;		//¾ÉMDL
-    ULONG             Length;			//Ê£ÏÂÃ»ÓĞ¶ÁÈ¡µÄ×Ö½Ú
-    ULONG             Numxfer;			//ÒÑ¾­´«ËÍ¹ıµÄ×Ö½ÚÊı
-    ULONG_PTR         VirtualAddress;	//ºóĞø´«ËÍµÄĞéÄâµØÖ·
-    PDEVICE_EXTENSION DeviceExtension;	//Á´½Óµ½Éè±¸À©Õ¹
+    PMDL              NewMdl;			//æ–°MDL
+	PMDL              PreviousMdl;		//æ—§MDL
+    ULONG             Length;			//å‰©ä¸‹æ²¡æœ‰è¯»å–çš„å­—èŠ‚
+    ULONG             Numxfer;			//å·²ç»ä¼ é€è¿‡çš„å­—èŠ‚æ•°
+    ULONG_PTR         VirtualAddress;	//åç»­ä¼ é€çš„è™šæ‹Ÿåœ°å€
+    PDEVICE_EXTENSION DeviceExtension;	//é“¾æ¥åˆ°è®¾å¤‡æ‰©å±•
 } MYDRIVER_RW_CONTEXT, * PMYDRIVER_RW_CONTEXT;
 
-// º¯ÊıÉùÃ÷
+// å‡½æ•°å£°æ˜
 
 NTSTATUS CreateDevice (IN PDRIVER_OBJECT pDriverObject);
 VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject);

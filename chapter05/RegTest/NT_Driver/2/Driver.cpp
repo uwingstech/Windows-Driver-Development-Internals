@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:Driver.cpp                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.cpp
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #include "Driver.h"
@@ -9,25 +9,25 @@
 
 #define  MY_REG_SOFTWARE_KEY_NAME		L"\\Registry\\Machine\\Software\\Zhangfan"
 #pragma INITCODE
-VOID CreateRegTest() 
+VOID CreateRegTest()
 {
-	//´´½¨»ò´ò¿ªÄ³×¢²á±íÏîÄ¿
+	//åˆ›å»ºæˆ–æ‰“å¼€æŸæ³¨å†Œè¡¨é¡¹ç›®
 	UNICODE_STRING RegUnicodeString;
 	HANDLE hRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
 	ULONG ulResult;
-	//´´½¨»ò´ø¿ª×¢²á±íÏîÄ¿
+	//åˆ›å»ºæˆ–å¸¦å¼€æ³¨å†Œè¡¨é¡¹ç›®
 	NTSTATUS ntStatus = ZwCreateKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes,
@@ -38,7 +38,7 @@ VOID CreateRegTest()
 
 	if (NT_SUCCESS(ntStatus))
 	{
-		//ÅĞ¶ÏÊÇ±»ĞÂ´´½¨£¬»¹ÊÇÒÑ¾­±»´´½¨
+		//åˆ¤æ–­æ˜¯è¢«æ–°åˆ›å»ºï¼Œè¿˜æ˜¯å·²ç»è¢«åˆ›å»º
 		if(ulResult==REG_CREATED_NEW_KEY)
 		{
 			KdPrint(("The register item is created\n"));
@@ -48,22 +48,22 @@ VOID CreateRegTest()
 		}
 	}
 
-	//(2)´´½¨»ò´ò¿ªÄ³×¢²á±íÏîÄ¿µÄ×ÓÏî
+	//(2)åˆ›å»ºæˆ–æ‰“å¼€æŸæ³¨å†Œè¡¨é¡¹ç›®çš„å­é¡¹
 	UNICODE_STRING subRegUnicodeString;
 	HANDLE hSubRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &subRegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &subRegUnicodeString,
 		L"SubItem");
 
 	OBJECT_ATTRIBUTES subObjectAttributes;
-	//³õÊ¼»¯subObjectAttributes
+	//åˆå§‹åŒ–subObjectAttributes
 	InitializeObjectAttributes(&subObjectAttributes,
 							&subRegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ 
-							hRegister, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							hRegister,
 							NULL );
-	//´´½¨»ò´ø¿ª×¢²á±íÏîÄ¿
+	//åˆ›å»ºæˆ–å¸¦å¼€æ³¨å†Œè¡¨é¡¹ç›®
 	ntStatus = ZwCreateKey( &hSubRegister,
 							KEY_ALL_ACCESS,
 							&subObjectAttributes,
@@ -74,7 +74,7 @@ VOID CreateRegTest()
 
 	if (NT_SUCCESS(ntStatus))
 	{
-		//ÅĞ¶ÏÊÇ±»ĞÂ´´½¨£¬»¹ÊÇÒÑ¾­±»´´½¨
+		//åˆ¤æ–­æ˜¯è¢«æ–°åˆ›å»ºï¼Œè¿˜æ˜¯å·²ç»è¢«åˆ›å»º
 		if(ulResult==REG_CREATED_NEW_KEY)
 		{
 			KdPrint(("The sub register item is created\n"));
@@ -84,7 +84,7 @@ VOID CreateRegTest()
 		}
 	}
 
-	//¹Ø±Õ×¢²á±í¾ä±ú
+	//å…³é—­æ³¨å†Œè¡¨å¥æŸ„
 	ZwClose(hRegister);
 	ZwClose(hSubRegister);
 }
@@ -95,18 +95,18 @@ VOID OpenRegTest()
 	UNICODE_STRING RegUnicodeString;
 	HANDLE hRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
-	//´ò¿ª×¢²á±í
+	//æ‰“å¼€æ³¨å†Œè¡¨
 	NTSTATUS ntStatus = ZwOpenKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes);
@@ -126,18 +126,18 @@ VOID DeleteItemRegTest()
 	HANDLE hRegister;
 
 #define MY_REG_SOFTWARE_KEY_NAME1 L"\\Registry\\Machine\\Software\\Zhangfan\\SubItem"
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME1);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
-	//´ò¿ª×¢²á±í
+	//æ‰“å¼€æ³¨å†Œè¡¨
 	NTSTATUS ntStatus = ZwOpenKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes);
@@ -173,18 +173,18 @@ VOID SetRegTest()
 	UNICODE_STRING RegUnicodeString;
 	HANDLE hRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
-	//´ò¿ª×¢²á±í
+	//æ‰“å¼€æ³¨å†Œè¡¨
 	NTSTATUS ntStatus = ZwOpenKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes);
@@ -195,10 +195,10 @@ VOID SetRegTest()
 	}
 
 	UNICODE_STRING ValueName;
-	//³õÊ¼»¯ValueName
+	//åˆå§‹åŒ–ValueName
 	RtlInitUnicodeString( &ValueName, L"REG_DWORD value");
 
-	//ÉèÖÃREG_DWORD×Ó¼ü
+	//è®¾ç½®REG_DWORDå­é”®
 	ULONG ulValue = 1000;
 	ZwSetValueKey(hRegister,
 				&ValueName,
@@ -207,11 +207,11 @@ VOID SetRegTest()
 				&ulValue,
 				sizeof(ulValue));
 
-	//³õÊ¼»¯ValueName
+	//åˆå§‹åŒ–ValueName
 	RtlInitUnicodeString( &ValueName, L"REG_SZ value");
 	WCHAR* strValue = L"hello world";
 
-	//ÉèÖÃREG_SZ×Ó¼ü
+	//è®¾ç½®REG_SZå­é”®
 	ZwSetValueKey(hRegister,
 				&ValueName,
 				0,
@@ -220,13 +220,13 @@ VOID SetRegTest()
 				wcslen(strValue)*2+2);
 
 
-	//³õÊ¼»¯ValueName
+	//åˆå§‹åŒ–ValueName
 	RtlInitUnicodeString( &ValueName, L"REG_BINARY value");
-	
+
 	UCHAR buffer[10];
 	RtlFillMemory(buffer,sizeof(buffer),0xFF);
 
-	//ÉèÖÃREG_MULTI_SZ×Ó¼ü
+	//è®¾ç½®REG_MULTI_SZå­é”®
 	ZwSetValueKey(hRegister,
 				&ValueName,
 				0,
@@ -234,7 +234,7 @@ VOID SetRegTest()
 				buffer,
 				sizeof(buffer));
 
-	//¹Ø±Õ×¢²á±í¾ä±ú
+	//å…³é—­æ³¨å†Œè¡¨å¥æŸ„
 	ZwClose(hRegister);
 }
 
@@ -244,18 +244,18 @@ VOID QueryRegTest()
 	UNICODE_STRING RegUnicodeString;
 	HANDLE hRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
-	//´ò¿ª×¢²á±í
+	//æ‰“å¼€æ³¨å†Œè¡¨
 	NTSTATUS ntStatus = ZwOpenKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes);
@@ -266,10 +266,10 @@ VOID QueryRegTest()
 	}
 
 	UNICODE_STRING ValueName;
-	//³õÊ¼»¯ValueName
+	//åˆå§‹åŒ–ValueName
 	RtlInitUnicodeString( &ValueName, L"REG_DWORD value");
 
-	//¶ÁÈ¡REG_DWORD×Ó¼ü
+	//è¯»å–REG_DWORDå­é”®
 	ULONG ulSize;
 	ntStatus = ZwQueryValueKey(hRegister,
 				&ValueName,
@@ -284,7 +284,7 @@ VOID QueryRegTest()
 		KdPrint(("The item is not exist\n"));
 		return;
 	}
-	PKEY_VALUE_PARTIAL_INFORMATION pvpi = 
+	PKEY_VALUE_PARTIAL_INFORMATION pvpi =
 		(PKEY_VALUE_PARTIAL_INFORMATION)
 		ExAllocatePool(PagedPool,ulSize);
 
@@ -300,7 +300,7 @@ VOID QueryRegTest()
 		KdPrint(("Read regsiter error\n"));
 		return;
 	}
-	//ÅĞ¶ÏÊÇ·ñÎªREG_DWORDÀàĞÍ
+	//åˆ¤æ–­æ˜¯å¦ä¸ºREG_DWORDç±»å‹
 	if (pvpi->Type==REG_DWORD && pvpi->DataLength==sizeof(ULONG))
 	{
 		PULONG pulValue = (PULONG) pvpi->Data;
@@ -309,9 +309,9 @@ VOID QueryRegTest()
 
 	ExFreePool(pvpi);
 
-	//³õÊ¼»¯ValueName
+	//åˆå§‹åŒ–ValueName
 	RtlInitUnicodeString( &ValueName, L"REG_SZ value");
-	//¶ÁÈ¡REG_SZ×Ó¼ü
+	//è¯»å–REG_SZå­é”®
 	ntStatus = ZwQueryValueKey(hRegister,
 				&ValueName,
 				KeyValuePartialInformation ,
@@ -325,7 +325,7 @@ VOID QueryRegTest()
 		KdPrint(("The item is not exist\n"));
 		return;
 	}
-	pvpi = 
+	pvpi =
 		(PKEY_VALUE_PARTIAL_INFORMATION)
 		ExAllocatePool(PagedPool,ulSize);
 
@@ -341,7 +341,7 @@ VOID QueryRegTest()
 		KdPrint(("Read regsiter error\n"));
 		return;
 	}
-	//ÅĞ¶ÏÊÇ·ñÎªREG_SZÀàĞÍ
+	//åˆ¤æ–­æ˜¯å¦ä¸ºREG_SZç±»å‹
 	if (pvpi->Type==REG_SZ)
 	{
 		KdPrint(("The value:%S\n",pvpi->Data));
@@ -356,18 +356,18 @@ VOID EnumerateSubItemRegTest()
 	UNICODE_STRING RegUnicodeString;
 	HANDLE hRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
-	//´ò¿ª×¢²á±í
+	//æ‰“å¼€æ³¨å†Œè¡¨
 	NTSTATUS ntStatus = ZwOpenKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes);
@@ -378,18 +378,18 @@ VOID EnumerateSubItemRegTest()
 	}
 
 	ULONG ulSize;
-	//µÚÒ»´Îµ÷ÓÃZwQueryKeyÎªÁË»ñÈ¡KEY_FULL_INFORMATIONÊı¾İµÄ³¤¶È
+	//ç¬¬ä¸€æ¬¡è°ƒç”¨ZwQueryKeyä¸ºäº†è·å–KEY_FULL_INFORMATIONæ•°æ®çš„é•¿åº¦
 	ZwQueryKey(hRegister,
 		KeyFullInformation,
 		NULL,
 		0,
 		&ulSize);
 
-	PKEY_FULL_INFORMATION pfi = 
+	PKEY_FULL_INFORMATION pfi =
 		(PKEY_FULL_INFORMATION)
 		ExAllocatePool(PagedPool,ulSize);
 
-	//µÚ¶ş´Îµ÷ÓÃZwQueryKeyÎªÁË»ñÈ¡KEY_FULL_INFORMATIONÊı¾İµÄÊı¾İ
+	//ç¬¬äºŒæ¬¡è°ƒç”¨ZwQueryKeyä¸ºäº†è·å–KEY_FULL_INFORMATIONæ•°æ®çš„æ•°æ®
 	ZwQueryKey(hRegister,
 		KeyFullInformation,
 		pfi,
@@ -398,7 +398,7 @@ VOID EnumerateSubItemRegTest()
 
 	for (ULONG i=0;i<pfi->SubKeys;i++)
 	{
-		//µÚÒ»´Îµ÷ÓÃZwEnumerateKeyÎªÁË»ñÈ¡KEY_BASIC_INFORMATIONÊı¾İµÄ³¤¶È
+		//ç¬¬ä¸€æ¬¡è°ƒç”¨ZwEnumerateKeyä¸ºäº†è·å–KEY_BASIC_INFORMATIONæ•°æ®çš„é•¿åº¦
 		ZwEnumerateKey(hRegister,
 				i,
 				KeyBasicInformation,
@@ -410,7 +410,7 @@ VOID EnumerateSubItemRegTest()
 			(PKEY_BASIC_INFORMATION)
 			ExAllocatePool(PagedPool,ulSize);
 
-		//µÚ¶ş´Îµ÷ÓÃZwEnumerateKeyÎªÁË»ñÈ¡KEY_BASIC_INFORMATIONÊı¾İµÄÊı¾İ
+		//ç¬¬äºŒæ¬¡è°ƒç”¨ZwEnumerateKeyä¸ºäº†è·å–KEY_BASIC_INFORMATIONæ•°æ®çš„æ•°æ®
 		ZwEnumerateKey(hRegister,
 				i,
 				KeyBasicInformation,
@@ -419,7 +419,7 @@ VOID EnumerateSubItemRegTest()
 				&ulSize);
 
 		UNICODE_STRING uniKeyName;
-		uniKeyName.Length = 
+		uniKeyName.Length =
 		uniKeyName.MaximumLength =
 		(USHORT)pbi->NameLength;
 
@@ -440,18 +440,18 @@ VOID EnumerateSubValueRegTest()
 	UNICODE_STRING RegUnicodeString;
 	HANDLE hRegister;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &RegUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &RegUnicodeString,
 		MY_REG_SOFTWARE_KEY_NAME);
-	
+
 	OBJECT_ATTRIBUTES objectAttributes;
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&RegUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óĞ¡Ğ´Ãô¸Ğ
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
-	//´ò¿ª×¢²á±í
+	//æ‰“å¼€æ³¨å†Œè¡¨
 	NTSTATUS ntStatus = ZwOpenKey( &hRegister,
 							KEY_ALL_ACCESS,
 							&objectAttributes);
@@ -468,7 +468,7 @@ VOID EnumerateSubValueRegTest()
 		0,
 		&ulSize);
 
-	PKEY_FULL_INFORMATION pfi = 
+	PKEY_FULL_INFORMATION pfi =
 		(PKEY_FULL_INFORMATION)
 		ExAllocatePool(PagedPool,ulSize);
 
@@ -499,7 +499,7 @@ VOID EnumerateSubValueRegTest()
 				&ulSize);
 
 		UNICODE_STRING uniKeyName;
-		uniKeyName.Length = 
+		uniKeyName.Length =
 		uniKeyName.MaximumLength =
 		(USHORT)pvbi->NameLength;
 
@@ -512,14 +512,14 @@ VOID EnumerateSubValueRegTest()
 			KdPrint(("The sub value type:REG_SZ\n"));
 		}else if (pvbi->Type==REG_MULTI_SZ)
 		{
-			KdPrint(("The sub value type:REG_MULTI_SZ\n")); 
+			KdPrint(("The sub value type:REG_MULTI_SZ\n"));
 
 		}else if (pvbi->Type==REG_DWORD)
 		{
-			KdPrint(("The sub value type:REG_DWORD\n")); 
+			KdPrint(("The sub value type:REG_DWORD\n"));
 		}else if (pvbi->Type==REG_BINARY)
 		{
-			KdPrint(("The sub value type:REG_BINARY\n")); 
+			KdPrint(("The sub value type:REG_BINARY\n"));
 		}
 
 		ExFreePool(pvbi);
@@ -532,7 +532,7 @@ VOID EnumerateSubValueRegTest()
 #pragma INITCODE
 void RtlRegTest()
 {
-	//´´½¨×ÓÏîÄ¿
+	//åˆ›å»ºå­é¡¹ç›®
 	NTSTATUS ntStatus =
 		RtlCreateRegistryKey(RTL_REGISTRY_SERVICES,L"HelloDDK\\Zhangfan");
 	if (NT_SUCCESS(ntStatus))
@@ -540,7 +540,7 @@ void RtlRegTest()
 		KdPrint(("Create the item successfully\n"));
 	}
 
-	//¼ì²éÄ³ÏîÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥æŸé¡¹æ˜¯å¦å­˜åœ¨
 	ntStatus =
 		RtlCheckRegistryKey(RTL_REGISTRY_SERVICES,L"HelloDDK\\Zhangfan");
 	if (NT_SUCCESS(ntStatus))
@@ -548,9 +548,9 @@ void RtlRegTest()
 		KdPrint(("The item is exist\n"));
 	}
 
-	//Ğ´ÈëREG_DWORDµÄÊı¾İ
+	//å†™å…¥REG_DWORDçš„æ•°æ®
 	ULONG value1 = 100;
-	ntStatus = 
+	ntStatus =
 		RtlWriteRegistryValue(RTL_REGISTRY_SERVICES,
 							L"HelloDDK\\Zhangfan",
 							L"DWORD_Value",
@@ -563,7 +563,7 @@ void RtlRegTest()
 	}
 
 	PWCHAR szString = L"Hello DDK";
-	ntStatus = 
+	ntStatus =
 		RtlWriteRegistryValue(RTL_REGISTRY_SERVICES,
 							L"HelloDDK\\Zhangfan",
 							L"SZ_Value",
@@ -588,7 +588,7 @@ void RtlRegTest()
     paramTable[0].DefaultData = &defaultData;
     paramTable[0].DefaultLength = sizeof(ULONG);
 
-	//²éÑ¯REG_DWORDµÄÊı¾İ
+	//æŸ¥è¯¢REG_DWORDçš„æ•°æ®
 	ntStatus = RtlQueryRegistryValues(RTL_REGISTRY_SERVICES,
 						L"HelloDDK\\Zhangfan",
 						paramTable,
@@ -599,8 +599,8 @@ void RtlRegTest()
 		KdPrint(("Query the item successfully\n"));
 		KdPrint(("The item is :%d\n",uQueryValue));
 	}
-	
-	//É¾³ı×Ó¼ü
+
+	//åˆ é™¤å­é”®
 	ntStatus = RtlDeleteRegistryValue(RTL_REGISTRY_SERVICES,
 					L"HelloDDK\\Zhangfan",
 					L"DWORD_Value");
@@ -611,7 +611,7 @@ void RtlRegTest()
 }
 
 #pragma INITCODE
-VOID RegTest() 
+VOID RegTest()
 {
  	CreateRegTest();
 // 	OpenRegTest();
@@ -624,29 +624,29 @@ VOID RegTest()
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:DriverEntry
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Çı¶¯³ÌĞò£¬¶¨Î»ºÍÉêÇëÓ²¼ş×ÊÔ´£¬´´½¨ÄÚºË¶ÔÏó
-* ²ÎÊıÁĞ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-      pRegistryPath:Çı¶¯³ÌĞòÔÚ×¢²á±íµÄÖĞµÄÂ·¾¶
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯Çı¶¯×´Ì¬
+* å‡½æ•°åç§°:DriverEntry
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–é©±åŠ¨ç¨‹åºï¼Œå®šä½å’Œç”³è¯·ç¡¬ä»¶èµ„æºï¼Œåˆ›å»ºå†…æ ¸å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      pRegistryPath:é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨çš„ä¸­çš„è·¯å¾„
+* è¿”å› å€¼:è¿”å›åˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 extern "C" NTSTATUS DriverEntry (
 			IN PDRIVER_OBJECT pDriverObject,
-			IN PUNICODE_STRING pRegistryPath	) 
+			IN PUNICODE_STRING pRegistryPath	)
 {
 	NTSTATUS status;
 	KdPrint(("Enter DriverEntry\n"));
 
-	//×¢²áÆäËûÇı¶¯µ÷ÓÃº¯ÊıÈë¿Ú
+	//æ³¨å†Œå…¶ä»–é©±åŠ¨è°ƒç”¨å‡½æ•°å…¥å£
 	pDriverObject->DriverUnload = HelloDDKUnload;
 	pDriverObject->MajorFunction[IRP_MJ_CREATE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_CLOSE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_WRITE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_READ] = HelloDDKDispatchRoutine;
-	
-	//´´½¨Çı¶¯Éè±¸¶ÔÏó
+
+	//åˆ›å»ºé©±åŠ¨è®¾å¤‡å¯¹è±¡
 	status = CreateDevice(pDriverObject);
 
 	RegTest();
@@ -656,25 +656,25 @@ extern "C" NTSTATUS DriverEntry (
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:CreateDevice
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Éè±¸¶ÔÏó
-* ²ÎÊıÁĞ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯×´Ì¬
+* å‡½æ•°åç§°:CreateDevice
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–è®¾å¤‡å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+* è¿”å› å€¼:è¿”å›åˆå§‹åŒ–çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 NTSTATUS CreateDevice (
-		IN PDRIVER_OBJECT	pDriverObject) 
+		IN PDRIVER_OBJECT	pDriverObject)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT pDevObj;
 	PDEVICE_EXTENSION pDevExt;
-	
-	//´´½¨Éè±¸Ãû³Æ
+
+	//åˆ›å»ºè®¾å¤‡åç§°
 	UNICODE_STRING devName;
 	RtlInitUnicodeString(&devName,L"\\Device\\MyDDKDevice");
-	
-	//´´½¨Éè±¸
+
+	//åˆ›å»ºè®¾å¤‡
 	status = IoCreateDevice( pDriverObject,
 						sizeof(DEVICE_EXTENSION),
 						&(UNICODE_STRING)devName,
@@ -688,12 +688,12 @@ NTSTATUS CreateDevice (
 	pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
 	pDevExt->pDevice = pDevObj;
 	pDevExt->ustrDeviceName = devName;
-	//´´½¨·ûºÅÁ´½Ó
+	//åˆ›å»ºç¬¦å·é“¾æ¥
 	UNICODE_STRING symLinkName;
 	RtlInitUnicodeString(&symLinkName,L"\\??\\HelloDDK");
 	pDevExt->ustrSymLinkName = symLinkName;
 	status = IoCreateSymbolicLink( &symLinkName,&devName );
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		IoDeleteDevice( pDevObj );
 		return status;
@@ -703,24 +703,24 @@ NTSTATUS CreateDevice (
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:HelloDDKUnload
-* ¹¦ÄÜÃèÊö:¸ºÔğÇı¶¯³ÌĞòµÄĞ¶ÔØ²Ù×÷
-* ²ÎÊıÁĞ±í:
-      pDriverObject:Çı¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKUnload
+* åŠŸèƒ½æè¿°:è´Ÿè´£é©±åŠ¨ç¨‹åºçš„å¸è½½æ“ä½œ
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:é©±åŠ¨å¯¹è±¡
+* è¿”å› å€¼:è¿”å›çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
-VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject) 
+VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 {
 	PDEVICE_OBJECT	pNextObj;
 	KdPrint(("Enter DriverUnload\n"));
 	pNextObj = pDriverObject->DeviceObject;
-	while (pNextObj != NULL) 
+	while (pNextObj != NULL)
 	{
 		PDEVICE_EXTENSION pDevExt = (PDEVICE_EXTENSION)
 			pNextObj->DeviceExtension;
 
-		//É¾³ı·ûºÅÁ´½Ó
+		//åˆ é™¤ç¬¦å·é“¾æ¥
 		UNICODE_STRING pLinkName = pDevExt->ustrSymLinkName;
 		IoDeleteSymbolicLink(&pLinkName);
 		pNextObj = pNextObj->NextDevice;
@@ -729,20 +729,20 @@ VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:HelloDDKDispatchRoutine
-* ¹¦ÄÜÃèÊö:¶Ô¶ÁIRP½øĞĞ´¦Àí
-* ²ÎÊıÁĞ±í:
-      pDevObj:¹¦ÄÜÉè±¸¶ÔÏó
-      pIrp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKDispatchRoutine
+* åŠŸèƒ½æè¿°:å¯¹è¯»IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      pDevObj:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      pIrp:ä»IOè¯·æ±‚åŒ…
+* è¿”å› å€¼:è¿”å›çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloDDKDispatchRoutine(IN PDEVICE_OBJECT pDevObj,
-								 IN PIRP pIrp) 
+								 IN PIRP pIrp)
 {
 	KdPrint(("Enter HelloDDKDispatchRoutine\n"));
 	NTSTATUS status = STATUS_SUCCESS;
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = 0;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );

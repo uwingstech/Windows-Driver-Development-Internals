@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼þÃû³Æ:Driver.h                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.h
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 #pragma once
 
@@ -17,7 +17,7 @@ void Ke386IoSetAccessProcess(PEPROCESS, int);
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #define IOPM_SIZE 0x2000
 UCHAR *pIOPM = NULL;
@@ -38,14 +38,14 @@ UCHAR *pIOPM = NULL;
 
 typedef struct _DEVICE_EXTENSION {
 	PDEVICE_OBJECT pDevice;
-	UNICODE_STRING ustrDeviceName;	//Éè±¸Ãû³Æ
-	UNICODE_STRING ustrSymLinkName;	//·ûºÅÁ´½ÓÃû
+	UNICODE_STRING ustrDeviceName;	//è®¾å¤‡åç§°
+	UNICODE_STRING ustrSymLinkName;	//ç¬¦å·é“¾æŽ¥å
 
-	PUCHAR buffer;//»º³åÇø
-	ULONG file_length;//Ä£ÄâµÄÎÄ¼þ³¤¶È£¬±ØÐëÐ¡ÓÚMAX_FILE_LENGTH
+	PUCHAR buffer;//ç¼“å†²åŒº
+	ULONG file_length;//æ¨¡æ‹Ÿçš„æ–‡ä»¶é•¿åº¦ï¼Œå¿…é¡»å°äºŽMAX_FILE_LENGTH
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
-// º¯ÊýÉùÃ÷
+// å‡½æ•°å£°æ˜Ž
 
 NTSTATUS CreateDevice (IN PDRIVER_OBJECT pDriverObject);
 VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject);

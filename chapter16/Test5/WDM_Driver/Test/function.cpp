@@ -45,7 +45,7 @@ HANDLE GetDeviceViaInterface( GUID* pGuid, DWORD instance)
 
 	printf("Symbolic link is %s\n",ifDetail->DevicePath);
 	// Open file
-	HANDLE rv = CreateFile( ifDetail->DevicePath, 
+	HANDLE rv = CreateFile( ifDetail->DevicePath,
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -140,7 +140,7 @@ BOOL WriteDwordToBase2(HANDLE handle,ULONG offset,DWORD input)
 {
 	PUCHAR pBuff = (PUCHAR)&input;
 
-	//端口操作为big endian
+	//绔彛鎿嶄綔涓篵ig endian
 	WriteByteToBase2(handle,offset,pBuff[0]);
 	WriteByteToBase2(handle,offset+1,pBuff[1]);
 	WriteByteToBase2(handle,offset+2,pBuff[2]);
@@ -152,9 +152,9 @@ BOOL WriteDwordToBase2(HANDLE handle,ULONG offset,DWORD input)
 BOOL WriteDwordToBase0(HANDLE handle,ULONG offset,DWORD input)
 {
 	PUCHAR pBuff = (PUCHAR)&input;
-	
-	//内存操作为little endian
-	
+
+	//鍐呭瓨鎿嶄綔涓簂ittle endian
+
 	WriteToBase0(handle,offset,pBuff,sizeof(DWORD));
 
 	return TRUE;

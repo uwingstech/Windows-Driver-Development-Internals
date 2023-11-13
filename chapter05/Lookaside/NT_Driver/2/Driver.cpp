@@ -1,32 +1,32 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:Driver.cpp                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.cpp
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #include "Driver.h"
 
-typedef struct _MYDATASTRUCT 
+typedef struct _MYDATASTRUCT
 {
 	CHAR buffer[64];
 } MYDATASTRUCT, *PMYDATASTRUCT;
 
 #pragma INITCODE
-VOID LookasideTest() 
+VOID LookasideTest()
 {
-	//³õÊ¼»¯Lookaside¶ÔÏó
+	//åˆå§‹åŒ–Lookasideå¯¹è±¡
 	PAGED_LOOKASIDE_LIST pageList;
 	ExInitializePagedLookasideList(&pageList,NULL,NULL,0,sizeof(MYDATASTRUCT),'1234',0);
 
 #define ARRAY_NUMBER 50
 	PMYDATASTRUCT MyObjectArray[ARRAY_NUMBER];
-	//Ä£ÄâÆµ·±ÉêÇëÄÚ´æ
+	//æ¨¡æ‹Ÿé¢‘ç¹ç”³è¯·å†…å­˜
 	for (int i=0;i<ARRAY_NUMBER;i++)
 	{
 		MyObjectArray[i] = (PMYDATASTRUCT)ExAllocateFromPagedLookasideList(&pageList);
 	}
 
-	//Ä£ÄâÆµ·±»ØÊÕÄÚ´æ
+	//æ¨¡æ‹Ÿé¢‘ç¹å›æ”¶å†…å­˜
 	for (i=0;i<ARRAY_NUMBER;i++)
 	{
 		ExFreeToPagedLookasideList(&pageList,MyObjectArray[i]);
@@ -34,33 +34,33 @@ VOID LookasideTest()
 	}
 
 	ExDeletePagedLookasideList(&pageList);
-	//É¾³ıLookaside¶ÔÏó
+	//åˆ é™¤Lookasideå¯¹è±¡
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:DriverEntry
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Çı¶¯³ÌĞò£¬¶¨Î»ºÍÉêÇëÓ²¼ş×ÊÔ´£¬´´½¨ÄÚºË¶ÔÏó
-* ²ÎÊıÁĞ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-      pRegistryPath:Çı¶¯³ÌĞòÔÚ×¢²á±íµÄÖĞµÄÂ·¾¶
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯Çı¶¯×´Ì¬
+* å‡½æ•°åç§°:DriverEntry
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–é©±åŠ¨ç¨‹åºï¼Œå®šä½å’Œç”³è¯·ç¡¬ä»¶èµ„æºï¼Œåˆ›å»ºå†…æ ¸å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      pRegistryPath:é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨çš„ä¸­çš„è·¯å¾„
+* è¿”å› å€¼:è¿”å›åˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 extern "C" NTSTATUS DriverEntry (
 			IN PDRIVER_OBJECT pDriverObject,
-			IN PUNICODE_STRING pRegistryPath	) 
+			IN PUNICODE_STRING pRegistryPath	)
 {
 	NTSTATUS status;
 	KdPrint(("Enter DriverEntry\n"));
 
-	//×¢²áÆäËûÇı¶¯µ÷ÓÃº¯ÊıÈë¿Ú
+	//æ³¨å†Œå…¶ä»–é©±åŠ¨è°ƒç”¨å‡½æ•°å…¥å£
 	pDriverObject->DriverUnload = HelloDDKUnload;
 	pDriverObject->MajorFunction[IRP_MJ_CREATE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_CLOSE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_WRITE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_READ] = HelloDDKDispatchRoutine;
-	
-	//´´½¨Çı¶¯Éè±¸¶ÔÏó
+
+	//åˆ›å»ºé©±åŠ¨è®¾å¤‡å¯¹è±¡
 	status = CreateDevice(pDriverObject);
 
 	LookasideTest();
@@ -70,25 +70,25 @@ extern "C" NTSTATUS DriverEntry (
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:CreateDevice
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Éè±¸¶ÔÏó
-* ²ÎÊıÁĞ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯×´Ì¬
+* å‡½æ•°åç§°:CreateDevice
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–è®¾å¤‡å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+* è¿”å› å€¼:è¿”å›åˆå§‹åŒ–çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 NTSTATUS CreateDevice (
-		IN PDRIVER_OBJECT	pDriverObject) 
+		IN PDRIVER_OBJECT	pDriverObject)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT pDevObj;
 	PDEVICE_EXTENSION pDevExt;
-	
-	//´´½¨Éè±¸Ãû³Æ
+
+	//åˆ›å»ºè®¾å¤‡åç§°
 	UNICODE_STRING devName;
 	RtlInitUnicodeString(&devName,L"\\Device\\MyDDKDevice");
-	
-	//´´½¨Éè±¸
+
+	//åˆ›å»ºè®¾å¤‡
 	status = IoCreateDevice( pDriverObject,
 						sizeof(DEVICE_EXTENSION),
 						&(UNICODE_STRING)devName,
@@ -102,12 +102,12 @@ NTSTATUS CreateDevice (
 	pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
 	pDevExt->pDevice = pDevObj;
 	pDevExt->ustrDeviceName = devName;
-	//´´½¨·ûºÅÁ´½Ó
+	//åˆ›å»ºç¬¦å·é“¾æ¥
 	UNICODE_STRING symLinkName;
 	RtlInitUnicodeString(&symLinkName,L"\\??\\HelloDDK");
 	pDevExt->ustrSymLinkName = symLinkName;
 	status = IoCreateSymbolicLink( &symLinkName,&devName );
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		IoDeleteDevice( pDevObj );
 		return status;
@@ -116,24 +116,24 @@ NTSTATUS CreateDevice (
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:HelloDDKUnload
-* ¹¦ÄÜÃèÊö:¸ºÔğÇı¶¯³ÌĞòµÄĞ¶ÔØ²Ù×÷
-* ²ÎÊıÁĞ±í:
-      pDriverObject:Çı¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKUnload
+* åŠŸèƒ½æè¿°:è´Ÿè´£é©±åŠ¨ç¨‹åºçš„å¸è½½æ“ä½œ
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:é©±åŠ¨å¯¹è±¡
+* è¿”å› å€¼:è¿”å›çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
-VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject) 
+VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 {
 	PDEVICE_OBJECT	pNextObj;
 	KdPrint(("Enter DriverUnload\n"));
 	pNextObj = pDriverObject->DeviceObject;
-	while (pNextObj != NULL) 
+	while (pNextObj != NULL)
 	{
 		PDEVICE_EXTENSION pDevExt = (PDEVICE_EXTENSION)
 			pNextObj->DeviceExtension;
 
-		//É¾³ı·ûºÅÁ´½Ó
+		//åˆ é™¤ç¬¦å·é“¾æ¥
 		UNICODE_STRING pLinkName = pDevExt->ustrSymLinkName;
 		IoDeleteSymbolicLink(&pLinkName);
 		pNextObj = pNextObj->NextDevice;
@@ -142,20 +142,20 @@ VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:HelloDDKDispatchRoutine
-* ¹¦ÄÜÃèÊö:¶Ô¶ÁIRP½øĞĞ´¦Àí
-* ²ÎÊıÁĞ±í:
-      pDevObj:¹¦ÄÜÉè±¸¶ÔÏó
-      pIrp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKDispatchRoutine
+* åŠŸèƒ½æè¿°:å¯¹è¯»IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      pDevObj:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      pIrp:ä»IOè¯·æ±‚åŒ…
+* è¿”å› å€¼:è¿”å›çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloDDKDispatchRoutine(IN PDEVICE_OBJECT pDevObj,
-								 IN PIRP pIrp) 
+								 IN PIRP pIrp)
 {
 	KdPrint(("Enter HelloDDKDispatchRoutine\n"));
 	NTSTATUS status = STATUS_SUCCESS;
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = 0;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );

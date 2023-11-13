@@ -14,7 +14,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/

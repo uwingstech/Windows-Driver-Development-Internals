@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-//Ê¹ÓÃCTL_CODE±ØĞë¼ÓÈëwinioctl.h
+//ä½¿ç”¨CTL_CODEå¿…é¡»åŠ å…¥winioctl.h
 #include <winioctl.h>
 #include "..\NT_Driver\Ioctls.h"
 
@@ -10,66 +10,66 @@ UCHAR In_8(HANDLE hDevice,USHORT port)
 	DWORD dwOutput ;
 	DWORD inputBuffer[2] =
 	{
-		port,//¶Ôport½øĞĞ²Ù×÷
-		1//1´ú±í8Î»²Ù×÷£¬2´ú±í16Î»²Ù×÷£¬4´ú±í32Î»²Ù×÷
+		port,//å¯¹portè¿›è¡Œæ“ä½œ
+		1//1ä»£è¡¨8ä½æ“ä½œï¼Œ2ä»£è¡¨16ä½æ“ä½œï¼Œ4ä»£è¡¨32ä½æ“ä½œ
 	};
 	DWORD dResult;
 
 	DeviceIoControl(hDevice, READ_PORT, inputBuffer, sizeof(inputBuffer), &dResult, sizeof(DWORD), &dwOutput, NULL);
 
 	return (UCHAR) dResult;
-	
+
 }
 void Out_8(HANDLE hDevice,USHORT port,UCHAR value)
 {
 	DWORD dwOutput ;
 	DWORD inputBuffer[3] =
 	{
-		port,//¶Ôport½øĞĞ²Ù×÷
-		1,//1´ú±í8Î»²Ù×÷£¬2´ú±í16Î»²Ù×÷£¬4´ú±í32Î»²Ù×÷
-		value//Êä³ö×Ö½Ú
+		port,//å¯¹portè¿›è¡Œæ“ä½œ
+		1,//1ä»£è¡¨8ä½æ“ä½œï¼Œ2ä»£è¡¨16ä½æ“ä½œï¼Œ4ä»£è¡¨32ä½æ“ä½œ
+		value//è¾“å‡ºå­—èŠ‚
 	};
 
 	DeviceIoControl(hDevice, WRITE_PORT, inputBuffer, sizeof(inputBuffer), NULL, 0, &dwOutput, NULL);
 }
 
-//·¢Òô³ÌĞò,²ÎÊıf´ú±íÆµÂÊ
+//å‘éŸ³ç¨‹åº,å‚æ•°fä»£è¡¨é¢‘ç‡
 void Sound(HANDLE hDevice,int f)
-{  
-	//¼ÆÊıÎª1193180/F
-	USHORT   B=1193180/f; 
+{
+	//è®¡æ•°ä¸º1193180/F
+	USHORT   B=1193180/f;
 
-	//´Ó¶Ë¿Ú0x61È¡Êı  
+	//ä»ç«¯å£0x61å–æ•°
 	UCHAR temp = In_8(hDevice,0x61);
-	//Á½µÍÎ»ÖÃ1 
-	temp = temp | 3; 
-	//Êä³öµ½0x61¶Ë¿Ú
+	//ä¸¤ä½ä½ç½®1
+	temp = temp | 3;
+	//è¾“å‡ºåˆ°0x61ç«¯å£
 	Out_8(hDevice,0x61,temp);
 
-	//Êä³öµ½0x61¶Ë¿Ú
+	//è¾“å‡ºåˆ°0x61ç«¯å£
 	Out_8(hDevice,0x43,0xB6);
-	//Êä³öµ½0x42¶Ë¿Ú£¬Ğ´µÍ8Î»
+	//è¾“å‡ºåˆ°0x42ç«¯å£ï¼Œå†™ä½8ä½
 	Out_8(hDevice,0x42,B&0xF);
-	//Êä³öµ½0x42¶Ë¿Ú£¬Ğ´¸ß8Î»
+	//è¾“å‡ºåˆ°0x42ç«¯å£ï¼Œå†™é«˜8ä½
 	Out_8(hDevice,0x42,(B>>8)&0xF);
 }
 
-// ¹Ø±ÕÉùÒô  
-void SoundOff(HANDLE hDevice)                               
+// å…³é—­å£°éŸ³
+void SoundOff(HANDLE hDevice)
 {
-	//È¡¶Ë¿Ú0x61µÄ×Ö½Ú  
+	//å–ç«¯å£0x61çš„å­—èŠ‚
 	UCHAR value = In_8(hDevice,0x61);
 
-	//Ç¿ÖÆÖÃ×îºóÁ½Î»Îª0 
+	//å¼ºåˆ¶ç½®æœ€åä¸¤ä½ä¸º0
 	value = value & 0xFC;
 
-	//·µËÍ¶Ë¿Ú0x61  
+	//è¿”é€ç«¯å£0x61
 	Out_8(hDevice,0x61,value);
 }
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none
@@ -86,9 +86,9 @@ int main()
 		return 1;
 	}
 
-	//²úÉú2KHzÆµÂÊµÄÉùÒô
+	//äº§ç”Ÿ2KHzé¢‘ç‡çš„å£°éŸ³
 	Sound(hDevice,2000);
-	//³ÖĞø200ºÁÃë
+	//æŒç»­200æ¯«ç§’
 	Sleep(200);
 	SoundOff(hDevice);
 

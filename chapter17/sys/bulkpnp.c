@@ -20,7 +20,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -39,7 +39,7 @@ BulkUsb_DispatchPnP(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     The plug and play dispatch routines.
@@ -133,7 +133,7 @@ Return Value:
         ntStatus = HandleCancelStopDevice(DeviceObject, Irp);
 
         break;
-     
+
     case IRP_MN_STOP_DEVICE:
 
         ntStatus = HandleStopDevice(DeviceObject, Irp);
@@ -193,7 +193,7 @@ Return Value:
     } // switch
 
 //
-// complete request 
+// complete request
 //
 
     Irp->IoStatus.Status = ntStatus;
@@ -216,7 +216,7 @@ HandleStartDevice(
     IN PIRP              Irp
     )
 /*++
- 
+
 Routine Description:
 
     This is the dispatch routine for IRP_MN_START_DEVICE
@@ -259,21 +259,21 @@ Return Value:
 
     IoCopyCurrentIrpStackLocationToNext(Irp);
 
-    IoSetCompletionRoutine(Irp, 
-                           (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine, 
-                           (PVOID)&startDeviceEvent, 
-                           TRUE, 
-                           TRUE, 
+    IoSetCompletionRoutine(Irp,
+                           (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine,
+                           (PVOID)&startDeviceEvent,
+                           TRUE,
+                           TRUE,
                            TRUE);
 
     ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
 
     if(ntStatus == STATUS_PENDING) {
 
-        KeWaitForSingleObject(&startDeviceEvent, 
-                              Executive, 
-                              KernelMode, 
-                              FALSE, 
+        KeWaitForSingleObject(&startDeviceEvent,
+                              Executive,
+                              KernelMode,
+                              FALSE,
                               NULL);
 
         ntStatus = Irp->IoStatus.Status;
@@ -286,7 +286,7 @@ Return Value:
     }
 
     //
-    // Read the device descriptor, configuration descriptor 
+    // Read the device descriptor, configuration descriptor
     // and select the interface descriptors
     //
 
@@ -303,7 +303,7 @@ Return Value:
     // handles to the device
     //
 
-    ntStatus = IoSetDeviceInterfaceState(&deviceExtension->InterfaceName, 
+    ntStatus = IoSetDeviceInterfaceState(&deviceExtension->InterfaceName,
                                          TRUE);
 
     if(!NT_SUCCESS(ntStatus)) {
@@ -322,11 +322,11 @@ Return Value:
     //
     // initialize wait wake outstanding flag to false.
     // and issue a wait wake.
-    
+
     deviceExtension->FlagWWOutstanding = 0;
     deviceExtension->FlagWWCancel = 0;
     deviceExtension->WaitWakeIrp = NULL;
-    
+
     if(deviceExtension->WaitWakeEnable) {
 
         IssueWaitWake(deviceExtension);
@@ -348,7 +348,7 @@ Return Value:
 
             dueTime.QuadPart = -10000 * IDLE_INTERVAL;               // 5000 ms
 
-            KeSetTimerEx(&deviceExtension->Timer, 
+            KeSetTimerEx(&deviceExtension->Timer,
                          dueTime,
                          IDLE_INTERVAL,                              // 5000 ms
                          &deviceExtension->DeferredProcCall);
@@ -368,11 +368,11 @@ ReadandSelectDescriptors(
     IN PDEVICE_OBJECT DeviceObject
     )
 /*++
- 
+
 Routine Description:
 
     This routine configures the USB device.
-    In this routines we get the device descriptor, 
+    In this routines we get the device descriptor,
     the configuration descriptor and select the
     configuration descriptor.
 
@@ -390,7 +390,7 @@ Return Value:
     ULONG                  siz;
     NTSTATUS               ntStatus;
     PUSB_DEVICE_DESCRIPTOR deviceDescriptor;
-    
+
     //
     // initialize variables
     //
@@ -402,7 +402,7 @@ Return Value:
     // 1. Read the device descriptor
     //
 
-    urb = ExAllocatePool(NonPagedPool, 
+    urb = ExAllocatePool(NonPagedPool,
                          sizeof(struct _URB_CONTROL_DESCRIPTOR_REQUEST));
 
     if(urb) {
@@ -413,14 +413,14 @@ Return Value:
         if(deviceDescriptor) {
 
             UsbBuildGetDescriptorRequest(
-                    urb, 
+                    urb,
                     (USHORT) sizeof(struct _URB_CONTROL_DESCRIPTOR_REQUEST),
-                    USB_DEVICE_DESCRIPTOR_TYPE, 
-                    0, 
-                    0, 
-                    deviceDescriptor, 
-                    NULL, 
-                    siz, 
+                    USB_DEVICE_DESCRIPTOR_TYPE,
+                    0,
+                    0,
+                    deviceDescriptor,
+                    NULL,
+                    siz,
                     NULL);
 
             ntStatus = CallUSBD(DeviceObject, urb);
@@ -428,10 +428,10 @@ Return Value:
             if(NT_SUCCESS(ntStatus)) {
 
                 ASSERT(deviceDescriptor->bNumConfigurations);
-                ntStatus = ConfigureDevice(DeviceObject);    
+                ntStatus = ConfigureDevice(DeviceObject);
             }
-                            
-            ExFreePool(urb);                
+
+            ExFreePool(urb);
             ExFreePool(deviceDescriptor);
         }
         else {
@@ -494,7 +494,7 @@ Return Value:
     // 2. Read the CD with all embedded interface and endpoint descriptors
     //
 
-    urb = ExAllocatePool(NonPagedPool, 
+    urb = ExAllocatePool(NonPagedPool,
                          sizeof(struct _URB_CONTROL_DESCRIPTOR_REQUEST));
 
     if(urb) {
@@ -505,14 +505,14 @@ Return Value:
         if(configurationDescriptor) {
 
             UsbBuildGetDescriptorRequest(
-                    urb, 
+                    urb,
                     (USHORT) sizeof(struct _URB_CONTROL_DESCRIPTOR_REQUEST),
-                    USB_CONFIGURATION_DESCRIPTOR_TYPE, 
-                    0, 
-                    0, 
+                    USB_CONFIGURATION_DESCRIPTOR_TYPE,
+                    0,
+                    0,
                     configurationDescriptor,
-                    NULL, 
-                    sizeof(USB_CONFIGURATION_DESCRIPTOR), 
+                    NULL,
+                    sizeof(USB_CONFIGURATION_DESCRIPTOR),
                     NULL);
 
             ntStatus = CallUSBD(DeviceObject, urb);
@@ -540,14 +540,14 @@ Return Value:
         if(configurationDescriptor) {
 
             UsbBuildGetDescriptorRequest(
-                    urb, 
+                    urb,
                     (USHORT)sizeof(struct _URB_CONTROL_DESCRIPTOR_REQUEST),
                     USB_CONFIGURATION_DESCRIPTOR_TYPE,
-                    0, 
-                    0, 
-                    configurationDescriptor, 
-                    NULL, 
-                    siz, 
+                    0,
+                    0,
+                    configurationDescriptor,
+                    NULL,
+                    siz,
                     NULL);
 
             ntStatus = CallUSBD(DeviceObject, urb);
@@ -615,7 +615,7 @@ SelectInterfaces(
     IN PUSB_CONFIGURATION_DESCRIPTOR ConfigurationDescriptor
     )
 /*++
- 
+
 Routine Description:
 
     This helper routine selects the configuration
@@ -632,8 +632,8 @@ Return Value:
 
 --*/
 {
-    LONG                        numberOfInterfaces, 
-                                interfaceNumber, 
+    LONG                        numberOfInterfaces,
+                                interfaceNumber,
                                 interfaceindex;
     ULONG                       i;
     PURB                        urb;
@@ -641,7 +641,7 @@ Return Value:
     NTSTATUS                    ntStatus;
     PDEVICE_EXTENSION           deviceExtension;
     PUSB_INTERFACE_DESCRIPTOR   interfaceDescriptor;
-    PUSBD_INTERFACE_LIST_ENTRY  interfaceList, 
+    PUSBD_INTERFACE_LIST_ENTRY  interfaceList,
                                 tmp;
     PUSBD_INTERFACE_INFORMATION Interface;
 
@@ -662,7 +662,7 @@ Return Value:
 
     tmp = interfaceList =
         ExAllocatePool(
-               NonPagedPool, 
+               NonPagedPool,
                sizeof(USBD_INTERFACE_LIST_ENTRY) * (numberOfInterfaces + 1));
 
     if(!tmp) {
@@ -675,7 +675,7 @@ Return Value:
     while(interfaceNumber < numberOfInterfaces) {
 
         interfaceDescriptor = USBD_ParseConfigurationDescriptorEx(
-                                            ConfigurationDescriptor, 
+                                            ConfigurationDescriptor,
                                             ConfigurationDescriptor,
                                             interfaceindex,
                                             0, -1, -1, -1);
@@ -707,7 +707,7 @@ Return Value:
             // USBD sets the rest of the Interface struct members
             //
 
-            Interface->Pipes[i].MaximumTransferSize = 
+            Interface->Pipes[i].MaximumTransferSize =
                                 USBD_DEFAULT_MAXIMUM_TRANSFER_SIZE;
         }
 
@@ -722,7 +722,7 @@ Return Value:
                                                            Interface->Length);
 
             if(deviceExtension->UsbInterface) {
-                
+
                 RtlCopyMemory(deviceExtension->UsbInterface,
                               Interface,
                               Interface->Length);
@@ -740,13 +740,13 @@ Return Value:
             Interface = &urb->UrbSelectConfiguration.Interface;
 
             BulkUsb_DbgPrint(3, ("---------\n"));
-            BulkUsb_DbgPrint(3, ("NumberOfPipes 0x%x\n", 
+            BulkUsb_DbgPrint(3, ("NumberOfPipes 0x%x\n",
                                  Interface->NumberOfPipes));
-            BulkUsb_DbgPrint(3, ("Length 0x%x\n", 
+            BulkUsb_DbgPrint(3, ("Length 0x%x\n",
                                  Interface->Length));
-            BulkUsb_DbgPrint(3, ("Alt Setting 0x%x\n", 
+            BulkUsb_DbgPrint(3, ("Alt Setting 0x%x\n",
                                  Interface->AlternateSetting));
-            BulkUsb_DbgPrint(3, ("Interface Number 0x%x\n", 
+            BulkUsb_DbgPrint(3, ("Interface Number 0x%x\n",
                                  Interface->InterfaceNumber));
             BulkUsb_DbgPrint(3, ("Class, subclass, protocol 0x%x 0x%x 0x%x\n",
                                  Interface->Class,
@@ -763,14 +763,14 @@ Return Value:
                                                 sizeof(BULKUSB_PIPE_CONTEXT));
 
             if(deviceExtension->PipeContext) {
-                
+
                 for(i=0; i<Interface->NumberOfPipes; i++) {
 
                     deviceExtension->PipeContext[i].PipeOpen = FALSE;
                 }
             }
             else {
-                    
+
                 ntStatus = STATUS_INSUFFICIENT_RESOURCES;
                 BulkUsb_DbgPrint(1, ("memory alloc for UsbInterface failed\n"));
             }
@@ -778,17 +778,17 @@ Return Value:
             for(i=0; i<Interface->NumberOfPipes; i++) {
 
                 BulkUsb_DbgPrint(3, ("---------\n"));
-                BulkUsb_DbgPrint(3, ("PipeType 0x%x\n", 
+                BulkUsb_DbgPrint(3, ("PipeType 0x%x\n",
                                      Interface->Pipes[i].PipeType));
-                BulkUsb_DbgPrint(3, ("EndpointAddress 0x%x\n", 
+                BulkUsb_DbgPrint(3, ("EndpointAddress 0x%x\n",
                                      Interface->Pipes[i].EndpointAddress));
-                BulkUsb_DbgPrint(3, ("MaxPacketSize 0x%x\n", 
+                BulkUsb_DbgPrint(3, ("MaxPacketSize 0x%x\n",
                                     Interface->Pipes[i].MaximumPacketSize));
-                BulkUsb_DbgPrint(3, ("Interval 0x%x\n", 
+                BulkUsb_DbgPrint(3, ("Interval 0x%x\n",
                                      Interface->Pipes[i].Interval));
-                BulkUsb_DbgPrint(3, ("Handle 0x%x\n", 
+                BulkUsb_DbgPrint(3, ("Handle 0x%x\n",
                                      Interface->Pipes[i].PipeHandle));
-                BulkUsb_DbgPrint(3, ("MaximumTransferSize 0x%x\n", 
+                BulkUsb_DbgPrint(3, ("MaximumTransferSize 0x%x\n",
                                     Interface->Pipes[i].MaximumTransferSize));
             }
 
@@ -800,7 +800,7 @@ Return Value:
         }
     }
     else {
-        
+
         BulkUsb_DbgPrint(1, ("USBD_CreateConfigurationRequestEx failed\n"));
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
     }
@@ -824,7 +824,7 @@ DeconfigureDevice(
     IN PDEVICE_OBJECT DeviceObject
     )
 /*++
- 
+
 Routine Description:
 
     This routine is invoked when the device is removed or stopped.
@@ -843,7 +843,7 @@ Return Value:
     PURB     urb;
     ULONG    siz;
     NTSTATUS ntStatus;
-    
+
     //
     // initialize variables
     //
@@ -879,7 +879,7 @@ CallUSBD(
     IN PURB           Urb
     )
 /*++
- 
+
 Routine Description:
 
     This routine synchronously submits an urb down the stack.
@@ -906,17 +906,17 @@ Return Value:
 
     irp = NULL;
     deviceExtension = DeviceObject->DeviceExtension;
-    
+
     KeInitializeEvent(&event, NotificationEvent, FALSE);
 
-    irp = IoBuildDeviceIoControlRequest(IOCTL_INTERNAL_USB_SUBMIT_URB, 
+    irp = IoBuildDeviceIoControlRequest(IOCTL_INTERNAL_USB_SUBMIT_URB,
                                         deviceExtension->TopOfStackDeviceObject,
-                                        NULL, 
-                                        0, 
-                                        NULL, 
-                                        0, 
-                                        TRUE, 
-                                        &event, 
+                                        NULL,
+                                        0,
+                                        NULL,
+                                        0,
+                                        TRUE,
+                                        &event,
                                         &ioStatus);
 
     if(!irp) {
@@ -936,15 +936,15 @@ Return Value:
 
     if(ntStatus == STATUS_PENDING) {
 
-        KeWaitForSingleObject(&event, 
-                              Executive, 
-                              KernelMode, 
-                              FALSE, 
+        KeWaitForSingleObject(&event,
+                              Executive,
+                              KernelMode,
+                              FALSE,
                               NULL);
 
         ntStatus = ioStatus.Status;
     }
-    
+
     BulkUsb_DbgPrint(3, ("CallUSBD::"));
     BulkUsb_IoDecrement(deviceExtension);
     return ntStatus;
@@ -956,7 +956,7 @@ HandleQueryStopDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services the Irps of minor type IRP_MN_QUERY_STOP_DEVICE
@@ -985,15 +985,15 @@ Return Value:
     deviceExtension = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
 
     //
-    // If we can stop the device, we need to set the QueueState to 
+    // If we can stop the device, we need to set the QueueState to
     // HoldRequests so further requests will be queued.
     //
 
     KeAcquireSpinLock(&deviceExtension->DevStateLock, &oldIrql);
-    
+
     SET_NEW_PNP_STATE(deviceExtension, PendingStop);
     deviceExtension->QueueState = HoldRequests;
-    
+
     KeReleaseSpinLock(&deviceExtension->DevStateLock, oldIrql);
 
     //
@@ -1004,10 +1004,10 @@ Return Value:
     BulkUsb_DbgPrint(3, ("HandleQueryStopDevice::"));
     BulkUsb_IoDecrement(deviceExtension);
 
-    KeWaitForSingleObject(&deviceExtension->StopEvent, 
-                          Executive, 
-                          KernelMode, 
-                          FALSE, 
+    KeWaitForSingleObject(&deviceExtension->StopEvent,
+                          Executive,
+                          KernelMode,
+                          FALSE,
                           NULL);
 
     Irp->IoStatus.Status = STATUS_SUCCESS;
@@ -1028,7 +1028,7 @@ HandleCancelStopDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services Irp of minor type IRP_MN_CANCEL_STOP_DEVICE
@@ -1044,7 +1044,7 @@ Return Value:
 
 --*/
 {
-    KIRQL             oldIrql;    
+    KIRQL             oldIrql;
     KEVENT            event;
     NTSTATUS          ntStatus;
     PDEVICE_EXTENSION deviceExtension;
@@ -1055,7 +1055,7 @@ Return Value:
 
     //
     // Send this IRP down and wait for it to come back.
-    // Set the QueueState flag to AllowRequests, 
+    // Set the QueueState flag to AllowRequests,
     // and process all the previously queued up IRPs.
     //
     // First check to see whether you have received cancel-stop
@@ -1069,21 +1069,21 @@ Return Value:
         KeInitializeEvent(&event, NotificationEvent, FALSE);
 
         IoCopyCurrentIrpStackLocationToNext(Irp);
-        IoSetCompletionRoutine(Irp, 
-                               (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine, 
-                               (PVOID)&event, 
-                               TRUE, 
-                               TRUE, 
+        IoSetCompletionRoutine(Irp,
+                               (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine,
+                               (PVOID)&event,
+                               TRUE,
+                               TRUE,
                                TRUE);
 
         ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
 
         if(ntStatus == STATUS_PENDING) {
 
-            KeWaitForSingleObject(&event, 
-                                  Executive, 
-                                  KernelMode, 
-                                  FALSE, 
+            KeWaitForSingleObject(&event,
+                                  Executive,
+                                  KernelMode,
+                                  FALSE,
                                   NULL);
             ntStatus = Irp->IoStatus.Status;
         }
@@ -1175,43 +1175,43 @@ Return Value:
             // make sure that if a DPC was fired before we called cancel timer,
             // then the DPC and work-time have run to their completion
             //
-            KeWaitForSingleObject(&deviceExtension->NoDpcWorkItemPendingEvent, 
-                                  Executive, 
-                                  KernelMode, 
-                                  FALSE, 
+            KeWaitForSingleObject(&deviceExtension->NoDpcWorkItemPendingEvent,
+                                  Executive,
+                                  KernelMode,
+                                  FALSE,
                                   NULL);
 
             //
             // make sure that the selective suspend request has been completed.
             //
-            KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent, 
-                                  Executive, 
-                                  KernelMode, 
-                                  FALSE, 
+            KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent,
+                                  Executive,
+                                  KernelMode,
+                                  FALSE,
                                   NULL);
         }
     }
 
     //
-    // after the stop Irp is sent to the lower driver object, 
-    // the driver must not send any more Irps down that touch 
+    // after the stop Irp is sent to the lower driver object,
+    // the driver must not send any more Irps down that touch
     // the device until another Start has occurred.
     //
 
     if(deviceExtension->WaitWakeEnable) {
-    
+
         CancelWaitWake(deviceExtension);
     }
 
     KeAcquireSpinLock(&deviceExtension->DevStateLock, &oldIrql);
 
     SET_NEW_PNP_STATE(deviceExtension, Stopped);
-    
+
     KeReleaseSpinLock(&deviceExtension->DevStateLock, oldIrql);
 
     //
     // This is the right place to actually give up all the resources used
-    // This might include calls to IoDisconnectInterrupt, MmUnmapIoSpace, 
+    // This might include calls to IoDisconnectInterrupt, MmUnmapIoSpace,
     // etc.
     //
 
@@ -1221,12 +1221,12 @@ Return Value:
 
     Irp->IoStatus.Status = ntStatus;
     Irp->IoStatus.Information = 0;
-    
+
     IoSkipCurrentIrpStackLocation(Irp);
     ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
 
     BulkUsb_DbgPrint(3, ("HandleStopDevice - ends\n"));
-    
+
     return ntStatus;
 }
 
@@ -1236,7 +1236,7 @@ HandleQueryRemoveDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services Irp of minor type IRP_MN_QUERY_REMOVE_DEVICE
@@ -1267,9 +1267,9 @@ Return Value:
     //
     // If we can allow removal of the device, we should set the QueueState
     // to HoldRequests so further requests will be queued. This is required
-    // so that we can process queued up requests in cancel-remove just in 
-    // case somebody else in the stack fails the query-remove. 
-    // 
+    // so that we can process queued up requests in cancel-remove just in
+    // case somebody else in the stack fails the query-remove.
+    //
 
     ntStatus = CanRemoveDevice(DeviceObject, Irp);
 
@@ -1287,10 +1287,10 @@ Return Value:
     // wait for all the requests to be completed
     //
 
-    KeWaitForSingleObject(&deviceExtension->StopEvent, 
+    KeWaitForSingleObject(&deviceExtension->StopEvent,
                           Executive,
-                          KernelMode, 
-                          FALSE, 
+                          KernelMode,
+                          FALSE,
                           NULL);
 
     Irp->IoStatus.Status = STATUS_SUCCESS;
@@ -1310,7 +1310,7 @@ HandleCancelRemoveDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services Irp of minor type IRP_MN_CANCEL_REMOVE_DEVICE
@@ -1340,14 +1340,14 @@ Return Value:
     deviceExtension = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
 
     //
-    // We need to reset the QueueState flag to ProcessRequest, 
+    // We need to reset the QueueState flag to ProcessRequest,
     // since the device resume its normal activities.
     //
 
     //
     // First check to see whether you have received cancel-remove
-    // without first receiving a query-remove. This could happen if 
-    // someone above us fails a query-remove and passes down the 
+    // without first receiving a query-remove. This could happen if
+    // someone above us fails a query-remove and passes down the
     // subsequent cancel-remove.
     //
 
@@ -1356,20 +1356,20 @@ Return Value:
         KeInitializeEvent(&event, NotificationEvent, FALSE);
 
         IoCopyCurrentIrpStackLocationToNext(Irp);
-        IoSetCompletionRoutine(Irp, 
-                               (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine, 
-                               (PVOID)&event, 
-                               TRUE, 
-                               TRUE, 
+        IoSetCompletionRoutine(Irp,
+                               (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine,
+                               (PVOID)&event,
+                               TRUE,
+                               TRUE,
                                TRUE);
         ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
 
         if(ntStatus == STATUS_PENDING) {
 
-            KeWaitForSingleObject(&event, 
-                                  Executive, 
-                                  KernelMode, 
-                                  FALSE, 
+            KeWaitForSingleObject(&event,
+                                  Executive,
+                                  KernelMode,
+                                  FALSE,
                                   NULL);
 
             ntStatus = Irp->IoStatus.Status;
@@ -1384,17 +1384,17 @@ Return Value:
 
             KeReleaseSpinLock(&deviceExtension->DevStateLock, oldIrql);
             //
-            // process the queued requests that arrive between 
+            // process the queued requests that arrive between
             // QUERY_REMOVE and CANCEL_REMOVE
             //
-            
+
             ProcessQueuedRequests(deviceExtension);
-            
+
         }
     }
     else {
 
-        // 
+        //
         // spurious cancel-remove
         //
         ntStatus = STATUS_SUCCESS;
@@ -1411,7 +1411,7 @@ HandleSurpriseRemoval(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services Irp of minor type IRP_MN_SURPRISE_REMOVAL
@@ -1446,7 +1446,7 @@ Return Value:
     //
 
     if(deviceExtension->WaitWakeEnable) {
-    
+
         CancelWaitWake(deviceExtension);
     }
 
@@ -1459,29 +1459,29 @@ Return Value:
             // Cancel the timer so that the DPCs are no longer fired.
             // we do not need DPCs because the device has been surprise
             // removed
-            //  
-        
+            //
+
             KeCancelTimer(&deviceExtension->Timer);
 
             deviceExtension->SSEnable = 0;
 
-            //  
+            //
             // make sure that if a DPC was fired before we called cancel timer,
             // then the DPC and work-time have run to their completion
             //
-            KeWaitForSingleObject(&deviceExtension->NoDpcWorkItemPendingEvent, 
-                                  Executive, 
-                                  KernelMode, 
-                                  FALSE, 
+            KeWaitForSingleObject(&deviceExtension->NoDpcWorkItemPendingEvent,
+                                  Executive,
+                                  KernelMode,
+                                  FALSE,
                                   NULL);
 
             //
             // make sure that the selective suspend request has been completed.
             //
-            KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent, 
-                                  Executive, 
-                                  KernelMode, 
-                                  FALSE, 
+            KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent,
+                                  Executive,
+                                  KernelMode,
+                                  FALSE,
                                   NULL);
         }
     }
@@ -1495,7 +1495,7 @@ Return Value:
 
     ProcessQueuedRequests(deviceExtension);
 
-    ntStatus = IoSetDeviceInterfaceState(&deviceExtension->InterfaceName, 
+    ntStatus = IoSetDeviceInterfaceState(&deviceExtension->InterfaceName,
                                          FALSE);
 
     if(!NT_SUCCESS(ntStatus)) {
@@ -1522,7 +1522,7 @@ HandleRemoveDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services Irp of minor type IRP_MN_REMOVE_DEVICE
@@ -1568,11 +1568,11 @@ Return Value:
         KeAcquireSpinLock(&deviceExtension->DevStateLock, &oldIrql);
 
         deviceExtension->QueueState = FailRequests;
-        
+
         KeReleaseSpinLock(&deviceExtension->DevStateLock, oldIrql);
 
         if(deviceExtension->WaitWakeEnable) {
-        
+
             CancelWaitWake(deviceExtension);
         }
 
@@ -1583,7 +1583,7 @@ Return Value:
                 //
                 // Cancel the timer so that the DPCs are no longer fired.
                 // we do not need DPCs because the device has been removed
-                //            
+                //
                 KeCancelTimer(&deviceExtension->Timer);
 
                 deviceExtension->SSEnable = 0;
@@ -1592,26 +1592,26 @@ Return Value:
                 // make sure that if a DPC was fired before we called cancel timer,
                 // then the DPC and work-time have run to their completion
                 //
-                KeWaitForSingleObject(&deviceExtension->NoDpcWorkItemPendingEvent, 
-                                      Executive, 
-                                      KernelMode, 
-                                      FALSE, 
+                KeWaitForSingleObject(&deviceExtension->NoDpcWorkItemPendingEvent,
+                                      Executive,
+                                      KernelMode,
+                                      FALSE,
                                       NULL);
 
                 //
                 // make sure that the selective suspend request has been completed.
-                //  
-                KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent, 
-                                      Executive, 
-                                      KernelMode, 
-                                      FALSE, 
+                //
+                KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent,
+                                      Executive,
+                                      KernelMode,
+                                      FALSE,
                                       NULL);
             }
         }
 
         ProcessQueuedRequests(deviceExtension);
 
-        ntStatus = IoSetDeviceInterfaceState(&deviceExtension->InterfaceName, 
+        ntStatus = IoSetDeviceInterfaceState(&deviceExtension->InterfaceName,
                                              FALSE);
 
         if(!NT_SUCCESS(ntStatus)) {
@@ -1625,9 +1625,9 @@ Return Value:
     KeAcquireSpinLock(&deviceExtension->DevStateLock, &oldIrql);
 
     SET_NEW_PNP_STATE(deviceExtension, Removed);
-    
+
     KeReleaseSpinLock(&deviceExtension->DevStateLock, oldIrql);
-    
+
     BulkUsb_WmiDeRegistration(deviceExtension);
 
     //
@@ -1642,10 +1642,10 @@ Return Value:
     BulkUsb_DbgPrint(3, ("HandleRemoveDevice::"));
     requestCount = BulkUsb_IoDecrement(deviceExtension);
 
-    KeWaitForSingleObject(&deviceExtension->RemoveEvent, 
-                          Executive, 
-                          KernelMode, 
-                          FALSE, 
+    KeWaitForSingleObject(&deviceExtension->RemoveEvent,
+                          Executive,
+                          KernelMode,
+                          FALSE,
                           NULL);
 
     ReleaseMemory(DeviceObject);
@@ -1678,7 +1678,7 @@ HandleQueryCapabilities(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services Irp of minor type IRP_MN_QUERY_CAPABILITIES
@@ -1690,7 +1690,7 @@ Arguments:
 
 Return Value:
 
-    NT status value  
+    NT status value
 
 --*/
 {
@@ -1715,12 +1715,12 @@ Return Value:
     // We will provide here an example of an IRP that is processed
     // both on its way down and on its way up: there might be no need for
     // a function driver process this Irp (the bus driver will do that).
-    // The driver will wait for the lower drivers (the bus driver among 
+    // The driver will wait for the lower drivers (the bus driver among
     // them) to process this IRP, then it processes it again.
     //
 
     if(pdc->Version < 1 || pdc->Size < sizeof(DEVICE_CAPABILITIES)) {
-        
+
         BulkUsb_DbgPrint(1, ("HandleQueryCapabilities::request failed\n"));
         ntStatus = STATUS_UNSUCCESSFUL;
         return ntStatus;
@@ -1733,22 +1733,22 @@ Return Value:
     Irp->IoStatus.Status = STATUS_SUCCESS;
 
     KeInitializeEvent(&event, NotificationEvent, FALSE);
-        
+
     IoCopyCurrentIrpStackLocationToNext(Irp);
-    IoSetCompletionRoutine(Irp, 
-                           (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine, 
-                           (PVOID)&event, 
-                           TRUE, 
-                           TRUE, 
+    IoSetCompletionRoutine(Irp,
+                           (PIO_COMPLETION_ROUTINE)IrpCompletionRoutine,
+                           (PVOID)&event,
+                           TRUE,
+                           TRUE,
                            TRUE);
     ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
 
     if(ntStatus == STATUS_PENDING) {
 
-        KeWaitForSingleObject(&event, 
-                              Executive, 
-                              KernelMode, 
-                              FALSE, 
+        KeWaitForSingleObject(&event,
+                              Executive,
+                              KernelMode,
+                              FALSE,
                               NULL);
         ntStatus = Irp->IoStatus.Status;
     }
@@ -1762,20 +1762,20 @@ Return Value:
     if(NT_SUCCESS(ntStatus)) {
 
         deviceExtension->DeviceCapabilities = *pdc;
-       
+
         for(i = PowerSystemSleeping1; i <= PowerSystemSleeping3; i++) {
 
-            if(deviceExtension->DeviceCapabilities.DeviceState[i] < 
+            if(deviceExtension->DeviceCapabilities.DeviceState[i] <
                                                             PowerDeviceD3) {
 
-                deviceExtension->PowerDownLevel = 
+                deviceExtension->PowerDownLevel =
                     deviceExtension->DeviceCapabilities.DeviceState[i];
             }
         }
 
         //
         // since its safe to surprise-remove this device, we shall
-        // set the SurpriseRemoveOK flag to supress any dialog to 
+        // set the SurpriseRemoveOK flag to supress any dialog to
         // user.
         //
 
@@ -1784,7 +1784,7 @@ Return Value:
 
     if(deviceExtension->PowerDownLevel == PowerDeviceUnspecified ||
        deviceExtension->PowerDownLevel <= PowerDeviceD0) {
-    
+
         deviceExtension->PowerDownLevel = PowerDeviceD2;
     }
 
@@ -1802,7 +1802,7 @@ DpcRoutine(
     IN PVOID SystemArgument2
     )
 /*++
- 
+
 Routine Description:
 
     DPC routine triggered by the timer to check the idle state
@@ -1842,18 +1842,18 @@ Return Value:
 
         if(item) {
 
-            IoQueueWorkItem(item, 
+            IoQueueWorkItem(item,
                             IdleRequestWorkerRoutine,
-                            DelayedWorkQueue, 
+                            DelayedWorkQueue,
                             item);
 
             ntStatus = STATUS_PENDING;
 
         }
         else {
-        
+
             BulkUsb_DbgPrint(3, ("Cannot alloc memory for work item\n"));
-            
+
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
 
             //
@@ -1865,7 +1865,7 @@ Return Value:
         }
     }
     else {
-        
+
         BulkUsb_DbgPrint(3, ("Idle event not signaled\n"));
 
         //
@@ -1877,7 +1877,7 @@ Return Value:
     }
 
     BulkUsb_DbgPrint(3, ("DpcRoutine - ends\n"));
-}    
+}
 
 
 VOID
@@ -1886,7 +1886,7 @@ IdleRequestWorkerRoutine(
     IN PVOID          Context
     )
 /*++
- 
+
 Routine Description:
 
     This is the work item fired from the DPC.
@@ -1951,7 +1951,7 @@ ProcessQueuedRequests(
     IN OUT PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     Remove and process the entries in the queue. If this routine is called
@@ -2003,7 +2003,7 @@ Return Value:
             KeReleaseSpinLock(&DeviceExtension->QueueLock, oldIrql);
             break;
         }
-    
+
         //
         // Remove a request from the queue
         //
@@ -2029,7 +2029,7 @@ Return Value:
                 // so queue the IRP in the cancelledIrp list and complete
                 // after releasing the lock
                 //
-                
+
                 InsertTailList(&cancelledIrpList, listEntry);
             }
             else {
@@ -2064,7 +2064,7 @@ Return Value:
 
                 IoSkipCurrentIrpStackLocation(nextIrp);
                 IoCallDriver(DeviceExtension->TopOfStackDeviceObject, nextIrp);
-               
+
                 BulkUsb_DbgPrint(3, ("ProcessQueuedRequests::"));
                 BulkUsb_IoDecrement(DeviceExtension);
             }
@@ -2078,7 +2078,7 @@ Return Value:
     while(!IsListEmpty(&cancelledIrpList)) {
 
         PLIST_ENTRY listEntry = RemoveHeadList(&cancelledIrpList);
-        
+
         cancelledIrp = CONTAINING_RECORD(listEntry, IRP, Tail.Overlay.ListEntry);
 
         cancelledIrp->IoStatus.Status = STATUS_CANCELLED;
@@ -2099,7 +2099,7 @@ BulkUsb_GetRegistryDword(
     IN OUT PULONG Value
     )
 /*++
- 
+
 Routine Description:
 
     This routine reads the specified reqistry value.
@@ -2168,7 +2168,7 @@ BulkUsb_DispatchClean(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     Dispatch routine for IRP_MJ_CLEANUP
@@ -2187,11 +2187,11 @@ Return Value:
     PDEVICE_EXTENSION  deviceExtension;
     KIRQL              oldIrql;
     LIST_ENTRY         cleanupList;
-    PLIST_ENTRY        thisEntry, 
-                       nextEntry, 
+    PLIST_ENTRY        thisEntry,
+                       nextEntry,
                        listHead;
     PIRP               pendingIrp;
-    PIO_STACK_LOCATION pendingIrpStack, 
+    PIO_STACK_LOCATION pendingIrpStack,
                        irpStack;
     NTSTATUS           ntStatus;
 
@@ -2285,11 +2285,11 @@ CanDeviceSuspend(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This is the routine where we check if the device
-    can selectively suspend. 
+    can selectively suspend.
 
 Arguments:
 
@@ -2306,7 +2306,7 @@ Return Value:
 
     if((DeviceExtension->OpenHandleCount == 0) &&
         (DeviceExtension->OutStandingIO == 1)) {
-        
+
         return TRUE;
     }
     else {
@@ -2320,7 +2320,7 @@ BulkUsb_AbortPipes(
     IN PDEVICE_OBJECT DeviceObject
     )
 /*++
- 
+
 Routine Description
 
     sends an abort pipe request for open pipes.
@@ -2349,9 +2349,9 @@ Return Value:
     deviceExtension = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
     pipeContext = deviceExtension->PipeContext;
     interfaceInfo = deviceExtension->UsbInterface;
-    
+
     BulkUsb_DbgPrint(3, ("BulkUsb_AbortPipes - begins\n"));
-    
+
     if(interfaceInfo == NULL || pipeContext == NULL) {
 
         return STATUS_SUCCESS;
@@ -2362,7 +2362,7 @@ Return Value:
         if(pipeContext[i].PipeOpen) {
 
             BulkUsb_DbgPrint(3, ("Aborting open pipe %d\n", i));
-    
+
             urb = ExAllocatePool(NonPagedPool,
                                  sizeof(struct _URB_PIPE_REQUEST));
 
@@ -2370,7 +2370,7 @@ Return Value:
 
                 urb->UrbHeader.Length = sizeof(struct _URB_PIPE_REQUEST);
                 urb->UrbHeader.Function = URB_FUNCTION_ABORT_PIPE;
-                urb->UrbPipeRequest.PipeHandle = 
+                urb->UrbPipeRequest.PipeHandle =
                                         interfaceInfo->Pipes[i].PipeHandle;
 
                 ntStatus = CallUSBD(DeviceObject, urb);
@@ -2404,13 +2404,13 @@ IrpCompletionRoutine(
     IN PVOID          Context
     )
 /*++
- 
+
 Routine Description:
 
     This routine is a completion routine.
     In this routine we set an event.
 
-    Since the completion routine returns 
+    Since the completion routine returns
     STATUS_MORE_PROCESSING_REQUIRED, the Irps,
     which set this routine as the completion routine,
     should be marked pending.
@@ -2419,7 +2419,7 @@ Arguments:
 
     DeviceObject - pointer to device object
     Irp - I/O request packet
-    Context - 
+    Context -
 
 Return Value:
 
@@ -2440,7 +2440,7 @@ BulkUsb_IoIncrement(
     IN OUT PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine bumps up the I/O count.
@@ -2485,7 +2485,7 @@ BulkUsb_IoDecrement(
     IN OUT PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine decrements the outstanding I/O count
@@ -2534,24 +2534,24 @@ CanStopDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
-    This routine determines whether the device can be safely stopped. In our 
+    This routine determines whether the device can be safely stopped. In our
     particular case, we'll assume we can always stop the device.
     A device might fail the request if it doesn't have a queue for the
     requests it might come or if it was notified that it is in the paging
-    path. 
-  
+    path.
+
 Arguments:
 
     DeviceObject - pointer to the device object.
-    
+
     Irp - pointer to the current IRP.
 
 Return Value:
 
-    STATUS_SUCCESS if the device can be safely stopped, an appropriate 
+    STATUS_SUCCESS if the device can be safely stopped, an appropriate
     NT Status if not.
 
 --*/
@@ -2572,27 +2572,27 @@ CanRemoveDevice(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
-    This routine determines whether the device can be safely removed. In our 
+    This routine determines whether the device can be safely removed. In our
     particular case, we'll assume we can always remove the device.
     A device shouldn't be removed if, for example, it has open handles or
-    removing the device could result in losing data (plus the reasons 
-    mentioned at CanStopDevice). The PnP manager on Windows 2000 fails 
-    on its own any attempt to remove, if there any open handles to the device. 
-    However on Win9x, the driver must keep count of open handles and fail 
+    removing the device could result in losing data (plus the reasons
+    mentioned at CanStopDevice). The PnP manager on Windows 2000 fails
+    on its own any attempt to remove, if there any open handles to the device.
+    However on Win9x, the driver must keep count of open handles and fail
     query_remove if there are any open handles.
 
 Arguments:
 
     DeviceObject - pointer to the device object.
-    
+
     Irp - pointer to the current IRP.
-    
+
 Return Value:
 
-    STATUS_SUCCESS if the device can be safely removed, an appropriate 
+    STATUS_SUCCESS if the device can be safely removed, an appropriate
     NT Status if not.
 
 --*/
@@ -2612,20 +2612,20 @@ ReleaseMemory(
     IN PDEVICE_OBJECT DeviceObject
     )
 /*++
- 
+
 Routine Description:
 
     This routine returns all the memory allocations acquired during
-    device startup. 
-    
+    device startup.
+
 Arguments:
 
     DeviceObject - pointer to the device object.
-        
-    
+
+
 Return Value:
 
-    STATUS_SUCCESS if the device can be safely removed, an appropriate 
+    STATUS_SUCCESS if the device can be safely removed, an appropriate
     NT Status if not.
 
 --*/
@@ -2633,7 +2633,7 @@ Return Value:
     //
     // Disconnect from the interrupt and unmap any I/O ports
     //
-    
+
     PDEVICE_EXTENSION deviceExtension;
 
     deviceExtension = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
@@ -2645,7 +2645,7 @@ Return Value:
     }
 
     if(deviceExtension->UsbInterface) {
-        
+
         ExFreePool(deviceExtension->UsbInterface);
         deviceExtension->UsbInterface = NULL;
     }
@@ -2664,7 +2664,7 @@ PnPMinorFunctionString (
     UCHAR MinorFunction
     )
 /*++
- 
+
 Routine Description:
 
 Arguments:

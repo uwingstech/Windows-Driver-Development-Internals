@@ -528,7 +528,7 @@ AdapterStreamInfo (
      PHW_STREAM_INFORMATION pstrinfo =
             (PHW_STREAM_INFORMATION)&(pSrb->CommandData.StreamBuffer->StreamInfo);
 
-	DbgLogInfo(("TestCap: Enter AdapterStreamInfo\n"));	 
+	DbgLogInfo(("TestCap: Enter AdapterStreamInfo\n"));
 
 
     //
@@ -555,7 +555,7 @@ AdapterStreamInfo (
         *pstrinfo++ = Streams[j].hwStreamInfo;
      }
 
-	DbgLogInfo(("TestCap: Leave AdapterStreamInfo\n"));	 	 
+	DbgLogInfo(("TestCap: Leave AdapterStreamInfo\n"));
 
 }
 
@@ -1226,7 +1226,7 @@ AdapterFormatFromRange(
     ULONG                       NumberOfFormatArrayEntries;
     PKSDATAFORMAT               *pAvailableFormats;
 
-DbgLogInfo(("TestCap: Enter AdapterFormatFromRange\n"));	
+DbgLogInfo(("TestCap: Enter AdapterFormatFromRange\n"));
 
 
     IntersectInfo = pSrb->CommandData.IntersectInfo;
@@ -1309,9 +1309,9 @@ DbgLogInfo(("TestCap: Enter AdapterFormatFromRange\n"));
             MatchFound = TRUE;
 			if(MatchFound)
 				{
-				DbgLogInfo(("TestCap: MatchFound!!!!\n"));	
+				DbgLogInfo(("TestCap: MatchFound!!!!\n"));
 				}
-				
+
             FormatSize = sizeof (KSDATAFORMAT) +
                 KS_SIZE_VIDEOHEADER (&DataRangeVideoToVerify->VideoInfoHeader);
 

@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:Driver.h                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.h
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 #pragma once
 
@@ -12,7 +12,7 @@ extern "C"
 #include <NTDDK.h>
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #define PAGEDCODE code_seg("PAGE")
 #define LOCKEDCODE code_seg()
@@ -26,15 +26,15 @@ extern "C"
 
 typedef struct _DEVICE_EXTENSION {
 	PDEVICE_OBJECT pDevice;
-	UNICODE_STRING ustrDeviceName;	//Éè±¸Ãû³Æ
-	UNICODE_STRING ustrSymLinkName;	//·ûºÅÁ´½ÓÃû
+	UNICODE_STRING ustrDeviceName;	//è®¾å¤‡åç§°
+	UNICODE_STRING ustrSymLinkName;	//ç¬¦å·é“¾æ¥å
 
-	KDPC pollingDPC;	// ´æ´¢DPC¶ÔÏó
-	KTIMER pollingTimer;// ´æ´¢¼ÆÊ±Æ÷¶ÔÏó
-	PIRP currentPendingIRP;//¼ÇÂ¼µ±Ç°¹ÒÆğµÄIRP
+	KDPC pollingDPC;	// å­˜å‚¨DPCå¯¹è±¡
+	KTIMER pollingTimer;// å­˜å‚¨è®¡æ—¶å™¨å¯¹è±¡
+	PIRP currentPendingIRP;//è®°å½•å½“å‰æŒ‚èµ·çš„IRP
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
-// º¯ÊıÉùÃ÷
+// å‡½æ•°å£°æ˜
 
 NTSTATUS CreateDevice (IN PDRIVER_OBJECT pDriverObject);
 VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject);

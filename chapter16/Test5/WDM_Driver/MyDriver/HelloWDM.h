@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:HelloWDM.h                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:HelloWDM.h
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #ifdef __cplusplus
@@ -11,23 +11,23 @@ extern "C"
 #include <NTDDk.h>
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 typedef struct _DEVICE_EXTENSION
 {
 	PDEVICE_OBJECT fdo;
 	PDEVICE_OBJECT NextStackDevice;
-	UNICODE_STRING interfaceName;   //Éè±¸½Ó¿Ú
+	UNICODE_STRING interfaceName;   //è®¾å¤‡æ¥å£
 
 	PKINTERRUPT InterruptObject;			// address of interrupt object
-	PUCHAR portbase;						// IO¶Ë¿ÚµØÖ·
-	ULONG nports;							//IO¶Ë¿ÚµØÖ·µÄÊıÁ¿
-	PVOID MemBar0;							//ÄÚ´æ»ùµØÖ·0
-	ULONG nMem0;							//»ùµØÖ·BAR0Õ¼ÓÃ×Ö½ÚÊı
-	PVOID MemBar1;							//ÄÚ´æ»ùµØÖ·1
-	ULONG nMem1;							//»ùµØÖ·BAR1Õ¼ÓÃ×Ö½ÚÊı
-	PVOID MemForImage;						//Á¬ĞøÎïÀíµØÖ·ÓÃÀ´dma¶ÁÈ¡Í¼Ïñ
-	BOOLEAN mappedport;						//Èç¹ûÎªÕæĞèÒª×öIO¶Ë¿ÚÓ³Éä
+	PUCHAR portbase;						// IOç«¯å£åœ°å€
+	ULONG nports;							//IOç«¯å£åœ°å€çš„æ•°é‡
+	PVOID MemBar0;							//å†…å­˜åŸºåœ°å€0
+	ULONG nMem0;							//åŸºåœ°å€BAR0å ç”¨å­—èŠ‚æ•°
+	PVOID MemBar1;							//å†…å­˜åŸºåœ°å€1
+	ULONG nMem1;							//åŸºåœ°å€BAR1å ç”¨å­—èŠ‚æ•°
+	PVOID MemForImage;						//è¿ç»­ç‰©ç†åœ°å€ç”¨æ¥dmaè¯»å–å›¾åƒ
+	BOOLEAN mappedport;						//å¦‚æœä¸ºçœŸéœ€è¦åšIOç«¯å£æ˜ å°„
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
 #define PAGEDCODE code_seg("PAGE")

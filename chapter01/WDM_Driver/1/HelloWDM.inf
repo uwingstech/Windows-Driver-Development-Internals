@@ -55,7 +55,7 @@ YouMark_Files_Driver = 10,System32\Drivers
 
 ; PCI hardware Ids use the form
 ; PCI\VEN_aaaa&DEV_bbbb&SUBSYS_cccccccc&REV_dd
-;改成你自己的ID
+;鏀规垚浣犺嚜宸辩殑ID
 %DeviceDesc%=YouMark_DDI, PCI\VEN_9999&DEV_9999
 
 ;---------- DDInstall Sections -----------------------------------------------

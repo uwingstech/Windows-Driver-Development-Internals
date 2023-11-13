@@ -4,16 +4,16 @@
 #define BUFFER_SIZE	512
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("test.dat",
 					GENERIC_READ | GENERIC_WRITE,
 					0,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL,//此处没有设置FILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL,//姝ゅ娌℃湁璁剧疆FILE_FLAG_OVERLAPPED
 					NULL );
 
-	if (hDevice == INVALID_HANDLE_VALUE) 
+	if (hDevice == INVALID_HANDLE_VALUE)
 	{
 		printf("Read Error\n");
 		return 1;
@@ -21,7 +21,7 @@ int main()
 
 	UCHAR buffer[BUFFER_SIZE];
 	DWORD dwRead;
-	ReadFile(hDevice,buffer,BUFFER_SIZE,&dwRead,NULL);//这里没有设置OVERLAP参数
+	ReadFile(hDevice,buffer,BUFFER_SIZE,&dwRead,NULL);//杩欓噷娌℃湁璁剧疆OVERLAP鍙傛暟
 
 	CloseHandle(hDevice);
 

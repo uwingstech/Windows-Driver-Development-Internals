@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:HelloWDM.h                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:HelloWDM.h
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #ifdef __cplusplus
@@ -12,14 +12,14 @@ extern "C"
 #include <ntddser.h>
 #ifdef __cplusplus
 }
-#endif 
+#endif
 #define COMBUFLEN 50000
 typedef struct _DEVICE_EXTENSION
 {
 	PDEVICE_OBJECT fdo;
 	PDEVICE_OBJECT NextStackDevice;
-	UNICODE_STRING ustrDeviceName;	// Éè±¸Ãû
-	UNICODE_STRING ustrSymLinkName;	// ·ûºÅÁ´½ÓÃû
+	UNICODE_STRING ustrDeviceName;	// è®¾å¤‡å
+	UNICODE_STRING ustrSymLinkName;	// ç¬¦å·é“¾æ¥å
 
 	KSPIN_LOCK IoctlSpinLock;
 	KSPIN_LOCK WriteSpinLock;

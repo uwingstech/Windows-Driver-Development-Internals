@@ -1,37 +1,37 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:Driver.cpp                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.cpp
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #include "Driver.h"
 
 /************************************************************************
-* º¯ÊıÃû³Æ:DriverEntry
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Çı¶¯³ÌĞò£¬¶¨Î»ºÍÉêÇëÓ²¼ş×ÊÔ´£¬´´½¨ÄÚºË¶ÔÏó
-* ²ÎÊıÁĞ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-      pRegistryPath:Çı¶¯³ÌĞòÔÚ×¢²á±íµÄÖĞµÄÂ·¾¶
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯Çı¶¯×´Ì¬
+* å‡½æ•°åç§°:DriverEntry
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–é©±åŠ¨ç¨‹åºï¼Œå®šä½å’Œç”³è¯·ç¡¬ä»¶èµ„æºï¼Œåˆ›å»ºå†…æ ¸å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      pRegistryPath:é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨çš„ä¸­çš„è·¯å¾„
+* è¿”å› å€¼:è¿”å›åˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 extern "C" NTSTATUS DriverEntry (
 			IN PDRIVER_OBJECT pDriverObject,
-			IN PUNICODE_STRING pRegistryPath	) 
+			IN PUNICODE_STRING pRegistryPath	)
 {
 	NTSTATUS status;
 	KdPrint(("Enter DriverEntry\n"));
 
-	//ÉèÖÃĞ¶ÔØº¯Êı
+	//è®¾ç½®å¸è½½å‡½æ•°
 	pDriverObject->DriverUnload = HelloDDKUnload;
 
-	//ÉèÖÃÅÉÇ²º¯Êı
+	//è®¾ç½®æ´¾é£å‡½æ•°
 	for (int i = 0; i < arraysize(pDriverObject->MajorFunction); ++i)
 		pDriverObject->MajorFunction[i] = HelloDDKDispatchRoutin;
 
 	pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = HelloDDKDeviceIOControl;
-	
-	//´´½¨Çı¶¯Éè±¸¶ÔÏó
+
+	//åˆ›å»ºé©±åŠ¨è®¾å¤‡å¯¹è±¡
 	status = CreateDevice(pDriverObject);
 
 	KdPrint(("Leave DriverEntry\n"));
@@ -39,25 +39,25 @@ extern "C" NTSTATUS DriverEntry (
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:CreateDevice
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Éè±¸¶ÔÏó
-* ²ÎÊıÁĞ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯×´Ì¬
+* å‡½æ•°åç§°:CreateDevice
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–è®¾å¤‡å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+* è¿”å› å€¼:è¿”å›åˆå§‹åŒ–çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 NTSTATUS CreateDevice (
-		IN PDRIVER_OBJECT	pDriverObject) 
+		IN PDRIVER_OBJECT	pDriverObject)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT pDevObj;
 	PDEVICE_EXTENSION pDevExt;
-	
-	//´´½¨Éè±¸Ãû³Æ
+
+	//åˆ›å»ºè®¾å¤‡åç§°
 	UNICODE_STRING devName;
 	RtlInitUnicodeString(&devName,L"\\Device\\MyDDKDevice");
-	
-	//´´½¨Éè±¸
+
+	//åˆ›å»ºè®¾å¤‡
 	status = IoCreateDevice( pDriverObject,
 						sizeof(DEVICE_EXTENSION),
 						&(UNICODE_STRING)devName,
@@ -72,17 +72,17 @@ NTSTATUS CreateDevice (
 	pDevExt->pDevice = pDevObj;
 	pDevExt->ustrDeviceName = devName;
 
-	//ÉêÇëÄ£ÄâÎÄ¼şµÄ»º³åÇø
+	//ç”³è¯·æ¨¡æ‹Ÿæ–‡ä»¶çš„ç¼“å†²åŒº
 	pDevExt->buffer = (PUCHAR)ExAllocatePool(PagedPool,MAX_FILE_LENGTH);
-	//ÉèÖÃÄ£ÄâÎÄ¼ş´óĞ¡
+	//è®¾ç½®æ¨¡æ‹Ÿæ–‡ä»¶å¤§å°
 	pDevExt->file_length = 0;
 
-	//´´½¨·ûºÅÁ´½Ó
+	//åˆ›å»ºç¬¦å·é“¾æ¥
 	UNICODE_STRING symLinkName;
 	RtlInitUnicodeString(&symLinkName,L"\\??\\HelloDDK");
 	pDevExt->ustrSymLinkName = symLinkName;
 	status = IoCreateSymbolicLink( &symLinkName,&devName );
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		IoDeleteDevice( pDevObj );
 		return status;
@@ -91,19 +91,19 @@ NTSTATUS CreateDevice (
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:HelloDDKUnload
-* ¹¦ÄÜÃèÊö:¸ºÔğÇı¶¯³ÌĞòµÄĞ¶ÔØ²Ù×÷
-* ²ÎÊıÁĞ±í:
-      pDriverObject:Çı¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKUnload
+* åŠŸèƒ½æè¿°:è´Ÿè´£é©±åŠ¨ç¨‹åºçš„å¸è½½æ“ä½œ
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:é©±åŠ¨å¯¹è±¡
+* è¿”å› å€¼:è¿”å›çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
-VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject) 
+VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 {
 	PDEVICE_OBJECT	pNextObj;
 	KdPrint(("Enter DriverUnload\n"));
 	pNextObj = pDriverObject->DeviceObject;
-	while (pNextObj != NULL) 
+	while (pNextObj != NULL)
 	{
 		PDEVICE_EXTENSION pDevExt = (PDEVICE_EXTENSION)
 			pNextObj->DeviceExtension;
@@ -113,7 +113,7 @@ VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 			pDevExt->buffer = NULL;
 		}
 
-		//É¾³ı·ûºÅÁ´½Ó
+		//åˆ é™¤ç¬¦å·é“¾æ¥
 		UNICODE_STRING pLinkName = pDevExt->ustrSymLinkName;
 		IoDeleteSymbolicLink(&pLinkName);
 		pNextObj = pNextObj->NextDevice;
@@ -122,22 +122,22 @@ VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 }
 
 /************************************************************************
-* º¯ÊıÃû³Æ:HelloDDKDispatchRoutin
-* ¹¦ÄÜÃèÊö:¶Ô¶ÁIRP½øĞĞ´¦Àí
-* ²ÎÊıÁĞ±í:
-      pDevObj:¹¦ÄÜÉè±¸¶ÔÏó
-      pIrp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKDispatchRoutin
+* åŠŸèƒ½æè¿°:å¯¹è¯»IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      pDevObj:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      pIrp:ä»IOè¯·æ±‚åŒ…
+* è¿”å› å€¼:è¿”å›çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloDDKDispatchRoutin(IN PDEVICE_OBJECT pDevObj,
-								 IN PIRP pIrp) 
+								 IN PIRP pIrp)
 {
 	KdPrint(("Enter HelloDDKDispatchRoutin\n"));
 
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(pIrp);
-	//½¨Á¢Ò»¸ö×Ö·û´®Êı×éÓëIRPÀàĞÍ¶ÔÓ¦ÆğÀ´
-	static char* irpname[] = 
+	//å»ºç«‹ä¸€ä¸ªå­—ç¬¦ä¸²æ•°ç»„ä¸IRPç±»å‹å¯¹åº”èµ·æ¥
+	static char* irpname[] =
 	{
 		"IRP_MJ_CREATE",
 		"IRP_MJ_CREATE_NAMED_PIPE",
@@ -176,7 +176,7 @@ NTSTATUS HelloDDKDispatchRoutin(IN PDEVICE_OBJECT pDevObj,
 		KdPrint(("\t%s\n", irpname[type]));
 
 	NTSTATUS status = STATUS_SUCCESS;
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = 0;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );
@@ -193,13 +193,13 @@ NTSTATUS HelloDDKDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 	NTSTATUS status = STATUS_SUCCESS;
 	KdPrint(("Enter HelloDDKDeviceIOControl\n"));
 
-	//µÃµ½µ±Ç°¶ÑÕ»
+	//å¾—åˆ°å½“å‰å †æ ˆ
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(pIrp);
-	//µÃµ½ÊäÈë»º³åÇø´óĞ¡
+	//å¾—åˆ°è¾“å…¥ç¼“å†²åŒºå¤§å°
 	ULONG cbin = stack->Parameters.DeviceIoControl.InputBufferLength;
-	//µÃµ½Êä³ö»º³åÇø´óĞ¡
+	//å¾—åˆ°è¾“å‡ºç¼“å†²åŒºå¤§å°
 	ULONG cbout = stack->Parameters.DeviceIoControl.OutputBufferLength;
-	//µÃµ½IOCTLÂë
+	//å¾—åˆ°IOCTLç 
 	ULONG code = stack->Parameters.DeviceIoControl.IoControlCode;
 
 	ULONG info = 0;
@@ -209,56 +209,56 @@ NTSTATUS HelloDDKDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 		case IOCTL_TEST1:
 		{
 			KdPrint(("IOCTL_TEST1\n"));
-			//»º³åÇø·½Ê½IOCTL
-			//ÏÔÊ¾ÊäÈë»º³åÇøÊı¾İ
+			//ç¼“å†²åŒºæ–¹å¼IOCTL
+			//æ˜¾ç¤ºè¾“å…¥ç¼“å†²åŒºæ•°æ®
  			UCHAR* InputBuffer = (UCHAR*)pIrp->AssociatedIrp.SystemBuffer;
 			for (ULONG i=0;i<cbin;i++)
 			{
 				KdPrint(("%X\n",InputBuffer[i]));
 			}
 
-			//²Ù×÷Êä³ö»º³åÇø
+			//æ“ä½œè¾“å‡ºç¼“å†²åŒº
 			UCHAR* OutputBuffer = (UCHAR*)pIrp->AssociatedIrp.SystemBuffer;
 			memset(OutputBuffer,0xAA,cbout);
-			//ÉèÖÃÊµ¼Ê²Ù×÷Êä³ö»º³åÇø³¤¶È
+			//è®¾ç½®å®é™…æ“ä½œè¾“å‡ºç¼“å†²åŒºé•¿åº¦
  			info = cbout;
 			break;
 		}
 		case IOCTL_TEST2:
 		{
 			KdPrint(("IOCTL_TEST2\n"));
-			//»º³åÇø·½Ê½IOCTL
-			//ÏÔÊ¾ÊäÈë»º³åÇøÊı¾İ
+			//ç¼“å†²åŒºæ–¹å¼IOCTL
+			//æ˜¾ç¤ºè¾“å…¥ç¼“å†²åŒºæ•°æ®
 
-			//»º³åÇø·½Ê½IOCTL
-			//ÏÔÊ¾ÊäÈë»º³åÇøÊı¾İ
+			//ç¼“å†²åŒºæ–¹å¼IOCTL
+			//æ˜¾ç¤ºè¾“å…¥ç¼“å†²åŒºæ•°æ®
  			UCHAR* InputBuffer = (UCHAR*)pIrp->AssociatedIrp.SystemBuffer;
 			for (ULONG i=0;i<cbin;i++)
 			{
 				KdPrint(("%X\n",InputBuffer[i]));
 			}
 
-			//pIrp->MdlAddressÎªDeviceIoControlÊä³ö»º³åÇøµØÖ·ÏàÍ¬
+			//pIrp->MdlAddressä¸ºDeviceIoControlè¾“å‡ºç¼“å†²åŒºåœ°å€ç›¸åŒ
 			KdPrint(("User Address:0X%08X\n",MmGetMdlVirtualAddress(pIrp->MdlAddress)));
 
  			UCHAR* OutputBuffer = (UCHAR*)MmGetSystemAddressForMdlSafe(pIrp->MdlAddress,NormalPagePriority);
- 			//InputBuffer±»Ó³Éäµ½ÄÚºËÄ£Ê½ÏÂµÄÄÚ´æµØÖ·£¬±Ø¶¨ÔÚ0X80000000-0XFFFFFFFFÖ®¼ä
+ 			//InputBufferè¢«æ˜ å°„åˆ°å†…æ ¸æ¨¡å¼ä¸‹çš„å†…å­˜åœ°å€ï¼Œå¿…å®šåœ¨0X80000000-0XFFFFFFFFä¹‹é—´
  			memset(OutputBuffer,0xAA,cbout);
-			//ÉèÖÃÊµ¼Ê²Ù×÷Êä³ö»º³åÇø³¤¶È
+			//è®¾ç½®å®é™…æ“ä½œè¾“å‡ºç¼“å†²åŒºé•¿åº¦
  			info = cbout;
 			break;
 		}
 		case IOCTL_TEST3:
 		{
 			KdPrint(("IOCTL_TEST3\n"));
-			//»º³åÇø·½Ê½IOCTL
+			//ç¼“å†²åŒºæ–¹å¼IOCTL
 
-			//»º³åÇø·½Ê½IOCTL
-			//ÏÔÊ¾ÊäÈë»º³åÇøÊı¾İ
+			//ç¼“å†²åŒºæ–¹å¼IOCTL
+			//æ˜¾ç¤ºè¾“å…¥ç¼“å†²åŒºæ•°æ®
  			UCHAR* UserInputBuffer = (UCHAR*)stack->Parameters.DeviceIoControl.Type3InputBuffer;
 			KdPrint(("UserInputBuffer:0X%0X\n",UserInputBuffer));
 
-			//µÃµ½ÓÃ»§Ä£Ê½µØÖ·
+			//å¾—åˆ°ç”¨æˆ·æ¨¡å¼åœ°å€
 			PVOID UserOutputBuffer = pIrp->UserBuffer;
 
 			KdPrint(("UserOutputBuffer:0X%0X\n",UserOutputBuffer));
@@ -267,21 +267,21 @@ NTSTATUS HelloDDKDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 			{
 				KdPrint(("Enter __try block\n"));
 
-				//ÅĞ¶ÏÖ¸ÕëÊÇ·ñ¿É¶Á
+				//åˆ¤æ–­æŒ‡é’ˆæ˜¯å¦å¯è¯»
 				ProbeForRead(UserInputBuffer,cbin,4);
-				//ÏÔÊ¾ÊäÈë»º³åÇøÄÚÈİ
+				//æ˜¾ç¤ºè¾“å…¥ç¼“å†²åŒºå†…å®¹
 				for (ULONG i=0;i<cbin;i++)
 				{
 					KdPrint(("%X\n",UserInputBuffer[i]));
 				}
 
-				//ÅĞ¶ÏÖ¸ÕëÊÇ·ñ¿ÉĞ´
+				//åˆ¤æ–­æŒ‡é’ˆæ˜¯å¦å¯å†™
 				ProbeForWrite(UserOutputBuffer,cbout,4);
 
-				//²Ù×÷Êä³ö»º³åÇø
+				//æ“ä½œè¾“å‡ºç¼“å†²åŒº
 				memset(UserOutputBuffer,0xAA,cbout);
 
-				//ÓÉÓÚÔÚÉÏÃæÒı·¢Òì³££¬ËùÒÔÒÔºóÓï¾ä²»»á±»Ö´ĞĞ!
+				//ç”±äºåœ¨ä¸Šé¢å¼•å‘å¼‚å¸¸ï¼Œæ‰€ä»¥ä»¥åè¯­å¥ä¸ä¼šè¢«æ‰§è¡Œ!
 				info = cbout;
 
 				KdPrint(("Leave __try block\n"));
@@ -301,7 +301,7 @@ NTSTATUS HelloDDKDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 			status = STATUS_INVALID_VARIANT;
 	}
 
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = info;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );

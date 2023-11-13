@@ -22,15 +22,15 @@
 
 // -------------------------------------------------------------------
 // A few notes about property set handling
-//  
+//
 // Property sets used in Testcap are of two varieties, those that have
 // default values, ranges, and stepping, such as VideoProcAmp and CameraControl,
 // and those which don't have defaults and ranges, such as TVTuner and
 // Crossbar.
-// 
+//
 // Default values and stepping are established by tables in capprop.h,
 // no code is required to implement this other than initally creating the tables.
-// 
+//
 // Many of the property sets require the ability to modify a number
 // of input parameters.  Since KS doesn't allow this inherently, you'll
 // note that some property sets require copying the provided input parameters
@@ -43,7 +43,7 @@
 //
 // ... while the output data pointer is:
 //      pSrb->CommandData.PropertyInfo.PropertyInfo
-// 
+//
 // -------------------------------------------------------------------
 
 
@@ -61,14 +61,14 @@
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
 ** Side Effects:  none
 */
 
-VOID 
+VOID
 STREAMAPI
 AdapterSetVideoProcAmpProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
@@ -87,7 +87,7 @@ AdapterSetVideoProcAmpProperty(
         pHwDevExt->Brightness = pS->Value;
         pHwDevExt->BrightnessFlags = pS->Flags;
         break;
-        
+
     case KSPROPERTY_VIDEOPROCAMP_CONTRAST:
         pHwDevExt->Contrast = pS->Value;
         pHwDevExt->ContrastFlags = pS->Flags;
@@ -113,14 +113,14 @@ AdapterSetVideoProcAmpProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
 ** Side Effects:  none
 */
 
-VOID 
+VOID
 STREAMAPI
 AdapterGetVideoProcAmpProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
@@ -129,7 +129,7 @@ AdapterGetVideoProcAmpProperty(
     PHW_DEVICE_EXTENSION pHwDevExt = ((PHW_DEVICE_EXTENSION)pSrb->HwDeviceExtension);
     PSTREAM_PROPERTY_DESCRIPTOR pSPD = pSrb->CommandData.PropertyInfo;
     ULONG Id = pSPD->Property->Id;              // index of the property
-    PKSPROPERTY_VIDEOPROCAMP_S pS = (PKSPROPERTY_VIDEOPROCAMP_S) pSPD->PropertyInfo;  
+    PKSPROPERTY_VIDEOPROCAMP_S pS = (PKSPROPERTY_VIDEOPROCAMP_S) pSPD->PropertyInfo;
 
     ASSERT (pSPD->PropertyOutputSize >= sizeof (KSPROPERTY_VIDEOPROCAMP_S));
 
@@ -138,14 +138,14 @@ AdapterGetVideoProcAmpProperty(
     case KSPROPERTY_VIDEOPROCAMP_BRIGHTNESS:
         pS->Value = pHwDevExt->Brightness;
         pS->Flags = pHwDevExt->BrightnessFlags;
-        pS->Capabilities = KSPROPERTY_VIDEOPROCAMP_FLAGS_MANUAL | 
+        pS->Capabilities = KSPROPERTY_VIDEOPROCAMP_FLAGS_MANUAL |
                            KSPROPERTY_VIDEOPROCAMP_FLAGS_AUTO;
         break;
-        
+
     case KSPROPERTY_VIDEOPROCAMP_CONTRAST:
         pS->Value = pHwDevExt->Contrast;
         pS->Flags = pHwDevExt->ContrastFlags;
-        pS->Capabilities = KSPROPERTY_VIDEOPROCAMP_FLAGS_MANUAL | 
+        pS->Capabilities = KSPROPERTY_VIDEOPROCAMP_FLAGS_MANUAL |
                            KSPROPERTY_VIDEOPROCAMP_FLAGS_AUTO;
         break;
 
@@ -175,14 +175,14 @@ AdapterGetVideoProcAmpProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
 ** Side Effects:  none
 */
 
-VOID 
+VOID
 STREAMAPI
 AdapterSetCameraControlProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
@@ -201,7 +201,7 @@ AdapterSetCameraControlProperty(
         pHwDevExt->Zoom = pS->Value;
         pHwDevExt->ZoomFlags = pS->Flags;
         break;
-        
+
     case KSPROPERTY_CAMERACONTROL_FOCUS:
         pHwDevExt->Focus = pS->Value;
         pHwDevExt->FocusFlags = pS->Flags;
@@ -222,14 +222,14 @@ AdapterSetCameraControlProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
 ** Side Effects:  none
 */
 
-VOID 
+VOID
 STREAMAPI
 AdapterGetCameraControlProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
@@ -247,14 +247,14 @@ AdapterGetCameraControlProperty(
     case KSPROPERTY_CAMERACONTROL_ZOOM:
         pS->Value = pHwDevExt->Zoom;
         pS->Flags = pHwDevExt->ZoomFlags;
-        pS->Capabilities = KSPROPERTY_CAMERACONTROL_FLAGS_MANUAL | 
+        pS->Capabilities = KSPROPERTY_CAMERACONTROL_FLAGS_MANUAL |
                            KSPROPERTY_CAMERACONTROL_FLAGS_AUTO;
         break;
-        
+
     case KSPROPERTY_CAMERACONTROL_FOCUS:
         pS->Value = pHwDevExt->Focus;
         pS->Flags = pHwDevExt->FocusFlags;
-        pS->Capabilities = KSPROPERTY_CAMERACONTROL_FLAGS_MANUAL | 
+        pS->Capabilities = KSPROPERTY_CAMERACONTROL_FLAGS_MANUAL |
                            KSPROPERTY_CAMERACONTROL_FLAGS_AUTO;
         break;
 
@@ -278,14 +278,14 @@ AdapterGetCameraControlProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
 ** Side Effects:  none
 */
 
-VOID 
+VOID
 STREAMAPI
 AdapterSetVideoControlProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
@@ -324,7 +324,7 @@ AdapterSetVideoControlProperty(
     }
 
     ASSERT (pSPD->PropertyInputSize >= sizeof (KSPROPERTY_VIDEOCONTROL_MODE_S));
-    
+
     switch (Id) {
 
     case KSPROPERTY_VIDEOCONTROL_MODE:
@@ -348,14 +348,14 @@ AdapterSetVideoControlProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
 ** Side Effects:  none
 */
 
-VOID 
+VOID
 STREAMAPI
 AdapterGetVideoControlProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
@@ -399,28 +399,28 @@ AdapterGetVideoControlProperty(
         PKSPROPERTY_VIDEOCONTROL_CAPS_S pS = (PKSPROPERTY_VIDEOCONTROL_CAPS_S) pSPD->PropertyInfo;    // pointer to the data
 
         ASSERT (pSPD->PropertyOutputSize >= sizeof (KSPROPERTY_VIDEOCONTROL_CAPS_S));
-        
-        pS->VideoControlCaps =    
-              KS_VideoControlFlag_FlipHorizontal       
-//            | KS_VideoControlFlag_FlipVertical         
+
+        pS->VideoControlCaps =
+              KS_VideoControlFlag_FlipHorizontal
+//            | KS_VideoControlFlag_FlipVertical
 //            | KS_VideoControlFlag_ExternalTriggerEnable
-//            | KS_VideoControlFlag_Trigger              
+//            | KS_VideoControlFlag_Trigger
             ;
 
         pSrb->ActualBytesTransferred = sizeof (KSPROPERTY_VIDEOCONTROL_CAPS_S);
     }
     break;
-        
+
     case KSPROPERTY_VIDEOCONTROL_ACTUAL_FRAME_RATE:
     {
-        PKSPROPERTY_VIDEOCONTROL_ACTUAL_FRAME_RATE_S pS = 
+        PKSPROPERTY_VIDEOCONTROL_ACTUAL_FRAME_RATE_S pS =
             (PKSPROPERTY_VIDEOCONTROL_ACTUAL_FRAME_RATE_S) pSPD->PropertyInfo;    // pointer to the data
 
         ASSERT (pSPD->PropertyOutputSize >= sizeof (KSPROPERTY_VIDEOCONTROL_ACTUAL_FRAME_RATE_S));
 
         pS->CurrentActualFrameRate = 15;        // TODO: Implement the right rates in shipping drivers.
         pS->CurrentMaxAvailableFrameRate = 15;  // TODO: Implement the right rates in shipping drivers.
-        
+
 
         pSrb->ActualBytesTransferred = sizeof (KSPROPERTY_VIDEOCONTROL_ACTUAL_FRAME_RATE_S);
     }
@@ -507,54 +507,54 @@ AdapterGetVideoCompressionProperty(
 
     case KSPROPERTY_VIDEOCOMPRESSION_GETINFO:
         {
-            PKSPROPERTY_VIDEOCOMPRESSION_GETINFO_S pS = 
+            PKSPROPERTY_VIDEOCOMPRESSION_GETINFO_S pS =
                 (PKSPROPERTY_VIDEOCOMPRESSION_GETINFO_S) pSPD->PropertyInfo;
 
             pS->DefaultKeyFrameRate = 15;    // Key frame rate
             pS->DefaultPFrameRate = 3;       // Predeicted frames per Key frame
             pS->DefaultQuality = 5000;       // 0 to 10000
-            pS->Capabilities = 
+            pS->Capabilities =
                        KS_CompressionCaps_CanQuality  |
                        KS_CompressionCaps_CanKeyFrame |
                        KS_CompressionCaps_CanBFrame   ;
-            
+
             pSrb->ActualBytesTransferred = sizeof (KSPROPERTY_VIDEOCOMPRESSION_GETINFO_S);
         }
         break;
 
     case KSPROPERTY_VIDEOCOMPRESSION_KEYFRAME_RATE:
         {
-            PKSPROPERTY_VIDEOCOMPRESSION_S pS = 
+            PKSPROPERTY_VIDEOCOMPRESSION_S pS =
                 (PKSPROPERTY_VIDEOCOMPRESSION_S) pSPD->PropertyInfo;
 
             pS->Value = pCompressionSettings->CompressionKeyFrameRate;
-                
+
             pSrb->ActualBytesTransferred = sizeof (KSPROPERTY_VIDEOCOMPRESSION_S);
         }
         break;
-    
+
     case KSPROPERTY_VIDEOCOMPRESSION_PFRAMES_PER_KEYFRAME:
         {
-            PKSPROPERTY_VIDEOCOMPRESSION_S pS = 
+            PKSPROPERTY_VIDEOCOMPRESSION_S pS =
                 (PKSPROPERTY_VIDEOCOMPRESSION_S) pSPD->PropertyInfo;
 
             pS->Value = pCompressionSettings->CompressionPFramesPerKeyFrame;
-                
+
             pSrb->ActualBytesTransferred = sizeof (KSPROPERTY_VIDEOCOMPRESSION_S);
         }
         break;
-    
+
     case KSPROPERTY_VIDEOCOMPRESSION_QUALITY:
         {
-            PKSPROPERTY_VIDEOCOMPRESSION_S pS = 
+            PKSPROPERTY_VIDEOCOMPRESSION_S pS =
                 (PKSPROPERTY_VIDEOCOMPRESSION_S) pSPD->PropertyInfo;
 
             pS->Value = pCompressionSettings->CompressionQuality;
-                
+
             pSrb->ActualBytesTransferred = sizeof (KSPROPERTY_VIDEOCOMPRESSION_S);
         }
         break;
-    
+
     default:
         TRAP;
         break;
@@ -620,13 +620,13 @@ AdapterSetVideoCompressionProperty(
             pCompressionSettings->CompressionKeyFrameRate = pS->Value;
         }
         break;
-    
+
     case KSPROPERTY_VIDEOCOMPRESSION_PFRAMES_PER_KEYFRAME:
         {
             pCompressionSettings->CompressionPFramesPerKeyFrame = pS->Value;
         }
         break;
-    
+
     case KSPROPERTY_VIDEOCOMPRESSION_QUALITY:
         {
             pCompressionSettings->CompressionQuality = pS->Value;
@@ -652,7 +652,7 @@ AdapterSetVideoCompressionProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
@@ -660,7 +660,7 @@ AdapterSetVideoCompressionProperty(
 */
 
 VOID
-STREAMAPI 
+STREAMAPI
 AdapterSetProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
     )
@@ -668,7 +668,7 @@ AdapterSetProperty(
 {
     PSTREAM_PROPERTY_DESCRIPTOR pSPD = pSrb->CommandData.PropertyInfo;
 
-	DbgLogInfo(("TestCap: Enter AdapterSetProperty\n"));	 
+	DbgLogInfo(("TestCap: Enter AdapterSetProperty\n"));
 
     if (IsEqualGUID(&PROPSETID_VIDCAP_VIDEOPROCAMP, &pSPD->Property->Set)) {
         AdapterSetVideoProcAmpProperty (pSrb);
@@ -700,7 +700,7 @@ AdapterSetProperty(
 ** Arguments:
 **
 **      pSRB -
-**          Pointer to the HW_STREAM_REQUEST_BLOCK 
+**          Pointer to the HW_STREAM_REQUEST_BLOCK
 **
 ** Returns:
 **
@@ -708,7 +708,7 @@ AdapterSetProperty(
 */
 
 VOID
-STREAMAPI 
+STREAMAPI
 AdapterGetProperty(
     PHW_STREAM_REQUEST_BLOCK pSrb
     )
@@ -716,7 +716,7 @@ AdapterGetProperty(
 {
     PSTREAM_PROPERTY_DESCRIPTOR pSPD = pSrb->CommandData.PropertyInfo;
 
-	DbgLogInfo(("TestCap: Enter AdapterGetProperty\n"));	 
+	DbgLogInfo(("TestCap: Enter AdapterGetProperty\n"));
 
     if (IsEqualGUID(&PROPSETID_VIDCAP_VIDEOPROCAMP, &pSPD->Property->Set)) {
         AdapterGetVideoProcAmpProperty (pSrb);

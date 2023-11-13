@@ -9,7 +9,7 @@ UCHAR In_8 (PUCHAR Port)
 		mov edx, Port
 		in al, dx
 		mov Value, al
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -26,7 +26,7 @@ USHORT In_16 (PUSHORT Port)
 		mov edx, Port
 		in ax, dx
 		mov Value, ax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -41,7 +41,7 @@ ULONG In_32 (PULONG Port)
 		mov edx, Port
 		in eax, dx
 		mov Value, eax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -55,7 +55,7 @@ void Out_32(PULONG Port,ULONG Value)
 		mov edx, Port
 		mov eax, Value
 		out dx,eax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -67,7 +67,7 @@ void Out_16 (PUSHORT Port,USHORT Value)
 		mov edx, Port
 		mov ax, Value
 		out dx,ax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -80,7 +80,7 @@ void Out_8 (PUCHAR Port,UCHAR Value)
 		mov edx, Port
 		mov al, Value
 		out dx,al
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}

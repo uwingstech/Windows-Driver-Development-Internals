@@ -3,13 +3,13 @@
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//�˴�����FILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//此处设置FILE_FLAG_OVERLAPPED
 					NULL );
 
 	if (hDevice == INVALID_HANDLE_VALUE)
@@ -23,7 +23,7 @@ int main()
 
 	UCHAR buffer[10];
 	ULONG ulRead;
-	
+
 	BOOL bRead = ReadFile(hDevice,buffer,10,&ulRead,&overlap1);
 	if (!bRead && GetLastError()==ERROR_IO_PENDING)
 	{
@@ -34,14 +34,14 @@ int main()
 	{
 		printf("The operation is pending\n");
 	}
-	
-	//��ʹ������ֹ2��
+
+	//迫使程序中止2秒
 	Sleep(2000);
 
-	//��ʽ�ĵ���CancelIo����ʵ�ڹر��豸ʱ���Զ�����CancelIo
+	//显式的调用CancelIo，其实在关闭设备时会自动运行CancelIo
 	CancelIo(hDevice);
 
-	//����IRP_MJ_CLEANUP IRP
+	//创建IRP_MJ_CLEANUP IRP
 	CloseHandle(hDevice);
 
 	return 0;

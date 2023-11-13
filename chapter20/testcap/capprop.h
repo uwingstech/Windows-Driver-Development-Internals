@@ -239,7 +239,7 @@ DEFINE_KSPROPERTY_TABLE(TVAudioProperties)
 //
 
 // ------------------------------------------------------------------------
-static KSPROPERTY_STEPPING_LONG BrightnessRangeAndStep [] = 
+static KSPROPERTY_STEPPING_LONG BrightnessRangeAndStep [] =
 {
     {
         10000 / 10,         // SteppingDelta (range / steps)
@@ -251,7 +251,7 @@ static KSPROPERTY_STEPPING_LONG BrightnessRangeAndStep [] =
 
 static const ULONG BrightnessDefault = 5000;
 
-static KSPROPERTY_MEMBERSLIST BrightnessMembersList [] = 
+static KSPROPERTY_MEMBERSLIST BrightnessMembersList [] =
 {
     {
         {
@@ -266,11 +266,11 @@ static KSPROPERTY_MEMBERSLIST BrightnessMembersList [] =
         {
             KSPROPERTY_MEMBER_VALUES,
             sizeof (BrightnessDefault),
-            1, 
+            1,
             KSPROPERTY_MEMBER_FLAG_DEFAULT
         },
         (PVOID) &BrightnessDefault,
-    }    
+    }
 };
 
 static KSPROPERTY_VALUES BrightnessValues =
@@ -285,7 +285,7 @@ static KSPROPERTY_VALUES BrightnessValues =
 };
 
 // ------------------------------------------------------------------------
-static KSPROPERTY_STEPPING_LONG ContrastRangeAndStep [] = 
+static KSPROPERTY_STEPPING_LONG ContrastRangeAndStep [] =
 {
     {
         10000 / 256,        // SteppingDelta (range / steps)
@@ -297,7 +297,7 @@ static KSPROPERTY_STEPPING_LONG ContrastRangeAndStep [] =
 
 static const ULONG ContrastDefault = 5000;
 
-static KSPROPERTY_MEMBERSLIST ContrastMembersList [] = 
+static KSPROPERTY_MEMBERSLIST ContrastMembersList [] =
 {
     {
         {
@@ -312,11 +312,11 @@ static KSPROPERTY_MEMBERSLIST ContrastMembersList [] =
         {
             KSPROPERTY_MEMBER_VALUES,
             sizeof (ContrastDefault),
-            1, 
+            1,
             KSPROPERTY_MEMBER_FLAG_DEFAULT
         },
         (PVOID) &ContrastDefault,
-    }    
+    }
 };
 
 static KSPROPERTY_VALUES ContrastValues =
@@ -331,19 +331,19 @@ static KSPROPERTY_VALUES ContrastValues =
 };
 
 // ------------------------------------------------------------------------
-static KSPROPERTY_STEPPING_LONG ColorEnableRangeAndStep [] = 
+static KSPROPERTY_STEPPING_LONG ColorEnableRangeAndStep [] =
 {
     {
         1,                  // SteppingDelta (this is a BOOL)
         0,                  // Reserved
-        0,                  // Minimum 
-        1                   // Maximum 
+        0,                  // Minimum
+        1                   // Maximum
     }
 };
 
 static const ULONG ColorEnableDefault = 1;
 
-static KSPROPERTY_MEMBERSLIST ColorEnableMembersList [] = 
+static KSPROPERTY_MEMBERSLIST ColorEnableMembersList [] =
 {
     {
         {
@@ -358,11 +358,11 @@ static KSPROPERTY_MEMBERSLIST ColorEnableMembersList [] =
         {
             KSPROPERTY_MEMBER_VALUES,
             sizeof (ColorEnableDefault),
-            1, 
+            1,
             KSPROPERTY_MEMBER_FLAG_DEFAULT
         },
         (PVOID) &ColorEnableDefault,
-    }    
+    }
 };
 
 static KSPROPERTY_VALUES ColorEnableValues =
@@ -429,19 +429,19 @@ DEFINE_KSPROPERTY_TABLE(VideoProcAmpProperties)
 //
 
 // ------------------------------------------------------------------------
-static KSPROPERTY_STEPPING_LONG ZoomRangeAndStep [] = 
+static KSPROPERTY_STEPPING_LONG ZoomRangeAndStep [] =
 {
     {
         10000 / 10,         // SteppingDelta (range / steps)
         0,                  // Reserved
-        0,                  // Minimum 
-        10000               // Maximum 
+        0,                  // Minimum
+        10000               // Maximum
     }
 };
 
 static const ULONG ZoomDefault = 5000;
 
-static KSPROPERTY_MEMBERSLIST ZoomMembersList [] = 
+static KSPROPERTY_MEMBERSLIST ZoomMembersList [] =
 {
     {
         {
@@ -456,11 +456,11 @@ static KSPROPERTY_MEMBERSLIST ZoomMembersList [] =
         {
             KSPROPERTY_MEMBER_VALUES,
             sizeof (ZoomDefault),
-            1, 
+            1,
             KSPROPERTY_MEMBER_FLAG_DEFAULT
         },
         (PVOID) &ZoomDefault,
-    }    
+    }
 };
 
 static KSPROPERTY_VALUES ZoomValues =
@@ -475,19 +475,19 @@ static KSPROPERTY_VALUES ZoomValues =
 };
 
 // ------------------------------------------------------------------------
-static KSPROPERTY_STEPPING_LONG FocusRangeAndStep [] = 
+static KSPROPERTY_STEPPING_LONG FocusRangeAndStep [] =
 {
     {
         10000 / 256,        // SteppingDelta (range / steps)
         0,                  // Reserved
-        0,                  // Minimum 
-        10000               // Maximum 
+        0,                  // Minimum
+        10000               // Maximum
     }
 };
 
 static const ULONG FocusDefault = 5000;
 
-static KSPROPERTY_MEMBERSLIST FocusMembersList [] = 
+static KSPROPERTY_MEMBERSLIST FocusMembersList [] =
 {
     {
         {
@@ -502,11 +502,11 @@ static KSPROPERTY_MEMBERSLIST FocusMembersList [] =
         {
             KSPROPERTY_MEMBER_VALUES,
             sizeof (FocusDefault),
-            1, 
+            1,
             KSPROPERTY_MEMBER_FLAG_DEFAULT
         },
         (PVOID) &FocusDefault,
-    }    
+    }
 };
 
 static KSPROPERTY_VALUES FocusValues =
@@ -538,7 +538,7 @@ DEFINE_KSPROPERTY_TABLE(CameraControlProperties)
     ),
     DEFINE_KSPROPERTY_ITEM
     (
-        KSPROPERTY_CAMERACONTROL_FOCUS,   
+        KSPROPERTY_CAMERACONTROL_FOCUS,
         TRUE,                                   // GetSupported or Handler
         sizeof(KSPROPERTY_CAMERACONTROL_S),     // MinProperty
         sizeof(KSPROPERTY_CAMERACONTROL_S),     // MinData
@@ -772,7 +772,7 @@ DEFINE_KSPROPERTY_TABLE(VBIProperties)
 DEFINE_KSPROPERTY_SET_TABLE(AdapterPropertyTable)
 {
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_CROSSBAR,             // Set
         SIZEOF_ARRAY(XBarProperties),           // PropertiesCount
         XBarProperties,                         // PropertyItem
@@ -780,55 +780,55 @@ DEFINE_KSPROPERTY_SET_TABLE(AdapterPropertyTable)
         NULL                                    // FastIoTable
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_TUNER,
         SIZEOF_ARRAY(TVTunerProperties),
         TVTunerProperties,
-        0, 
+        0,
         NULL,
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_TVAUDIO,
         SIZEOF_ARRAY(TVAudioProperties),
         TVAudioProperties,
-        0, 
+        0,
         NULL,
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_VIDEOPROCAMP,
         SIZEOF_ARRAY(VideoProcAmpProperties),
         VideoProcAmpProperties,
-        0, 
+        0,
         NULL,
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_CAMERACONTROL,
         SIZEOF_ARRAY(CameraControlProperties),
         CameraControlProperties,
-        0, 
+        0,
         NULL,
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_VIDEOCONTROL,
         SIZEOF_ARRAY(VideoControlProperties),
         VideoControlProperties,
-        0, 
+        0,
         NULL,
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_VIDEODECODER,
         SIZEOF_ARRAY(AnalogVideoDecoder),
         AnalogVideoDecoder,
-        0, 
+        0,
         NULL,
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_VIDEOCOMPRESSION,             // Set
         SIZEOF_ARRAY(VideoStreamCompressionProperties), // PropertiesCount
         VideoStreamCompressionProperties,               // PropertyItem
@@ -836,7 +836,7 @@ DEFINE_KSPROPERTY_SET_TABLE(AdapterPropertyTable)
         NULL                                            // FastIoTable
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &KSPROPSETID_VBICAP_PROPERTIES,                 // Set
         SIZEOF_ARRAY(VBIProperties),                    // PropertiesCount
         VBIProperties,                                  // PropertyItem

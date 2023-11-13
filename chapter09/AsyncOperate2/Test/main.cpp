@@ -3,12 +3,12 @@
 
 #define DEVICE_NAME	"test.dat"
 #define BUFFER_SIZE	512
-//¼ÙÉè¸ÃÎÄ¼þ´óÓÚ»òµÈÓÚBUFFER_SIZE
+//å‡è®¾è¯¥æ–‡ä»¶å¤§äºŽæˆ–ç­‰äºŽBUFFER_SIZE
 
 VOID CALLBACK MyFileIOCompletionRoutine(
-  DWORD dwErrorCode,                // ¶ÔÓÚ´Ë´Î²Ù×÷·µ»ØµÄ×´Ì¬
-  DWORD dwNumberOfBytesTransfered,  // ¸æËßÒÑ¾­²Ù×÷ÁË¶àÉÙ×Ö½Ú,Ò²¾ÍÊÇÔÚIRPÀïµÄInfomation
-  LPOVERLAPPED lpOverlapped         // Õâ¸öÊý¾Ý½á¹¹
+  DWORD dwErrorCode,                // å¯¹äºŽæ­¤æ¬¡æ“ä½œè¿”å›žçš„çŠ¶æ€
+  DWORD dwNumberOfBytesTransfered,  // å‘Šè¯‰å·²ç»æ“ä½œäº†å¤šå°‘å­—èŠ‚,ä¹Ÿå°±æ˜¯åœ¨IRPé‡Œçš„Infomation
+  LPOVERLAPPED lpOverlapped         // è¿™ä¸ªæ•°æ®ç»“æž„
 )
 {
 	printf("IO operation end!\n");
@@ -16,16 +16,16 @@ VOID CALLBACK MyFileIOCompletionRoutine(
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("test.dat",
 					GENERIC_READ | GENERIC_WRITE,
 					0,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//´Ë´¦ÉèÖÃFILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//æ­¤å¤„è®¾ç½®FILE_FLAG_OVERLAPPED
 					NULL );
 
-	if (hDevice == INVALID_HANDLE_VALUE) 
+	if (hDevice == INVALID_HANDLE_VALUE)
 	{
 		printf("Read Error\n");
 		return 1;
@@ -33,16 +33,16 @@ int main()
 
 	UCHAR buffer[BUFFER_SIZE];
 
-	//³õÊ¼»¯overlapÊ¹ÆäÄÚ²¿È«²¿ÎªÁã
-	//²»ÓÃ³õÊ¼»¯ÊÂ¼þ!!
+	//åˆå§‹åŒ–overlapä½¿å…¶å†…éƒ¨å…¨éƒ¨ä¸ºé›¶
+	//ä¸ç”¨åˆå§‹åŒ–äº‹ä»¶!!
 	OVERLAPPED overlap={0};
 
-	//ÕâÀïÃ»ÓÐÉèÖÃOVERLAP²ÎÊý£¬Òò´ËÊÇÒì²½²Ù×÷
+	//è¿™é‡Œæ²¡æœ‰è®¾ç½®OVERLAPå‚æ•°ï¼Œå› æ­¤æ˜¯å¼‚æ­¥æ“ä½œ
 	ReadFileEx(hDevice, buffer, BUFFER_SIZE,&overlap,MyFileIOCompletionRoutine);
 
-	//×öÒ»Ð©ÆäËû²Ù×÷£¬ÕâÐ©²Ù×÷»áÓë¶ÁÉè±¸²¢ÐÐÖ´ÐÐ
+	//åšä¸€äº›å…¶ä»–æ“ä½œï¼Œè¿™äº›æ“ä½œä¼šä¸Žè¯»è®¾å¤‡å¹¶è¡Œæ‰§è¡Œ
 
-	//½øÈëalterable
+	//è¿›å…¥alterable
 	SleepEx(0,TRUE);
 
 	CloseHandle(hDevice);

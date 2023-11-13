@@ -1,12 +1,12 @@
 #include <windows.h>
 #include <stdio.h>
-//Ê¹ÓÃCTL_CODE±ØĞë¼ÓÈëwinioctl.h
+//ä½¿ç”¨CTL_CODEå¿…é¡»åŠ å…¥winioctl.h
 #include <winioctl.h>
 #include "..\NT_Driver\Ioctls.h"
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none
@@ -26,17 +26,17 @@ int main()
 	DWORD dwOutput ;
 	DWORD inputBuffer[3] =
 	{
-		0x378,//¶Ô0x378½øĞĞ²Ù×÷
-		1,//1´ú±í8Î»²Ù×÷£¬2´ú±í16Î»²Ù×÷£¬4´ú±í32Î»²Ù×÷
-		2//Êä³ö×Ö½Ú
+		0x378,//å¯¹0x378è¿›è¡Œæ“ä½œ
+		1,//1ä»£è¡¨8ä½æ“ä½œï¼Œ2ä»£è¡¨16ä½æ“ä½œï¼Œ4ä»£è¡¨32ä½æ“ä½œ
+		2//è¾“å‡ºå­—èŠ‚
 	};
 
-	//²úÉúÖÜÆÚÊÇ200ºÁÃëµÄÖÜÆÚĞÅºÅ
+	//äº§ç”Ÿå‘¨æœŸæ˜¯200æ¯«ç§’çš„å‘¨æœŸä¿¡å·
 	for (;;)
 	{
 		DeviceIoControl(hDevice, WRITE_PORT, inputBuffer, sizeof(inputBuffer), NULL, 0, &dwOutput, NULL);
-		inputBuffer[2] = inputBuffer[2] ^3;//ÈÃµÚ0¡¢1Î»Çó·´
-		Sleep(100);//ÔİÍ£100ºÁÃë
+		inputBuffer[2] = inputBuffer[2] ^3;//è®©ç¬¬0ã€1ä½æ±‚å
+		Sleep(100);//æš‚åœ100æ¯«ç§’
 	}
 
 	CloseHandle(hDevice);

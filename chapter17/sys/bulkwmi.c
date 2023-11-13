@@ -14,7 +14,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -31,7 +31,7 @@ Notes:
 
 #define WMI_BULKUSB_DRIVER_INFORMATION 0
 
-DEFINE_GUID (BULKUSB_WMI_STD_DATA_GUID, 
+DEFINE_GUID (BULKUSB_WMI_STD_DATA_GUID,
 0xBBA21300, 0x6DD3, 0x11d2, 0xB8, 0x44, 0x00, 0xC0, 0x4F, 0xAD, 0x51, 0x71);
 
 WMIGUIDREGINFO BulkWmiGuidList[1] = { {
@@ -58,10 +58,10 @@ Return Value:
 --*/
 {
     NTSTATUS ntStatus;
-    
+
     PAGED_CODE();
 
-    DeviceExtension->WmiLibInfo.GuidCount = 
+    DeviceExtension->WmiLibInfo.GuidCount =
           sizeof (BulkWmiGuidList) / sizeof (WMIGUIDREGINFO);
 
     DeviceExtension->WmiLibInfo.GuidList           = BulkWmiGuidList;
@@ -75,12 +75,12 @@ Return Value:
     //
     // Register with WMI
     //
-    
+
     ntStatus = IoWMIRegistrationControl(DeviceExtension->FunctionalDeviceObject,
                                         WMIREG_ACTION_REGISTER);
 
     return ntStatus;
-    
+
 }
 
 NTSTATUS
@@ -91,8 +91,8 @@ BulkUsb_WmiDeRegistration(
 
 Routine Description:
 
-     Inform WMI to remove this DeviceObject from its 
-     list of providers. This function also 
+     Inform WMI to remove this DeviceObject from its
+     list of providers. This function also
      decrements the reference count of the deviceobject.
 
 Arguments:
@@ -115,7 +115,7 @@ BulkUsb_DispatchSysCtrl(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
 Arguments:
@@ -128,7 +128,7 @@ Return Value:
     SYSCTL_IRP_DISPOSITION  disposition;
     NTSTATUS                ntStatus;
     PIO_STACK_LOCATION      irpStack;
-    
+
     PAGED_CODE();
 
     irpStack = IoGetCurrentIrpStackLocation (Irp);
@@ -151,14 +151,14 @@ Return Value:
     BulkUsb_DbgPrint(3, ("BulkUsb_DispatchSysCtrl::"));
     BulkUsb_IoIncrement(deviceExtension);
 
-    ntStatus = WmiSystemControl(&deviceExtension->WmiLibInfo, 
-                                DeviceObject, 
+    ntStatus = WmiSystemControl(&deviceExtension->WmiLibInfo,
+                                DeviceObject,
                                 Irp,
                                 &disposition);
 
     switch(disposition) {
 
-        case IrpProcessed: 
+        case IrpProcessed:
         {
             //
             // This irp has been processed and may be completed or pending.
@@ -166,7 +166,7 @@ Return Value:
 
             break;
         }
-        
+
         case IrpNotCompleted:
         {
             //
@@ -174,11 +174,11 @@ Return Value:
             // we will complete it now
             //
 
-            IoCompleteRequest(Irp, IO_NO_INCREMENT);                
+            IoCompleteRequest(Irp, IO_NO_INCREMENT);
 
             break;
         }
-        
+
         case IrpForward:
         case IrpNotWmi:
         {
@@ -189,12 +189,12 @@ Return Value:
 
             IoSkipCurrentIrpStackLocation (Irp);
 
-            ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, 
+            ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject,
                                     Irp);
 
             break;
         }
-                                    
+
         default:
         {
             //
@@ -205,10 +205,10 @@ Return Value:
 
             IoSkipCurrentIrpStackLocation (Irp);
 
-            ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject, 
+            ntStatus = IoCallDriver(deviceExtension->TopOfStackDeviceObject,
                                   Irp);
             break;
-        }        
+        }
     }
 
     BulkUsb_DbgPrint(3, ("BulkUsb_DispatchSysCtrl::"));
@@ -224,7 +224,7 @@ BulkUsb_QueryWmiRegInfo(
     OUT PUNICODE_STRING InstanceName,
     OUT PUNICODE_STRING *RegistryPath,
     OUT PUNICODE_STRING MofResourceName,
-    OUT PDEVICE_OBJECT  *Pdo	    
+    OUT PDEVICE_OBJECT  *Pdo
     )
 /*++
 
@@ -260,7 +260,7 @@ Arguments:
         then this can be returned as NULL.
 
     *Pdo returns with the device object for the PDO associated with this
-        device if the WMIREG_FLAG_INSTANCE_PDO flag is returned in 
+        device if the WMIREG_FLAG_INSTANCE_PDO flag is returned in
         *RegFlags.
 
 Return Value:
@@ -283,7 +283,7 @@ Return Value:
     RtlInitUnicodeString(MofResourceName, MOFRESOURCENAME);
 
     BulkUsb_DbgPrint(3, ("BulkUsb_QueryWmiRegInfo - ends\n"));
-    
+
     return STATUS_SUCCESS;
 }
 
@@ -318,15 +318,15 @@ Arguments:
 
     InstanceIndex is the index that denotes which instance of the data block
         is being queried.
-            
+
     InstanceCount is the number of instances expected to be returned for
         the data block.
-            
-    InstanceLengthArray is a pointer to an array of ULONG that returns the 
+
+    InstanceLengthArray is a pointer to an array of ULONG that returns the
         lengths of each instance of the data block. If this is NULL then
         there was not enough space in the output buffer to fulfill the request
-        so the irp should be completed with the buffer needed.        
-            
+        so the irp should be completed with the buffer needed.
+
     OutBufferSize has the maximum size available to write the data
         block.
 
@@ -358,7 +358,7 @@ Return Value:
 
     ASSERT((InstanceIndex == 0) &&
            (InstanceCount == 1));
-    
+
     deviceExtension = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
 
     switch (GuidIndex) {
@@ -443,7 +443,7 @@ Arguments:
 
     InstanceIndex is the index that denotes which instance of the data block
         is being queried.
-            
+
     DataItemId has the id of the data item being set
 
     BufferSize has the size of the data item passed
@@ -460,7 +460,7 @@ Return Value:
     PDEVICE_EXTENSION deviceExtension;
     NTSTATUS          ntStatus;
     ULONG             info;
-    
+
     PAGED_CODE();
 
     BulkUsb_DbgPrint(3, ("BulkUsb_SetWmiDataItem - begins\n"));
@@ -469,7 +469,7 @@ Return Value:
     info = 0;
 
     switch(GuidIndex) {
-    
+
     case WMI_BULKUSB_DRIVER_INFORMATION:
 
         if(DataItemId == 1) {
@@ -539,7 +539,7 @@ Arguments:
 
     InstanceIndex is the index that denotes which instance of the data block
         is being queried.
-            
+
     BufferSize has the size of the data block passed
 
     Buffer has the new values for the data block
@@ -563,13 +563,13 @@ Return Value:
     BulkUsb_DbgPrint(3, ("BulkUsb_SetWmiDataBlock - begins\n"));
 
     switch(GuidIndex) {
-    
+
     case WMI_BULKUSB_DRIVER_INFORMATION:
 
         if(BufferSize == sizeof(ULONG)) {
 
             DebugLevel = *(PULONG) Buffer;
-                    
+
             ntStatus = STATUS_SUCCESS;
 
             info = sizeof(ULONG);
@@ -602,7 +602,7 @@ WMIMinorFunctionString (
     UCHAR MinorFunction
     )
 /*++
- 
+
 Routine Description:
 
 Arguments:

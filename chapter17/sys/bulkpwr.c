@@ -36,7 +36,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -55,7 +55,7 @@ BulkUsb_DispatchPower(
     IN PIRP Irp
     )
 /*++
- 
+
 Routine Description:
 
     The power dispatch routine.
@@ -76,11 +76,11 @@ Return Value:
     PIO_STACK_LOCATION irpStack;
     PUNICODE_STRING    tagString;
     PDEVICE_EXTENSION  deviceExtension;
-	
+
     //
     // initialize the variables
     //
-	
+
     irpStack = IoGetCurrentIrpStackLocation(Irp);
     deviceExtension = (PDEVICE_EXTENSION)DeviceObject->DeviceExtension;
 
@@ -127,9 +127,9 @@ Return Value:
 
     BulkUsb_DbgPrint(3, ("BulkUsb_DispatchPower::"));
     BulkUsb_IoIncrement(deviceExtension);
-    
+
     switch(irpStack->MinorFunction) {
-    
+
     case IRP_MN_SET_POWER:
 
         //
@@ -178,11 +178,11 @@ Return Value:
         //
 
         IoMarkIrpPending(Irp);
-    
+
         switch(irpStack->Parameters.Power.Type) {
 
         case SystemPowerState:
-            
+
             HandleSystemQueryPower(DeviceObject, Irp);
 
             ntStatus = STATUS_PENDING;
@@ -218,9 +218,9 @@ Return Value:
         IoSetCompletionRoutine(
                         Irp,
                         (PIO_COMPLETION_ROUTINE)WaitWakeCompletionRoutine,
-                        deviceExtension, 
-                        TRUE, 
-                        TRUE, 
+                        deviceExtension,
+                        TRUE,
+                        TRUE,
                         TRUE);
 
         PoStartNextPowerIrp(Irp);
@@ -264,7 +264,7 @@ Return Value:
 
             BulkUsb_DbgPrint(1, ("Lower drivers failed this Irp"));
         }
-        
+
         BulkUsb_DbgPrint(3, ("BulkUsb_DispatchPower::"));
         BulkUsb_IoDecrement(deviceExtension);
 
@@ -280,7 +280,7 @@ HandleSystemQueryPower(
     IN PIRP Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine handles the irp with minor function of type IRP_MN_QUERY_POWER
@@ -301,7 +301,7 @@ Return Value:
     PDEVICE_EXTENSION  deviceExtension;
     SYSTEM_POWER_STATE systemState;
     PIO_STACK_LOCATION irpStack;
-    
+
     BulkUsb_DbgPrint(3, ("HandleSystemQueryPower - begins\n"));
 
     //
@@ -352,11 +352,11 @@ Return Value:
     IoCopyCurrentIrpStackLocationToNext(Irp);
 
     IoSetCompletionRoutine(
-            Irp, 
+            Irp,
             (PIO_COMPLETION_ROUTINE)SysPoCompletionRoutine,
-            deviceExtension, 
-            TRUE, 
-            TRUE, 
+            deviceExtension,
+            TRUE,
+            TRUE,
             TRUE);
 
     ntStatus = PoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
@@ -372,7 +372,7 @@ HandleSystemSetPower(
     IN PIRP Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services irps of minor type IRP_MN_SET_POWER
@@ -393,7 +393,7 @@ Return Value:
     PDEVICE_EXTENSION  deviceExtension;
     SYSTEM_POWER_STATE systemState;
     PIO_STACK_LOCATION irpStack;
-    
+
     BulkUsb_DbgPrint(3, ("HandleSystemSetPower - begins\n"));
 
     //
@@ -412,11 +412,11 @@ Return Value:
     IoCopyCurrentIrpStackLocationToNext(Irp);
 
     IoSetCompletionRoutine(
-            Irp, 
+            Irp,
             (PIO_COMPLETION_ROUTINE)SysPoCompletionRoutine,
-            deviceExtension, 
-            TRUE, 
-            TRUE, 
+            deviceExtension,
+            TRUE,
+            TRUE,
             TRUE);
 
     ntStatus = PoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
@@ -432,7 +432,7 @@ HandleDeviceQueryPower(
     PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services irps of minor type IRP_MN_QUERY_POWER
@@ -536,7 +536,7 @@ SysPoCompletionRoutine(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This is the completion routine for the system power irps of minor
@@ -596,7 +596,7 @@ Return Value:
     //
     // queue device irp and return STATUS_MORE_PROCESSING_REQUIRED
     //
-	
+
     SendDeviceIrp(DeviceObject, Irp);
 
     BulkUsb_DbgPrint(3, ("SysPoCompletionRoutine - ends\n"));
@@ -610,11 +610,11 @@ SendDeviceIrp(
     IN PIRP SIrp
     )
 /*++
- 
+
 Routine Description:
 
     This routine is invoked from the completion routine of the system power
-    irp. This routine will PoRequest a device power irp. The system irp is 
+    irp. This routine will PoRequest a device power irp. The system irp is
     passed as a context to the the device power irp.
 
 Arguments:
@@ -635,7 +635,7 @@ Return Value:
     SYSTEM_POWER_STATE        systemState;
     DEVICE_POWER_STATE        devState;
     PPOWER_COMPLETION_CONTEXT powerContext;
-    
+
     //
     // initialize variables
     //
@@ -654,8 +654,8 @@ Return Value:
 
     devState = deviceExtension->DeviceCapabilities.DeviceState[systemState];
     powState.DeviceState = devState;
-    
-    powerContext = (PPOWER_COMPLETION_CONTEXT) 
+
+    powerContext = (PPOWER_COMPLETION_CONTEXT)
                    ExAllocatePool(NonPagedPool,
                                   sizeof(POWER_COMPLETION_CONTEXT));
 
@@ -669,17 +669,17 @@ Return Value:
 
         powerContext->DeviceObject = DeviceObject;
         powerContext->SIrp = SIrp;
-   
+
         //
         // in win2k PoRequestPowerIrp can take fdo or pdo.
         //
 
         ntStatus = PoRequestPowerIrp(
-                            deviceExtension->PhysicalDeviceObject, 
+                            deviceExtension->PhysicalDeviceObject,
                             irpStack->MinorFunction,
                             powState,
                             (PREQUEST_POWER_COMPLETE)DevPoCompletionRoutine,
-                            powerContext, 
+                            powerContext,
                             NULL);
     }
 
@@ -694,7 +694,7 @@ Return Value:
 
         SIrp->IoStatus.Status = ntStatus;
         SIrp->IoStatus.Information = 0;
-        
+
         IoCompleteRequest(SIrp, IO_NO_INCREMENT);
 
         BulkUsb_DbgPrint(3, ("SendDeviceIrp::"));
@@ -708,18 +708,18 @@ Return Value:
 
 VOID
 DevPoCompletionRoutine(
-    IN PDEVICE_OBJECT DeviceObject, 
+    IN PDEVICE_OBJECT DeviceObject,
     IN UCHAR MinorFunction,
     IN POWER_STATE PowerState,
     IN PVOID Context,
     IN PIO_STATUS_BLOCK IoStatus
     )
 /*++
- 
+
 Routine Description:
 
     This is the PoRequest - completion routine for the device power irp.
-    This routine is responsible for completing the system power irp, 
+    This routine is responsible for completing the system power irp,
     received as a context.
 
 Arguments:
@@ -739,7 +739,7 @@ Return Value:
     PIRP                      sIrp;
     PDEVICE_EXTENSION         deviceExtension;
     PPOWER_COMPLETION_CONTEXT powerContext;
-    
+
     //
     // initialize variables
     //
@@ -759,7 +759,7 @@ Return Value:
     //
     // complete the system Irp
     //
-    
+
     PoStartNextPowerIrp(sIrp);
 
     sIrp->IoStatus.Information = 0;
@@ -769,7 +769,7 @@ Return Value:
     //
     // cleanup
     //
-    
+
     BulkUsb_DbgPrint(3, ("DevPoCompletionRoutine::"));
     BulkUsb_IoDecrement(deviceExtension);
 
@@ -785,7 +785,7 @@ HandleDeviceSetPower(
     IN PIRP Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine services irps of minor type IRP_MN_SET_POWER
@@ -804,14 +804,14 @@ Return Value:
 {
     KIRQL              oldIrql;
     NTSTATUS           ntStatus;
-    POWER_STATE        newState;    
+    POWER_STATE        newState;
     PIO_STACK_LOCATION irpStack;
     PDEVICE_EXTENSION  deviceExtension;
     DEVICE_POWER_STATE newDevState,
                        oldDevState;
 
     BulkUsb_DbgPrint(3, ("HandleDeviceSetPower - begins\n"));
-	
+
     //
     // initialize variables
     //
@@ -840,11 +840,11 @@ Return Value:
         IoCopyCurrentIrpStackLocationToNext(Irp);
 
         IoSetCompletionRoutine(
-                Irp, 
+                Irp,
                 (PIO_COMPLETION_ROUTINE)FinishDevPoUpIrp,
-                deviceExtension, 
-                TRUE, 
-                TRUE, 
+                deviceExtension,
+                TRUE,
+                TRUE,
                 TRUE);
 
         ntStatus = PoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
@@ -853,10 +853,10 @@ Return Value:
     else {
 
         //
-        // newDevState >= oldDevState 
+        // newDevState >= oldDevState
         //
         // hold I/O if transition from D0 -> DX (X = 1, 2, 3)
-        // if transition from D1 or D2 to deeper sleep states, 
+        // if transition from D1 or D2 to deeper sleep states,
         // I/O queue is already on hold.
         //
 
@@ -901,22 +901,22 @@ Return Value:
             BulkUsb_DbgPrint(3, ("A SetD0 request\n"));
 
             KeAcquireSpinLock(&deviceExtension->DevStateLock, &oldIrql);
-              
+
             deviceExtension->QueueState = AllowRequests;
 
             KeReleaseSpinLock(&deviceExtension->DevStateLock, oldIrql);
 
             ProcessQueuedRequests(deviceExtension);
-        }   
+        }
 
         IoCopyCurrentIrpStackLocationToNext(Irp);
 
         IoSetCompletionRoutine(
-                Irp, 
+                Irp,
                 (PIO_COMPLETION_ROUTINE) FinishDevPoDnIrp,
-                deviceExtension, 
-                TRUE, 
-                TRUE, 
+                deviceExtension,
+                TRUE,
+                TRUE,
                 TRUE);
 
         ntStatus = PoCallDriver(deviceExtension->TopOfStackDeviceObject, Irp);
@@ -942,7 +942,7 @@ FinishDevPoUpIrp(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     completion routine for the device power UP irp with minor function
@@ -961,7 +961,7 @@ Return Value:
 --*/
 {
     NTSTATUS           ntStatus;
-                        
+
     //
     // initialize variables
     //
@@ -999,7 +999,7 @@ SetDeviceFunctional(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine processes queue of pending irps.
@@ -1057,7 +1057,7 @@ Return Value:
         KeAcquireSpinLock(&DeviceExtension->DevStateLock, &oldIrql);
 
         DeviceExtension->QueueState = AllowRequests;
-        
+
         KeReleaseSpinLock(&DeviceExtension->DevStateLock, oldIrql);
 
         ProcessQueuedRequests(DeviceExtension);
@@ -1085,7 +1085,7 @@ FinishDevPoDnIrp(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine is the completion routine for device power DOWN irp.
@@ -1144,7 +1144,7 @@ HoldIoRequests(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine is called on query or set power DOWN irp for the device.
@@ -1188,10 +1188,10 @@ Return Value:
         if(item) {
 
             IoMarkIrpPending(Irp);
-            
+
             IoQueueWorkItem(item, HoldIoRequestsWorkerRoutine,
                             DelayedWorkQueue, context);
-            
+
             ntStatus = STATUS_PENDING;
         }
         else {
@@ -1218,7 +1218,7 @@ HoldIoRequestsWorkerRoutine(
     IN PVOID          Context
     )
 /*++
- 
+
 Routine Description:
 
     This routine waits for the I/O in progress to finish and then
@@ -1271,7 +1271,7 @@ Return Value:
     BulkUsb_DbgPrint(3, ("HoldIoRequestsWorkerRoutine::"));
     BulkUsb_IoIncrement(deviceExtension);
 
-    // 
+    //
     // now send the Irp down
     //
 
@@ -1300,7 +1300,7 @@ QueueRequest(
     IN PIRP Irp
     )
 /*++
- 
+
 Routine Description:
 
     Queue the Irp in the device queue
@@ -1330,7 +1330,7 @@ Return Value:
 
     KeAcquireSpinLock(&DeviceExtension->QueueLock, &oldIrql);
 
-    InsertTailList(&DeviceExtension->NewRequestsQueue, 
+    InsertTailList(&DeviceExtension->NewRequestsQueue,
                    &Irp->Tail.Overlay.ListEntry);
 
     IoMarkIrpPending(Irp);
@@ -1354,7 +1354,7 @@ CancelQueued(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     This routine removes the irp from the queue and completes it with
@@ -1419,7 +1419,7 @@ IssueWaitWake(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine will PoRequest a WAIT WAKE irp for the device
@@ -1452,11 +1452,11 @@ Return Value:
 
     poState.SystemState = DeviceExtension->DeviceCapabilities.SystemWake;
 
-    ntStatus = PoRequestPowerIrp(DeviceExtension->PhysicalDeviceObject, 
+    ntStatus = PoRequestPowerIrp(DeviceExtension->PhysicalDeviceObject,
                                  IRP_MN_WAIT_WAKE,
-                                 poState, 
+                                 poState,
                                  (PREQUEST_POWER_COMPLETE) WaitWakeCallback,
-                                 DeviceExtension, 
+                                 DeviceExtension,
                                  &DeviceExtension->WaitWakeIrp);
 
     if(!NT_SUCCESS(ntStatus)) {
@@ -1474,7 +1474,7 @@ CancelWaitWake(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine cancels the Wait Wake request.
@@ -1493,7 +1493,7 @@ Return Value:
 
     BulkUsb_DbgPrint(3, ("CancelWaitWake - begins\n"));
 
-    Irp = (PIRP) InterlockedExchangePointer(&DeviceExtension->WaitWakeIrp, 
+    Irp = (PIRP) InterlockedExchangePointer(&DeviceExtension->WaitWakeIrp,
                                             NULL);
 
     if(Irp) {
@@ -1508,7 +1508,7 @@ Return Value:
             Irp->IoStatus.Information = 0;
 
             IoCompleteRequest(Irp, IO_NO_INCREMENT);
-        }    
+        }
     }
 
     BulkUsb_DbgPrint(3, ("CancelWaitWake - ends\n"));
@@ -1521,7 +1521,7 @@ WaitWakeCompletionRoutine(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This is the IoSet completion routine for the wait wake irp.
@@ -1546,8 +1546,8 @@ Return Value:
     }
 
     //
-    // Nullify the WaitWakeIrp pointer-the Irp is released 
-    // as part of the completion process. If it's already NULL, 
+    // Nullify the WaitWakeIrp pointer-the Irp is released
+    // as part of the completion process. If it's already NULL,
     // avoid race with the CancelWaitWake routine.
     //
 
@@ -1559,7 +1559,7 @@ Return Value:
     }
 
     //
-    // CancelWaitWake has run. 
+    // CancelWaitWake has run.
     // If FlagWWCancel != 0, complete the Irp.
     // If FlagWWCancel == 0, CancelWaitWake completes it.
     //
@@ -1576,7 +1576,7 @@ Return Value:
 }
 
 VOID
-WaitWakeCallback( 
+WaitWakeCallback(
     IN PDEVICE_OBJECT DeviceObject,
     IN UCHAR MinorFunction,
     IN POWER_STATE PowerState,
@@ -1584,7 +1584,7 @@ WaitWakeCallback(
     IN PIO_STATUS_BLOCK IoStatus
     )
 /*++
- 
+
 Routine Description:
 
     This is the PoRequest completion routine for the wait wake irp.
@@ -1634,11 +1634,11 @@ Return Value:
 
     powerState.DeviceState = PowerDeviceD0;
 
-    ntStatus = PoRequestPowerIrp(deviceExtension->PhysicalDeviceObject, 
-                                 IRP_MN_SET_POWER, 
-                                 powerState, 
+    ntStatus = PoRequestPowerIrp(deviceExtension->PhysicalDeviceObject,
+                                 IRP_MN_SET_POWER,
+                                 powerState,
                                  (PREQUEST_POWER_COMPLETE) WWIrpCompletionFunc,
-                                 deviceExtension, 
+                                 deviceExtension,
                                  NULL);
 
     if(deviceExtension->WaitWakeEnable) {
@@ -1657,7 +1657,7 @@ PowerMinorFunctionString (
     IN UCHAR MinorFunction
     )
 /*++
- 
+
 Routine Description:
 
 Arguments:

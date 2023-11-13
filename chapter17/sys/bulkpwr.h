@@ -14,7 +14,7 @@ Environment:
 
 Notes:
 
-  	Copyright (c) 2000 Microsoft Corporation.  
+  	Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -72,7 +72,7 @@ SendDeviceIrp(
 
 VOID
 DevPoCompletionRoutine(
-    IN PDEVICE_OBJECT   DeviceObject, 
+    IN PDEVICE_OBJECT   DeviceObject,
     IN UCHAR            MinorFunction,
     IN POWER_STATE      PowerState,
     IN PVOID            Context,
@@ -148,7 +148,7 @@ CancelWaitWake(
     );
 
 VOID
-WaitWakeCallback( 
+WaitWakeCallback(
     IN PDEVICE_OBJECT   DeviceObject,
     IN UCHAR            MinorFunction,
     IN POWER_STATE      PowerState,

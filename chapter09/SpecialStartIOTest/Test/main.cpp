@@ -9,7 +9,7 @@ UINT WINAPI Thread(LPVOID context)
 	overlap.hEvent = CreateEvent(NULL,FALSE,FALSE,NULL);
 	UCHAR buffer[10];
 	ULONG ulRead;
-	
+
 	BOOL bRead = ReadFile(*(PHANDLE)context,buffer,10,&ulRead,&overlap);
 
 	WaitForSingleObject(overlap.hEvent,INFINITE);
@@ -18,13 +18,13 @@ UINT WINAPI Thread(LPVOID context)
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					FILE_SHARE_READ,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//此处设置FILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//姝ゅ璁剧疆FILE_FLAG_OVERLAPPED
 					NULL );
 
 	if (hDevice == INVALID_HANDLE_VALUE)
@@ -37,10 +37,10 @@ int main()
 	hThread[0] = (HANDLE) _beginthreadex (NULL,0,Thread,&hDevice,0,NULL);
 	hThread[1] = (HANDLE) _beginthreadex (NULL,0,Thread,&hDevice,0,NULL);
 
-	//主线程等待两个子线程结束
+	//涓荤嚎绋嬬瓑寰呬袱涓瓙绾跨▼缁撴潫
 	WaitForMultipleObjects(2,hThread,TRUE,INFINITE);
-	
-	//创建IRP_MJ_CLEANUP IRP
+
+	//鍒涘缓IRP_MJ_CLEANUP IRP
 	CloseHandle(hDevice);
 
 	return 0;

@@ -14,7 +14,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -101,7 +101,7 @@ typedef enum _WDM_VERSION {
 #define BULKUSB_TEST_BOARD_TRANSFER_BUFFER_SIZE (64 *1024 )
 
 //
-// registry path used for parameters 
+// registry path used for parameters
 // global to all instances of the driver
 //
 
@@ -177,7 +177,7 @@ typedef struct _DEVICE_EXTENSION {
     KEVENT RemoveEvent;
 
     KEVENT StopEvent;
-    
+
     ULONG OutStandingIO;
 
     KSPIN_LOCK IOCountLock;
@@ -189,9 +189,9 @@ typedef struct _DEVICE_EXTENSION {
     LONG SSRegistryEnable;
 
     PUSB_IDLE_CALLBACK_INFO IdleCallbackInfo;
-	
+
     PIRP PendingIdleIrp;
-	
+
     LONG IdleReqPend;
 
     LONG FreeIdleIrpCount;
@@ -202,7 +202,7 @@ typedef struct _DEVICE_EXTENSION {
 
     // default power state to power down to on self-susped
     ULONG PowerDownLevel;
-    
+
     // remote wakeup variables
     PIRP WaitWakeIrp;
 

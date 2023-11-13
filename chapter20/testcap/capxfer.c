@@ -20,7 +20,7 @@
 //
 
 // 75% Amplitude, 100% Saturation
-const static UCHAR NTSCColorBars75Amp100SatRGB24 [3][8] = 
+const static UCHAR NTSCColorBars75Amp100SatRGB24 [3][8] =
 {
 //  Whi Yel Cya Grn Mag Red Blu Blk
     191,  0,191,  0,191,  0,191,  0,    // Blue
@@ -29,7 +29,7 @@ const static UCHAR NTSCColorBars75Amp100SatRGB24 [3][8] =
 };
 
 // 100% Amplitude, 100% Saturation
-const static UCHAR NTSCColorBars100Amp100SatRGB24 [3][8] = 
+const static UCHAR NTSCColorBars100Amp100SatRGB24 [3][8] =
 {
 //  Whi Yel Cya Grn Mag Red Blu Blk
     255,  0,255,  0,255,  0,255,  0,    // Blue
@@ -37,7 +37,7 @@ const static UCHAR NTSCColorBars100Amp100SatRGB24 [3][8] =
     255,255,  0,  0,255,255,  0,  0,    // Red
 };
 
-const static UCHAR NTSCColorBars100Amp100SatYUV [4][8] = 
+const static UCHAR NTSCColorBars100Amp100SatYUV [4][8] =
 {
 //  Whi Yel Cya Grn Mag Red Blu Blk
     128, 16,166, 54,202, 90,240,128,    // U
@@ -93,14 +93,14 @@ void ImageSynth (
 #if 0
     // Note:  set "ulInDebug = 1" in a debugger to view this output with .ntkern
     DbgLogTrace(("\'TestCap: ImageSynthBegin\n"));
-    DbgLogTrace(("\'TestCap: biSizeImage=%d, DataPacketLength=%d\n", 
+    DbgLogTrace(("\'TestCap: biSizeImage=%d, DataPacketLength=%d\n",
             biSizeImage, pDataPacket->DataPacketLength));
-    DbgLogTrace(("\'TestCap: biWidth=%d biHeight=%d WidthBytes=%d bpp=%d\n", 
+    DbgLogTrace(("\'TestCap: biWidth=%d biHeight=%d WidthBytes=%d bpp=%d\n",
             biWidth, biHeight, biWidthBytes, biBitCount));
     DbgLogTrace(("\'TestCap: pImage=%x\n", pImage));
 #endif
 
-    // 
+    //
     // Synthesize a single line of image data, which will then be replicated
     //
 
@@ -109,30 +109,30 @@ void ImageSynth (
     if ((biBitCount == 24) && (biCompression == KS_BI_RGB)) {
 
         switch (Command) {
-    
+
         case IMAGE_XFER_NTSC_EIA_100AMP_100SAT:
             // 100% saturation
             {
                 UINT x, col;
                 PUCHAR pT = pLineBuffer;
-        
+
                 for (x = 0; x < biWidth; x++) {
                     col = (x * 8) / biWidth;
                     col = FlipHorizontal ? (7 - col) : col;
-                    
+
                     *pT++ = NTSCColorBars100Amp100SatRGB24[0][col]; // Red
                     *pT++ = NTSCColorBars100Amp100SatRGB24[1][col]; // Green
                     *pT++ = NTSCColorBars100Amp100SatRGB24[2][col]; // Blue
                 }
             }
             break;
-    
+
         case IMAGE_XFER_NTSC_EIA_75AMP_100SAT:
             // 75% Saturation
             {
                 UINT x, col;
                 PUCHAR pT = pLineBuffer;
-        
+
                 for (x = 0; x < biWidth; x++) {
                     col = (x * 8) / biWidth;
                     col = FlipHorizontal ? (7 - col) : col;
@@ -143,13 +143,13 @@ void ImageSynth (
                 }
             }
             break;
-    
+
         case IMAGE_XFER_BLACK:
             // Camma corrected Grayscale ramp
             {
                 UINT x, col;
                 PUCHAR pT = pLineBuffer;
-        
+
                 for (x = 0; x < biWidth; x++) {
                     col = (255 * (x * 10) / biWidth) / 10;
                     col = FlipHorizontal ? (255 - col) : col;
@@ -160,7 +160,7 @@ void ImageSynth (
                 }
             }
             break;
-    
+
         case IMAGE_XFER_WHITE:
             // All white
             RtlFillMemory(
@@ -168,7 +168,7 @@ void ImageSynth (
                 biWidthBytes,
                 (UCHAR) 255);
             break;
-    
+
         case IMAGE_XFER_GRAY_INCREASING:
             // grayscale increasing with each image captured
             RtlFillMemory(
@@ -176,7 +176,7 @@ void ImageSynth (
                 biWidthBytes,
                 (UCHAR) (pStrmEx->FrameInfo.PictureNumber * 8));
             break;
-    
+
         default:
             break;
         }
@@ -185,13 +185,13 @@ void ImageSynth (
     else if ((biBitCount == 16) && (biCompression == FOURCC_YUV422)) {
 
         switch (Command) {
-    
+
         case IMAGE_XFER_NTSC_EIA_100AMP_100SAT:
         default:
             {
                 UINT x, col;
                 PUCHAR pT = pLineBuffer;
-        
+
                 for (x = 0; x < (biWidth / 2); x++) {
                     col = (x * 8) / (biWidth / 2);
                     col = FlipHorizontal ? (7 - col) : col;
@@ -204,7 +204,7 @@ void ImageSynth (
             }
             break;
         }
-    } 
+    }
 
     else {
         DbgLogError(("\'TestCap: Unknown format in ImageSynth!!!\n"));
@@ -212,7 +212,7 @@ void ImageSynth (
     }
 
 
-    // 
+    //
     // Copy the single line synthesized to all rows of the image
     //
 
@@ -220,7 +220,7 @@ void ImageSynth (
 
         // Show some action on an otherwise static image
         // This will be a changing grayscale horizontal band
-        // at the bottom of an RGB image and a changing color band at the 
+        // at the bottom of an RGB image and a changing color band at the
         // top of a YUV image
 
         if (Line >= 3 && Line <= 6) {

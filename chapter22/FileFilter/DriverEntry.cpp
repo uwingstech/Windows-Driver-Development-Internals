@@ -15,7 +15,7 @@ NTSTATUS StartDeviceCompletionRoutine(PDEVICE_OBJECT fido, PIRP Irp, PDEVICE_EXT
 NTSTATUS UsageNotificationCompletionRoutine(PDEVICE_OBJECT fido, PIRP Irp, PDEVICE_EXTENSION pdx);
 
 ///////////////////////////////////////////////////////////////////////////////
-#pragma INITCODE 
+#pragma INITCODE
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	IN PUNICODE_STRING RegistryPath)
 {							// DriverEntry
@@ -62,17 +62,17 @@ NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		IoInitializeRemoveLock(&pdx->RemoveLock, 0, 0, 0);
 		pdx->DeviceObject = fido;
 		pdx->Pdo = pdo;
-		//½«¹ýÂËÇý¶¯¸½¼ÓÔÚµ×²ãÇý¶¯Ö®ÉÏ
+		//å°†è¿‡æ»¤é©±åŠ¨é™„åŠ åœ¨åº•å±‚é©±åŠ¨ä¹‹ä¸Š
 		PDEVICE_OBJECT fdo = IoAttachDeviceToDeviceStack(fido, pdo);
 		if (!fdo)
-		{					// can't attach								 
+		{					// can't attach
 			KdPrint((DRIVERNAME " - IoAttachDeviceToDeviceStack failed\n"));
 			status = STATUS_DEVICE_REMOVED;
 			break;
 		}					// can't attach
-		//¼ÇÂ¼µ×²ãÇý¶¯
+		//è®°å½•åº•å±‚é©±åŠ¨
 		pdx->LowerDeviceObject = fdo;
-		//ÓÉÓÚ²»ÖªµÀµ×²ãÇý¶¯ÊÇÖ±½ÓIO»¹ÊÇBufferIO£¬Òò´Ë½«±êÖ¾¶¼ÖÃÉÏ
+		//ç”±äºŽä¸çŸ¥é“åº•å±‚é©±åŠ¨æ˜¯ç›´æŽ¥IOè¿˜æ˜¯BufferIOï¼Œå› æ­¤å°†æ ‡å¿—éƒ½ç½®ä¸Š
 		fido->Flags |= fdo->Flags & (DO_DIRECT_IO | DO_BUFFERED_IO | DO_POWER_PAGABLE);
 		// Clear the "initializing" flag so that we can get IRPs
 		fido->Flags &= ~DO_DEVICE_INITIALIZING;
@@ -111,12 +111,12 @@ USBSCSICompletion( IN PDEVICE_OBJECT DeviceObject,
 
     PIO_STACK_LOCATION irpStack = IoGetCurrentIrpStackLocation( Irp );
 
-	PSCSI_REQUEST_BLOCK CurSrb=irpStack->Parameters.Scsi.Srb; 
-	PCDB cdb = (PCDB)CurSrb->Cdb; 
-	UCHAR opCode=cdb->CDB6GENERIC.OperationCode; 
+	PSCSI_REQUEST_BLOCK CurSrb=irpStack->Parameters.Scsi.Srb;
+	PCDB cdb = (PCDB)CurSrb->Cdb;
+	UCHAR opCode=cdb->CDB6GENERIC.OperationCode;
 
-	if(opCode==SCSIOP_MODE_SENSE  && CurSrb->DataBuffer 
-		&& CurSrb->DataTransferLength >= 
+	if(opCode==SCSIOP_MODE_SENSE  && CurSrb->DataBuffer
+		&& CurSrb->DataTransferLength >=
 		sizeof(MODE_PARAMETER_HEADER))
 	{
 		KdPrint(("SCSIOP_MODE_SENSE comming!\n"));
@@ -124,26 +124,26 @@ USBSCSICompletion( IN PDEVICE_OBJECT DeviceObject,
 		PMODE_PARAMETER_HEADER modeData = (PMODE_PARAMETER_HEADER)CurSrb->DataBuffer;
 
 		modeData->DeviceSpecificParameter |= MODE_DSP_WRITE_PROTECT;
-	} 
+	}
 
 	if ( Irp->PendingReturned )
 	{
 		IoMarkIrpPending( Irp );
-	} 
+	}
 
 	IoReleaseRemoveLock(&pdx->RemoveLock,Irp);
 
 	return Irp->IoStatus.Status ;
-} 
- 
+}
+
 #pragma LOCKEDCODE
 NTSTATUS DispatchForSCSI(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 {
 //	KdPrint((DRIVERNAME " - Enter DispatchForSCSI \n"));
 
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fido->DeviceExtension;
-	
-	PIO_STACK_LOCATION irpStack = IoGetCurrentIrpStackLocation(Irp); 
+
+	PIO_STACK_LOCATION irpStack = IoGetCurrentIrpStackLocation(Irp);
 
 	// Pass request down without additional processing
 	NTSTATUS status;
@@ -152,13 +152,13 @@ NTSTATUS DispatchForSCSI(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 		return CompleteRequest(Irp, status, 0);
 
 	IoCopyCurrentIrpStackLocationToNext(Irp);
-	
+
 	IoSetCompletionRoutine( Irp,
 							USBSCSICompletion,
 							NULL,
 							TRUE,
 							TRUE,
-							TRUE ); 
+							TRUE );
 	status = IoCallDriver(pdx->LowerDeviceObject, Irp);
 	IoReleaseRemoveLock(&pdx->RemoveLock, Irp);
 	return status;
@@ -170,7 +170,7 @@ NTSTATUS DispatchAny(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fido->DeviceExtension;
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 #if DBG
-	static char* irpname[] = 
+	static char* irpname[] =
 	{
 		"IRP_MJ_CREATE",
 		"IRP_MJ_CREATE_NAMED_PIPE",
@@ -209,7 +209,7 @@ NTSTATUS DispatchAny(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 // 		KdPrint((DRIVERNAME " - %s\n", irpname[type]));
 
 #endif
-	
+
 	// Pass request down without additional processing
 	NTSTATUS status;
 	status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
@@ -228,7 +228,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 #if DBG
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	ULONG fcn = stack->MinorFunction;
-	static char* fcnname[] = 
+	static char* fcnname[] =
 	{
 		"IRP_MN_WAIT_WAKE",
 		"IRP_MN_POWER_SEQUENCE",
@@ -238,7 +238,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 
 	if (fcn == IRP_MN_SET_POWER || fcn == IRP_MN_QUERY_POWER)
 	{
-		static char* sysstate[] = 
+		static char* sysstate[] =
 		{
 			"PowerSystemUnspecified",
 			"PowerSystemWorking",
@@ -250,7 +250,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 			"PowerSystemMaximum",
 		};
 
-		static char* devstate[] = 
+		static char* devstate[] =
 		{
 			"PowerDeviceUnspecified",
 			"PowerDeviceD0",
@@ -297,8 +297,8 @@ NTSTATUS DispatchPnp(IN PDEVICE_OBJECT fido, IN PIRP Irp)
 	status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
 	if (!NT_SUCCESS(status))
 		return CompleteRequest(Irp, status, 0);
-#if DBG 
-	static char* pnpname[] = 
+#if DBG
+	static char* pnpname[] =
 	{
 		"IRP_MN_START_DEVICE",
 		"IRP_MN_QUERY_REMOVE_DEVICE",

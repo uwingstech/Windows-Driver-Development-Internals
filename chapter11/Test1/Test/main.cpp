@@ -4,7 +4,7 @@
 int main()
 {
 
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDKB",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none

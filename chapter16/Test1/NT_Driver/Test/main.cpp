@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-//Ê¹ÓÃCTL_CODE±ØĞë¼ÓÈëwinioctl.h
+//ä½¿ç”¨CTL_CODEå¿…é¡»åŠ å…¥winioctl.h
 #include <winioctl.h>
 #include "..\NT_Driver\Ioctls.h"
 
@@ -10,30 +10,30 @@ DWORD In_32(HANDLE hDevice,USHORT port)
 	DWORD dwOutput ;
 	DWORD inputBuffer[2] =
 	{
-		port,//¶Ôport½øĞĞ²Ù×÷
-		4//1´ú±í8Î»²Ù×÷£¬2´ú±í16Î»²Ù×÷£¬4´ú±í32Î»²Ù×÷
+		port,//å¯¹portè¿›è¡Œæ“ä½œ
+		4//1ä»£è¡¨8ä½æ“ä½œï¼Œ2ä»£è¡¨16ä½æ“ä½œï¼Œ4ä»£è¡¨32ä½æ“ä½œ
 	};
 	DWORD dResult;
 
 	DeviceIoControl(hDevice, READ_PORT, inputBuffer, sizeof(inputBuffer), &dResult, sizeof(DWORD), &dwOutput, NULL);
 
 	return dResult;
-	
+
 }
 void Out_32(HANDLE hDevice,USHORT port,DWORD value)
 {
 	DWORD dwOutput ;
 	DWORD inputBuffer[3] =
 	{
-		port,//¶Ôport½øĞĞ²Ù×÷
-		4,//1´ú±í8Î»²Ù×÷£¬2´ú±í16Î»²Ù×÷£¬4´ú±í32Î»²Ù×÷
-		value//Êä³ö×Ö½Ú
+		port,//å¯¹portè¿›è¡Œæ“ä½œ
+		4,//1ä»£è¡¨8ä½æ“ä½œï¼Œ2ä»£è¡¨16ä½æ“ä½œï¼Œ4ä»£è¡¨32ä½æ“ä½œ
+		value//è¾“å‡ºå­—èŠ‚
 	};
 
 	DeviceIoControl(hDevice, WRITE_PORT, inputBuffer, sizeof(inputBuffer), NULL, 0, &dwOutput, NULL);
 }
 
-/* PCIÅäÖÃ¿Õ¼ä¼Ä´æÆ÷ */
+/* PCIé…ç½®ç©ºé—´å¯„å­˜å™¨ */
 #define PCI_CONFIG_ADDRESS      0xCF8
 #define PCI_CONFIG_DATA         0xCFC
 
@@ -157,16 +157,16 @@ void DisplayPCIConfiguation(HANDLE hDevice,int bus,int dev,int func)
 	SlotNumber.u.bits.FunctionNumber = func;
 
 	dwAddr = 0x80000000 | (bus <<16) | (SlotNumber.u.AsULONG<<8);
-	
-	/* 256×Ö½ÚµÄPCIÅäÖÃ¿Õ¼ä */
-	for (int i = 0; i < 0x100; i += 4)	
+
+	/* 256å­—èŠ‚çš„PCIé…ç½®ç©ºé—´ */
+	for (int i = 0; i < 0x100; i += 4)
 	{
 		/* Read */
 		Out_32(hDevice,PCI_CONFIG_ADDRESS, dwAddr | i);
 		dwData = In_32(hDevice,PCI_CONFIG_DATA);
 		memcpy( ((PUCHAR)&pci_config)+i,&dwData,4);
 	}
-	
+
 	printf("bus:%d\tdev:%d\tfunc:%d\n",bus,dev,func);
 
 	printf("VendorID:%x\n",pci_config.VendorID);
@@ -191,7 +191,7 @@ void DisplayPCIConfiguation(HANDLE hDevice,int bus,int dev,int func)
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none

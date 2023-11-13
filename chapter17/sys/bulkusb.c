@@ -19,7 +19,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -68,30 +68,30 @@ DriverEntry(
     IN PDRIVER_OBJECT  DriverObject,
     IN PUNICODE_STRING UniRegistryPath
     )
-/*++ 
+/*++
 
 Routine Description:
 
     Installable driver initialization entry point.
-    This entry point is called directly by the I/O system.    
+    This entry point is called directly by the I/O system.
 
 Arguments:
-    
-    DriverObject - pointer to driver object 
 
-    RegistryPath - pointer to a unicode string representing the path to driver 
+    DriverObject - pointer to driver object
+
+    RegistryPath - pointer to a unicode string representing the path to driver
                    specific key in the registry.
 
 Return Values:
 
     NT status value
-    
+
 --*/
 {
 
     NTSTATUS        ntStatus;
     PUNICODE_STRING registryPath;
-    
+
     //
     // initialization of variables
     //
@@ -114,13 +114,13 @@ Return Values:
         BulkUsb_DbgPrint(1, ("Failed to allocate memory for registryPath\n"));
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
         goto DriverEntry_Exit;
-    } 
+    }
 
 
-    RtlZeroMemory (registryPath->Buffer, 
+    RtlZeroMemory (registryPath->Buffer,
                    registryPath->MaximumLength);
-    RtlMoveMemory (registryPath->Buffer, 
-                   UniRegistryPath->Buffer, 
+    RtlMoveMemory (registryPath->Buffer,
+                   UniRegistryPath->Buffer,
                    UniRegistryPath->Length);
 
     ntStatus = STATUS_SUCCESS;
@@ -157,10 +157,10 @@ Description:
 
 Arguments:
 
-    DriverObject - pointer to driver object 
+    DriverObject - pointer to driver object
 
 Return:
-	
+
     None
 
 --*/
@@ -199,8 +199,8 @@ Arguments:
                            undelying bus driver.
 
 Return:
-	
-    STATUS_SUCCESS - if successful 
+
+    STATUS_SUCCESS - if successful
     STATUS_UNSUCCESSFUL - otherwise
 
 --*/
@@ -229,7 +229,7 @@ Return:
         // returning failure here prevents the entire stack from functioning,
         // but most likely the rest of the stack will not be able to create
         // device objects either, so it is still OK.
-        //                
+        //
         BulkUsb_DbgPrint(1, ("Failed to create device object\n"));
         return ntStatus;
     }
@@ -279,8 +279,8 @@ Return:
     // Initialize the remove event to not-signaled.
     //
 
-    KeInitializeEvent(&deviceExtension->RemoveEvent, 
-                      SynchronizationEvent, 
+    KeInitializeEvent(&deviceExtension->RemoveEvent,
+                      SynchronizationEvent,
                       FALSE);
 
     //
@@ -288,8 +288,8 @@ Return:
     // This event is signaled when the OutstandingIO becomes 1
     //
 
-    KeInitializeEvent(&deviceExtension->StopEvent, 
-                      SynchronizationEvent, 
+    KeInitializeEvent(&deviceExtension->StopEvent,
+                      SynchronizationEvent,
                       TRUE);
 
     //
@@ -323,12 +323,12 @@ Return:
     }
 
     //
-    // Typically, the function driver for a device is its 
-    // power policy owner, although for some devices another 
-    // driver or system component may assume this role. 
-    // Set the initial power state of the device, if known, by calling 
+    // Typically, the function driver for a device is its
+    // power policy owner, although for some devices another
+    // driver or system component may assume this role.
+    // Set the initial power state of the device, if known, by calling
     // PoSetPowerState.
-    // 
+    //
 
     deviceExtension->DevPower = PowerDeviceD0;
     deviceExtension->SysPower = PowerSystemWorking;
@@ -342,7 +342,7 @@ Return:
     // attachment chain.  This is where all the IRPs should be routed.
     //
 
-    deviceExtension->TopOfStackDeviceObject = 
+    deviceExtension->TopOfStackDeviceObject =
                 IoAttachDeviceToDeviceStack(deviceObject,
                                             PhysicalDeviceObject);
 
@@ -352,14 +352,14 @@ Return:
         IoDeleteDevice(deviceObject);
         return STATUS_NO_SUCH_DEVICE;
     }
-        
+
     //
     // Register device interfaces
     //
 
-    ntStatus = IoRegisterDeviceInterface(deviceExtension->PhysicalDeviceObject, 
-                                         &GUID_CLASS_I82930_BULK, 
-                                         NULL, 
+    ntStatus = IoRegisterDeviceInterface(deviceExtension->PhysicalDeviceObject,
+                                         &GUID_CLASS_I82930_BULK,
+                                         NULL,
                                          &deviceExtension->InterfaceName);
 
     if(!NT_SUCCESS(ntStatus)) {
@@ -408,14 +408,14 @@ Return:
             //
             // initialize DPC
             //
-            KeInitializeDpc(&deviceExtension->DeferredProcCall, 
-                            DpcRoutine, 
+            KeInitializeDpc(&deviceExtension->DeferredProcCall,
+                            DpcRoutine,
                             deviceObject);
 
             //
             // initialize the timer.
-            // the DPC and the timer in conjunction, 
-            // monitor the state of the device to 
+            // the DPC and the timer in conjunction,
+            // monitor the state of the device to
             // selectively suspend the device.
             //
             KeInitializeTimerEx(&deviceExtension->Timer,
@@ -426,8 +426,8 @@ Return:
             // This event is cleared when a Dpc is fired and signaled
             // on completion of the work-item.
             //
-            KeInitializeEvent(&deviceExtension->NoDpcWorkItemPendingEvent, 
-                              NotificationEvent, 
+            KeInitializeEvent(&deviceExtension->NoDpcWorkItemPendingEvent,
+                              NotificationEvent,
                               TRUE);
 
             //
@@ -443,7 +443,7 @@ Return:
     //
     // Clear the DO_DEVICE_INITIALIZING flag.
     // Note: Do not clear this flag until the driver has set the
-    // device power state and the power DO flags. 
+    // device power state and the power DO flags.
     //
 
     deviceObject->Flags &= ~DO_DEVICE_INITIALIZING;

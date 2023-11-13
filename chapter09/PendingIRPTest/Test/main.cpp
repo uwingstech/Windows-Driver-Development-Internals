@@ -3,13 +3,13 @@
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//¥À¥¶…Ë÷√FILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//Ê≠§Â§ÑËÆæÁΩÆFILE_FLAG_OVERLAPPED
 					NULL );
 
 	if (hDevice == INVALID_HANDLE_VALUE)
@@ -23,7 +23,7 @@ int main()
 
 	UCHAR buffer[10];
 	ULONG ulRead;
-	
+
 	BOOL bRead = ReadFile(hDevice,buffer,10,&ulRead,&overlap1);
 	if (!bRead && GetLastError()==ERROR_IO_PENDING)
 	{
@@ -34,11 +34,11 @@ int main()
 	{
 		printf("The operation is pending\n");
 	}
-	
-	//∆» π≥Ã–Ú÷–÷π2√Î
+
+	//Ëø´‰ΩøÁ®ãÂ∫è‰∏≠Ê≠¢2Áßí
 	Sleep(2000);
 
-	//¥¥Ω®IRP_MJ_CLEANUP IRP
+	//ÂàõÂª∫IRP_MJ_CLEANUP IRP
 	CloseHandle(hDevice);
 
 	return 0;

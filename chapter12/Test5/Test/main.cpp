@@ -4,7 +4,7 @@
 int main()
 {
 
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDKA",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none
@@ -26,7 +26,7 @@ int main()
 	DWORD dRead;
 
 	ReadFile(hDevice,buffer,BUFFER_LENGTH,&dRead,NULL);
-	
+
 	CloseHandle(hDevice);
 
 	return 0;

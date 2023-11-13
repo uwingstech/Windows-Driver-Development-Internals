@@ -17,7 +17,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -36,7 +36,7 @@ BulkUsb_PipeWithName(
     IN PUNICODE_STRING FileName
     )
 /*++
- 
+
 Routine Description:
 
     This routine will pass the string pipe name and
@@ -49,7 +49,7 @@ Arguments:
 
 Return Value:
 
-    The device extension maintains a pipe context for 
+    The device extension maintains a pipe context for
     the pipes on 82930 board.
     This routine returns the pointer to this context in
     the device extension for the "FileName" pipe.
@@ -57,7 +57,7 @@ Return Value:
 --*/
 {
     LONG                  ix;
-    ULONG                 uval; 
+    ULONG                 uval;
     ULONG                 nameLength;
     ULONG                 umultiplier;
     PDEVICE_EXTENSION     deviceExtension;
@@ -76,7 +76,7 @@ Return Value:
     BulkUsb_DbgPrint(3, ("BulkUsb_PipeWithName - begins\n"));
 
     if(nameLength != 0) {
-    
+
         BulkUsb_DbgPrint(3, ("Filename = %ws nameLength = %d\n", FileName->Buffer, nameLength));
 
         //
@@ -102,7 +102,7 @@ Return Value:
             while((ix > -1) &&
                   (FileName->Buffer[ix] >= (WCHAR) '0') &&
                   (FileName->Buffer[ix] <= (WCHAR) '9'))          {
-        
+
                 uval += (umultiplier *
                          (ULONG) (FileName->Buffer[ix] - (WCHAR) '0'));
 
@@ -112,7 +112,7 @@ Return Value:
         }
 
         if(uval < 6 && deviceExtension->PipeContext) {
-        
+
             pipeContext = &deviceExtension->PipeContext[uval];
         }
     }
@@ -128,13 +128,13 @@ BulkUsb_DispatchReadWrite(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     Dispatch routine for read and write.
     This routine creates a BULKUSB_RW_CONTEXT for a read/write.
     This read/write is performed in stages of BULKUSB_MAX_TRANSFER_SIZE.
-    once a stage of transfer is complete, then the irp is circulated again, 
+    once a stage of transfer is complete, then the irp is circulated again,
     until the requested length of tranfer is performed.
 
 Arguments:
@@ -193,17 +193,17 @@ Return Value:
     // is signalled.
     //
     BulkUsb_DbgPrint(3, ("Waiting on the IdleReqPendEvent\n"));
-    
+
     //
     // make sure that the selective suspend request has been completed.
     //
 
     if(deviceExtension->SSEnable) {
 
-        KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent, 
-                              Executive, 
-                              KernelMode, 
-                              FALSE, 
+        KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent,
+                              Executive,
+                              KernelMode,
+                              FALSE,
                               NULL);
     }
 
@@ -212,7 +212,7 @@ Return Value:
         pipeInformation = fileObject->FsContext;
 
         if(UsbdPipeTypeBulk != pipeInformation->PipeType) {
-            
+
             BulkUsb_DbgPrint(1, ("Usbd pipe type is not bulk\n"));
 
             ntStatus = STATUS_INVALID_HANDLE;
@@ -232,7 +232,7 @@ Return Value:
                                sizeof(BULKUSB_RW_CONTEXT));
 
     if(rwContext == NULL) {
-        
+
         BulkUsb_DbgPrint(1, ("Failed to alloc mem for rwContext\n"));
 
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -301,7 +301,7 @@ Return Value:
                         NULL);
 
     if(mdl == NULL) {
-    
+
         BulkUsb_DbgPrint(1, ("Failed to alloc mem for mdl\n"));
 
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -347,7 +347,7 @@ Return Value:
     //
     // set BULKUSB_RW_CONTEXT parameters.
     //
-    
+
     rwContext->Urb             = urb;
     rwContext->Mdl             = mdl;
     rwContext->Length          = totalLength - stageLength;
@@ -362,10 +362,10 @@ Return Value:
     nextStack = IoGetNextIrpStackLocation(Irp);
     nextStack->MajorFunction = IRP_MJ_INTERNAL_DEVICE_CONTROL;
     nextStack->Parameters.Others.Argument1 = (PVOID) urb;
-    nextStack->Parameters.DeviceIoControl.IoControlCode = 
+    nextStack->Parameters.DeviceIoControl.IoControlCode =
                                              IOCTL_INTERNAL_USB_SUBMIT_URB;
 
-    IoSetCompletionRoutine(Irp, 
+    IoSetCompletionRoutine(Irp,
                            (PIO_COMPLETION_ROUTINE)BulkUsb_ReadWriteCompletion,
                            rwContext,
                            TRUE,
@@ -392,17 +392,17 @@ Return Value:
         BulkUsb_DbgPrint(1, ("IoCallDriver fails with status %X\n", ntStatus));
 
         //
-        // if the device was yanked out, then the pipeInformation 
+        // if the device was yanked out, then the pipeInformation
         // field is invalid.
         // similarly if the request was cancelled, then we need not
         // invoked reset pipe/device.
         //
-        if((ntStatus != STATUS_CANCELLED) && 
+        if((ntStatus != STATUS_CANCELLED) &&
            (ntStatus != STATUS_DEVICE_NOT_CONNECTED)) {
-            
+
             ntStatus = BulkUsb_ResetPipe(DeviceObject,
                                      pipeInformation);
-    
+
             if(!NT_SUCCESS(ntStatus)) {
 
                 BulkUsb_DbgPrint(1, ("BulkUsb_ResetPipe failed\n"));
@@ -441,7 +441,7 @@ BulkUsb_ReadWriteCompletion(
     IN PVOID          Context
     )
 /*++
- 
+
 Routine Description:
 
     This is the completion routine for reads/writes
@@ -485,9 +485,9 @@ Return Value:
 
         if(rwContext) {
 
-            rwContext->Numxfer += 
+            rwContext->Numxfer +=
               rwContext->Urb->UrbBulkOrInterruptTransfer.TransferBufferLength;
-        
+
             if(rwContext->Length) {
 
                 //
@@ -496,11 +496,11 @@ Return Value:
                 BulkUsb_DbgPrint(3, ("Another stage transfer...\n"));
 
                 if(rwContext->Length > BULKUSB_MAX_TRANSFER_SIZE) {
-            
+
                     stageLength = BULKUSB_MAX_TRANSFER_SIZE;
                 }
                 else {
-                
+
                     stageLength = rwContext->Length;
                 }
 
@@ -508,11 +508,11 @@ Return Value:
                                   rwContext->Mdl,
                                   (PVOID) rwContext->VirtualAddress,
                                   stageLength);
-            
+
                 //
                 // reinitialize the urb
                 //
-                rwContext->Urb->UrbBulkOrInterruptTransfer.TransferBufferLength 
+                rwContext->Urb->UrbBulkOrInterruptTransfer.TransferBufferLength
                                                                   = stageLength;
                 rwContext->VirtualAddress += stageLength;
                 rwContext->Length -= stageLength;
@@ -520,7 +520,7 @@ Return Value:
                 nextStack = IoGetNextIrpStackLocation(Irp);
                 nextStack->MajorFunction = IRP_MJ_INTERNAL_DEVICE_CONTROL;
                 nextStack->Parameters.Others.Argument1 = rwContext->Urb;
-                nextStack->Parameters.DeviceIoControl.IoControlCode = 
+                nextStack->Parameters.DeviceIoControl.IoControlCode =
                                             IOCTL_INTERNAL_USB_SUBMIT_URB;
 
                 IoSetCompletionRoutine(Irp,
@@ -530,7 +530,7 @@ Return Value:
                                        TRUE,
                                        TRUE);
 
-                IoCallDriver(rwContext->DeviceExtension->TopOfStackDeviceObject, 
+                IoCallDriver(rwContext->DeviceExtension->TopOfStackDeviceObject,
                              Irp);
 
                 return STATUS_MORE_PROCESSING_REQUIRED;
@@ -549,23 +549,23 @@ Return Value:
 
         BulkUsb_DbgPrint(1, ("ReadWriteCompletion - failed with status = %X\n", ntStatus));
     }
-    
+
     if(rwContext) {
 
         //
         // dump rwContext
         //
-        BulkUsb_DbgPrint(3, ("rwContext->Urb             = %X\n", 
+        BulkUsb_DbgPrint(3, ("rwContext->Urb             = %X\n",
                              rwContext->Urb));
-        BulkUsb_DbgPrint(3, ("rwContext->Mdl             = %X\n", 
+        BulkUsb_DbgPrint(3, ("rwContext->Mdl             = %X\n",
                              rwContext->Mdl));
-        BulkUsb_DbgPrint(3, ("rwContext->Length          = %d\n", 
+        BulkUsb_DbgPrint(3, ("rwContext->Length          = %d\n",
                              rwContext->Length));
-        BulkUsb_DbgPrint(3, ("rwContext->Numxfer         = %d\n", 
+        BulkUsb_DbgPrint(3, ("rwContext->Numxfer         = %d\n",
                              rwContext->Numxfer));
-        BulkUsb_DbgPrint(3, ("rwContext->VirtualAddress  = %X\n", 
+        BulkUsb_DbgPrint(3, ("rwContext->VirtualAddress  = %X\n",
                              rwContext->VirtualAddress));
-        BulkUsb_DbgPrint(3, ("rwContext->DeviceExtension = %X\n", 
+        BulkUsb_DbgPrint(3, ("rwContext->DeviceExtension = %X\n",
                              rwContext->DeviceExtension));
 
         BulkUsb_DbgPrint(3, ("BulkUsb_ReadWriteCompletion::"));

@@ -4,7 +4,7 @@
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					FILE_SHARE_READ,
@@ -21,9 +21,9 @@ int main()
 
 	DWORD dwRead;
 
-	//Èç¹û¶ÁIRPÃ»ÓĞ±»Íê³É£¬ReadFileÒ»Ö±¶¼²»»áÍË³ö!
+	//å¦‚æœè¯»IRPæ²¡æœ‰è¢«å®Œæˆï¼ŒReadFileä¸€ç›´éƒ½ä¸ä¼šé€€å‡º!
 	ReadFile(hDevice,NULL,0,&dwRead,NULL);
-	
+
 	ReadFile(hDevice,NULL,0,&dwRead,NULL);
 
 	CloseHandle(hDevice);

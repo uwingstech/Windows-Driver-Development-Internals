@@ -54,29 +54,29 @@ NTSTATUS DefaultPnpHandler(PDEVICE_EXTENSION pdx, PIRP Irp)
 
 NTSTATUS OnRequestComplete(PDEVICE_OBJECT junk, PIRP Irp, PKEVENT pev)
 {							// OnRequestComplete
-	//ÔÚÍê³ÉÀý³ÌÖÐÉèÖÃµÈ´ýÊÂ¼þ
+	//åœ¨å®Œæˆä¾‹ç¨‹ä¸­è®¾ç½®ç­‰å¾…äº‹ä»¶
 	KeSetEvent(pev, 0, FALSE);
-	//±êÖ¾±¾IRP»¹ÐèÒªÔÙ´Î±»Íê³É
+	//æ ‡å¿—æœ¬IRPè¿˜éœ€è¦å†æ¬¡è¢«å®Œæˆ
 	return STATUS_MORE_PROCESSING_REQUIRED;
 }
 
 NTSTATUS ForwardAndWait(PDEVICE_EXTENSION pdx, PIRP Irp)
 {							// ForwardAndWait
 	PAGED_CODE();
-	
+
 	KEVENT event;
-	//³õÊ¼»¯ÊÂ¼þ
+	//åˆå§‹åŒ–äº‹ä»¶
 	KeInitializeEvent(&event, NotificationEvent, FALSE);
 
-	//½«±¾²ã¶ÑÕ»¿½±´µ½ÏÂÒ»²ã¶ÑÕ»
+	//å°†æœ¬å±‚å †æ ˆæ‹·è´åˆ°ä¸‹ä¸€å±‚å †æ ˆ
 	IoCopyCurrentIrpStackLocationToNext(Irp);
-	//ÉèÖÃÍê³ÉÀý³Ì
+	//è®¾ç½®å®Œæˆä¾‹ç¨‹
 	IoSetCompletionRoutine(Irp, (PIO_COMPLETION_ROUTINE) OnRequestComplete,
 		(PVOID) &event, TRUE, TRUE, TRUE);
 
-	//µ÷ÓÃµ×²ãÇý¶¯£¬¼´PDO
+	//è°ƒç”¨åº•å±‚é©±åŠ¨ï¼Œå³PDO
 	IoCallDriver(pdx->TopOfStackDeviceObject, Irp);
-	//µÈ´ýPDOÍê³É
+	//ç­‰å¾…PDOå®Œæˆ
 	KeWaitForSingleObject(&event, Executive, KernelMode, FALSE, NULL);
 	return Irp->IoStatus.Status;
 }							// ForwardAndWait
@@ -88,7 +88,7 @@ NTSTATUS HandleStartDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
 
 	pdx->Channel0_Length = 0;
 
-	//×ª·¢IRP²¢µÈ´ý·µ»Ø
+	//è½¬å‘IRPå¹¶ç­‰å¾…è¿”å›ž
 	NTSTATUS status = ForwardAndWait(pdx,Irp);
 	if (!NT_SUCCESS(status))
 	{
@@ -96,7 +96,7 @@ NTSTATUS HandleStartDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
 		IoCompleteRequest(Irp, IO_NO_INCREMENT);
 		return status;
 	}
-	
+
 	UCHAR ucRegVal = 0;
 	status = SdioReadWriteByte(pdx->FunctionalDeviceObject,0,&ucRegVal,REG_CCCR_IENx,FALSE);
 	if (!NT_SUCCESS(status))
@@ -124,7 +124,7 @@ NTSTATUS HandleStartDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
 	}
 	KdPrint(("Set Bus Width to 4 bits successfully!\n"));
 
-	//Íê³ÉIRP
+	//å®ŒæˆIRP
 	Irp->IoStatus.Status = STATUS_SUCCESS;
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 
@@ -137,7 +137,7 @@ NTSTATUS HandleRemoveDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
 	PAGED_CODE();
 	KdPrint(("Enter HandleRemoveDevice\n"));
 
-    if (pdx->InterfaceStandard.InterfaceDereference) 
+    if (pdx->InterfaceStandard.InterfaceDereference)
     {
         (pdx->InterfaceStandard.InterfaceDereference)(pdx->InterfaceStandard.Context);
         pdx->InterfaceStandard.InterfaceDereference = NULL;
@@ -147,11 +147,11 @@ NTSTATUS HandleRemoveDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
 	NTSTATUS status = DefaultPnpHandler(pdx, Irp);
 	IoSetDeviceInterfaceState(&pdx->InterfaceName, FALSE);
 
-    //µ÷ÓÃIoDetachDevice()°Ñfdo´ÓÉè±¸Õ»ÖÐÍÑ¿ª£º
+    //è°ƒç”¨IoDetachDevice()æŠŠfdoä»Žè®¾å¤‡æ ˆä¸­è„±å¼€ï¼š
     if (pdx->TopOfStackDeviceObject)
         IoDetachDevice(pdx->TopOfStackDeviceObject);
-	
-    //É¾³ýfdo£º
+
+    //åˆ é™¤fdoï¼š
     IoDeleteDevice(pdx->FunctionalDeviceObject);
 	KdPrint(("Leave HandleRemoveDevice\n"));
 	return status;
@@ -166,7 +166,7 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 	NTSTATUS status = STATUS_SUCCESS;
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-	static NTSTATUS (*fcntab[])(PDEVICE_EXTENSION pdx, PIRP Irp) = 
+	static NTSTATUS (*fcntab[])(PDEVICE_EXTENSION pdx, PIRP Irp) =
 	{
 		HandleStartDevice,		// IRP_MN_START_DEVICE
 		DefaultPnpHandler,		// IRP_MN_QUERY_REMOVE_DEVICE
@@ -182,7 +182,7 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 		DefaultPnpHandler,		// IRP_MN_QUERY_RESOURCE_REQUIREMENTS
 		DefaultPnpHandler,		// IRP_MN_QUERY_DEVICE_TEXT
 		DefaultPnpHandler,		// IRP_MN_FILTER_RESOURCE_REQUIREMENTS
-		DefaultPnpHandler,		// 
+		DefaultPnpHandler,		//
 		DefaultPnpHandler,		// IRP_MN_READ_CONFIG
 		DefaultPnpHandler,		// IRP_MN_WRITE_CONFIG
 		DefaultPnpHandler,		// IRP_MN_EJECT
@@ -196,13 +196,13 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 
 	ULONG fcn = stack->MinorFunction;
 	if (fcn >= arraysize(fcntab))
-	{						// Î´ÖªµÄ×Ó¹¦ÄÜ´úÂë
+	{						// æœªçŸ¥çš„å­åŠŸèƒ½ä»£ç 
 		status = DefaultPnpHandler(pdx, Irp); // some function we don't know about
 		return status;
-	}						
+	}
 
 #if DBG
-	static char* fcnname[] = 
+	static char* fcnname[] =
 	{
 		"IRP_MN_START_DEVICE",
 		"IRP_MN_QUERY_REMOVE_DEVICE",
@@ -246,9 +246,9 @@ IN PUNICODE_STRING UniRegistryPath
 
 	NTSTATUS ntStatus;
 	PUNICODE_STRING pregistryPath = &SdioGlobals.Sdio_RegistryPath;
-	
+
 	KdPrint(("Enter DriverEntry\n"));
-	
+
 	//
 	// Allocate pool to hold a null-terminated copy of the path.
 	// Safe in paged pool since all registry routines execute at
@@ -257,14 +257,14 @@ IN PUNICODE_STRING UniRegistryPath
 	pregistryPath->MaximumLength = UniRegistryPath->Length + sizeof(UNICODE_NULL);
 	pregistryPath->Length = UniRegistryPath->Length;
 	pregistryPath->Buffer = (PWSTR )ExAllocatePool(PagedPool,pregistryPath->MaximumLength);
-	
-	if (!(pregistryPath->Buffer)) 
+
+	if (!(pregistryPath->Buffer))
 	{
 		KdPrint(("DriverEntry: Failed to allocate memory for registryPath\n"));
 		ntStatus = STATUS_INSUFFICIENT_RESOURCES;
 		goto DriverEntry_Exit;
 	}
-	
+
 	RtlZeroMemory (pregistryPath->Buffer,
 		pregistryPath->MaximumLength);
 		RtlMoveMemory (pregistryPath->Buffer,
@@ -272,7 +272,7 @@ IN PUNICODE_STRING UniRegistryPath
 		UniRegistryPath->Length);
 
 	ntStatus = STATUS_SUCCESS;
-	
+
 	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = HelloWDMDeviceIOControl;
 	DriverObject->MajorFunction[IRP_MJ_POWER] = HelloWDMDispatchRoutine;
 	DriverObject->MajorFunction[IRP_MJ_PNP] = HelloWDMPnp;
@@ -285,7 +285,7 @@ IN PUNICODE_STRING UniRegistryPath
 
 	DriverObject->DriverUnload = SdioClientDrv_DriverUnload;
 	DriverObject->DriverExtension->AddDevice = (PDRIVER_ADD_DEVICE) SdioClientDrv_AddDevice;
-	
+
 	DriverEntry_Exit:
 	KdPrint(("Leave DriverEntry\n"));
 	return ntStatus;
@@ -363,8 +363,8 @@ SdioReadBufferFromDevice(IN PDEVICE_OBJECT deviceObject,
                    OUT PULONG BytesRead
                    )
 {
-    PDEVICE_EXTENSION pdx = 
-    	(PDEVICE_EXTENSION)deviceObject->DeviceExtension; 
+    PDEVICE_EXTENSION pdx =
+    	(PDEVICE_EXTENSION)deviceObject->DeviceExtension;
 
 	//disable interrput
 	DisableInt(pdx);
@@ -415,8 +415,8 @@ SdioReadWriteBuffer(IN PDEVICE_OBJECT deviceObject,
                    OUT PULONG BytesRead
                    )
 {
-    PDEVICE_EXTENSION pdx = 
-    	(PDEVICE_EXTENSION)deviceObject->DeviceExtension; 
+    PDEVICE_EXTENSION pdx =
+    	(PDEVICE_EXTENSION)deviceObject->DeviceExtension;
 
     SDBUS_REQUEST_PACKET sdrp;
     SD_RW_EXTENDED_ARGUMENT extendedArgument;
@@ -472,8 +472,8 @@ SdioReadWriteByte(IN PDEVICE_OBJECT deviceObject,
                  IN BOOLEAN WriteToDevice
                  )
 {
-    PDEVICE_EXTENSION pdx = 
-    	(PDEVICE_EXTENSION)deviceObject->DeviceExtension; 
+    PDEVICE_EXTENSION pdx =
+    	(PDEVICE_EXTENSION)deviceObject->DeviceExtension;
     NTSTATUS	status;
     SDBUS_REQUEST_PACKET	sdrp;
     SD_RW_DIRECT_ARGUMENT	directArgument;
@@ -498,7 +498,7 @@ SdioReadWriteByte(IN PDEVICE_OBJECT deviceObject,
     directArgument.u.bits.Address = Address;
 
 
-    if (WriteToDevice) 
+    if (WriteToDevice)
     {
         directArgument.u.bits.WriteToDevice = 1;
         directArgument.u.bits.Data = *Data;
@@ -520,7 +520,7 @@ SdioReadWriteByte(IN PDEVICE_OBJECT deviceObject,
 		KdPrint(("SdioReadWriteByte failed\n"));
 	}
 
-    if (NT_SUCCESS(status) && !WriteToDevice) 
+    if (NT_SUCCESS(status) && !WriteToDevice)
     {
         *Data = sdrp.ResponseData.AsUCHAR[0];
     }
@@ -537,7 +537,7 @@ SdioGetProperty(IN PDEVICE_OBJECT deviceObject,
     PDEVICE_EXTENSION pdx;
     SDBUS_REQUEST_PACKET sdrp;
 
-    pdx = (PDEVICE_EXTENSION)deviceObject->DeviceExtension; 
+    pdx = (PDEVICE_EXTENSION)deviceObject->DeviceExtension;
     RtlZeroMemory(&sdrp, sizeof(SDBUS_REQUEST_PACKET));
 
     sdrp.RequestFunction = SDRF_GET_PROPERTY;
@@ -557,7 +557,7 @@ SdioSetProperty(IN PDEVICE_OBJECT deviceObject,
     PDEVICE_EXTENSION pdx;
     SDBUS_REQUEST_PACKET sdrp;
 
-    pdx = (PDEVICE_EXTENSION)deviceObject->DeviceExtension; 
+    pdx = (PDEVICE_EXTENSION)deviceObject->DeviceExtension;
 
     RtlZeroMemory(&sdrp, sizeof(SDBUS_REQUEST_PACKET));
 
@@ -582,7 +582,7 @@ MyDriverCallback(
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) CallbackRoutineContext;
 
 	KdPrint(("Enter MyDriverCallback\n"));
-	
+
 	UCHAR ucRegVal = 0;
 	status = SdioReadWriteByte(pdx->FunctionalDeviceObject,pdx->FunctionNumber,&ucRegVal,IFDevice_INT0_STATUS,FALSE);
 	if (!NT_SUCCESS(status))
@@ -611,9 +611,9 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
 	PDEVICE_EXTENSION pdx = NULL;
 	// POWER_STATE state;
 	// KIRQL oldIrql;
-	
+
 	KdPrint(("Enter SdioClientDrv_AddDevice\n"));
-	
+
 	ntStatus = IoCreateDevice(
 		DriverObject, // our driver object
 		sizeof(DEVICE_EXTENSION), // extension size for us
@@ -622,20 +622,20 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
 		FILE_DEVICE_SECURE_OPEN , // device characteristics
 		FALSE, // Not exclusive
 		&deviceObject); // Our device object
-	
+
 	if(!NT_SUCCESS(ntStatus))
 	{
 		KdPrint(("AddDevice:device obj not created\n"));
 		return ntStatus;
 	}
 	KdPrint(("AddDevice: device obj created\n"));
-	
+
 	//
 	// Initialize the device extension
 	//
-	
+
 	ntStatus = STATUS_SUCCESS;
-	
+
 	// Initialize the device extension
 	//
 	pdx = (PDEVICE_EXTENSION) deviceObject->DeviceExtension;
@@ -649,46 +649,46 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
 	//initialize OpenHandleCount
 	//
 	pdx->OpenHandleCount = 0;
-	
+
 	//
 	// Initialize the selective suspend variables
 	//
 	KeInitializeSpinLock(&pdx->IdleReqStateLock);
 	pdx->IdleReqPend = 0;
 	pdx->PendingIdleIrp = NULL;
-	
+
 	//
 	// set the flags as underlying PDO
 	//
-	
-	if(PhysicalDeviceObject->Flags & DO_POWER_PAGABLE) 
+
+	if(PhysicalDeviceObject->Flags & DO_POWER_PAGABLE)
 	{
 		deviceObject->Flags |= DO_POWER_PAGABLE;
 	}
-	
+
 	//
 	// attach our driver to device stack
 	// The return value of IoAttachDeviceToDeviceStack is the top of the
 	// attachment chain. This is where all the IRPs should be routed.
 	//
-	
-	pdx->TopOfStackDeviceObject = 
+
+	pdx->TopOfStackDeviceObject =
 		IoAttachDeviceToDeviceStack(deviceObject,PhysicalDeviceObject);
-	
-	if(NULL == pdx->TopOfStackDeviceObject) 
+
+	if(NULL == pdx->TopOfStackDeviceObject)
 	{
 		KdPrint(("AddDevice: IoAttachDeviceToDeviceStack failed"));
 		IoDeleteDevice(deviceObject);
 		return STATUS_NO_SUCH_DEVICE;
 	}
-	
+
 	ntStatus = IoRegisterDeviceInterface(
 		PhysicalDeviceObject,
 		(LPGUID) &GUID_DEVINTERFACE_SDIO_DEVICE,
 		NULL,
 		&pdx->InterfaceName);
 
-	if (!NT_SUCCESS (ntStatus)) 
+	if (!NT_SUCCESS (ntStatus))
 	{
 		KdPrint(("AddDevice: IoRegisterDeviceInterface failed %x", ntStatus));
 		IoDetachDevice(pdx->TopOfStackDeviceObject);
@@ -698,7 +698,7 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
 
 	KdPrint(("%wZ\n",&pdx->InterfaceName));
 	IoSetDeviceInterfaceState(&pdx->InterfaceName, TRUE);
-	
+
 	//Open the SD Bus Interface
 	//Lib routine returns ptr to the
 	ntStatus = SdBusOpenInterface (
@@ -706,10 +706,10 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
 		&pdx->InterfaceStandard,
 		sizeof(SDBUS_INTERFACE_STANDARD),
 		SDBUS_INTERFACE_VERSION);
-	
+
 	KdPrint(("AddDevive: SDBusOpenInterface-ntStatus 0x%x",ntStatus));
-	
-	if (NT_SUCCESS(ntStatus)) 
+
+	if (NT_SUCCESS(ntStatus))
 	{
 		SDBUS_INTERFACE_PARAMETERS interfaceParameters = {0};
 		KdPrint(("Sd Bus initialization success\n"));
@@ -721,28 +721,28 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
 		interfaceParameters.CallbackRoutineContext = pdx;
 
 		ntStatus = STATUS_UNSUCCESSFUL;
-		if (pdx->InterfaceStandard.InitializeInterface) 
+		if (pdx->InterfaceStandard.InitializeInterface)
 		{
 			ntStatus = (pdx->InterfaceStandard.InitializeInterface)
 				(pdx->InterfaceStandard.Context, &interfaceParameters);
 
-			if (NT_SUCCESS(ntStatus)) 
+			if (NT_SUCCESS(ntStatus))
 			{
 				KdPrint(("Execute InterfaceStandard.InitializeInterface\n"));
 			}
 		}
 	}
-	
+
  	ntStatus = SdioGetProperty(deviceObject,
 		SDP_FUNCTION_NUMBER,
 		&pdx->FunctionNumber,
 		sizeof(pdx->FunctionNumber));
-	if (!NT_SUCCESS(ntStatus)) 
+	if (!NT_SUCCESS(ntStatus))
 	{
 		return ntStatus;
 	}
 	KdPrint(("FunctionNumber:%d\n",pdx->FunctionNumber));
-	
+
     pdx->DriverVersion = SDBUS_DRIVER_VERSION_1;
 
     SdioGetProperty(deviceObject,
@@ -751,17 +751,17 @@ IN PDEVICE_OBJECT PhysicalDeviceObject
                     sizeof(pdx->DriverVersion));
 
     pdx->BlockMode = 0;
-	
+
 	KdPrint(("DriverVersion:%x\n",pdx->DriverVersion));
-	
-	if (!NT_SUCCESS(ntStatus)) 
+
+	if (!NT_SUCCESS(ntStatus))
 	{
 		return ntStatus;
 	}
 
 	// Clear the DO_DEVICE_INITIALIZING flag.
 	deviceObject->Flags &= ~DO_DEVICE_INITIALIZING;
-	
+
 	ntStatus = STATUS_SUCCESS;
 	KdPrint(("Leave SdioClientDrv_AddDevice\n"));
 	return ntStatus;
@@ -783,13 +783,13 @@ NTSTATUS HelloWDMDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) pDevObj->DeviceExtension;
 
-	//µÃµ½µ±Ç°¶ÑÕ»
+	//å¾—åˆ°å½“å‰å †æ ˆ
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(pIrp);
-	//µÃµ½ÊäÈë»º³åÇø´óÐ¡
+	//å¾—åˆ°è¾“å…¥ç¼“å†²åŒºå¤§å°
 	ULONG cbin = stack->Parameters.DeviceIoControl.InputBufferLength;
-	//µÃµ½Êä³ö»º³åÇø´óÐ¡
+	//å¾—åˆ°è¾“å‡ºç¼“å†²åŒºå¤§å°
 	ULONG cbout = stack->Parameters.DeviceIoControl.OutputBufferLength;
-	//µÃµ½IOCTLÂë
+	//å¾—åˆ°IOCTLç 
 	ULONG code = stack->Parameters.DeviceIoControl.IoControlCode;
 
 	ULONG info = 0;
@@ -812,7 +812,7 @@ NTSTATUS HelloWDMDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 			status = STATUS_INVALID_VARIANT;
 	}
 
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = info;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );

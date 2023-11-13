@@ -5,12 +5,12 @@
 #include <ntddsd.h>
 #include "guid.h"
 
-typedef struct _SDIOGLOBALS 
+typedef struct _SDIOGLOBALS
 {
 	UNICODE_STRING Sdio_RegistryPath;
 }SDIOGLOBALS;
 
-typedef enum _DEVSTATE 
+typedef enum _DEVSTATE
 {
 	NotStarted, // not started
 	Stopped, // device stopped
@@ -93,7 +93,7 @@ KEVENT NoDpcWorkItemPendingEvent;
     UCHAR BlockMode;
 
 	ULONG Channel0_Length;
-    
+
 
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 

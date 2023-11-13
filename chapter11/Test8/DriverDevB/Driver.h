@@ -1,7 +1,7 @@
 /************************************************************************
-* ÎÄ¼şÃû³Æ:Driver.h                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.h
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 #pragma once
 
@@ -32,7 +32,7 @@ IoGetBaseFileSystemDeviceObject (
 extern POBJECT_TYPE IoDeviceObjectType;
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #define PAGEDCODE code_seg("PAGE")
 #define LOCKEDCODE code_seg()
@@ -46,11 +46,11 @@ extern POBJECT_TYPE IoDeviceObjectType;
 
 typedef struct _DEVICE_EXTENSION {
 	PDEVICE_OBJECT pDevice;
-	UNICODE_STRING ustrDeviceName;	//Éè±¸Ãû³Æ
-	UNICODE_STRING ustrSymLinkName;	//·ûºÅÁ´½ÓÃû
+	UNICODE_STRING ustrDeviceName;	//è®¾å¤‡åç§°
+	UNICODE_STRING ustrSymLinkName;	//ç¬¦å·é“¾æ¥å
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
-// º¯ÊıÉùÃ÷
+// å‡½æ•°å£°æ˜
 
 NTSTATUS CreateDevice (IN PDRIVER_OBJECT pDriverObject);
 VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject);

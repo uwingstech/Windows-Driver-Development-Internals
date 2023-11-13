@@ -44,7 +44,7 @@ HANDLE GetDeviceViaInterface( GUID* pGuid, DWORD instance)
 
 	printf("Symbolic link is %s\n",ifDetail->DevicePath);
 	// Open file
-	HANDLE rv = CreateFile( ifDetail->DevicePath, 
+	HANDLE rv = CreateFile( ifDetail->DevicePath,
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

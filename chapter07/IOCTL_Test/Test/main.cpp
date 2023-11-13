@@ -1,12 +1,12 @@
 #include <windows.h>
 #include <stdio.h>
-//Ê¹ÓÃCTL_CODE±ØĞë¼ÓÈëwinioctl.h
+//ä½¿ç”¨CTL_CODEå¿…é¡»åŠ å…¥winioctl.h
 #include <winioctl.h>
 #include "..\NT_Driver\Ioctls.h"
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none
@@ -25,10 +25,10 @@ int main()
 
 	UCHAR InputBuffer[10];
 	UCHAR OutputBuffer[10];
-	//½«ÊäÈë»º³åÇøÈ«²¿ÖÃ³É0XBB
+	//å°†è¾“å…¥ç¼“å†²åŒºå…¨éƒ¨ç½®æˆ0XBB
 	memset(InputBuffer,0xBB,10);
 	DWORD dwOutput;
-	//ÊäÈë»º³åÇø×÷ÎªÊäÈë£¬Êä³ö»º³åÇø×÷ÎªÊä³ö
+	//è¾“å…¥ç¼“å†²åŒºä½œä¸ºè¾“å…¥ï¼Œè¾“å‡ºç¼“å†²åŒºä½œä¸ºè¾“å‡º
 
 	BOOL bRet;
 	bRet = DeviceIoControl(hDevice, IOCTL_TEST1, InputBuffer, 10, &OutputBuffer, 10, &dwOutput, NULL);

@@ -8,8 +8,8 @@ Module Name:
 
 Abstract:
 
-    This file contains dispatch routines for create, 
-    close and selective suspend. 
+    This file contains dispatch routines for create,
+    close and selective suspend.
     The selective suspend feature is enabled if
     the SSRegistryEnable key in the registry is set to 1.
 
@@ -19,7 +19,7 @@ Environment:
 
 Notes:
 
-    Copyright (c) 2000 Microsoft Corporation.  
+    Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -38,7 +38,7 @@ BulkUsb_DispatchCreate(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     Dispatch routine for create.
@@ -95,8 +95,8 @@ Return Value:
     // FsContext is Null for the device
     //
     if(fileObject) {
-        
-        fileObject->FsContext = NULL; 
+
+        fileObject->FsContext = NULL;
     }
     else {
 
@@ -118,13 +118,13 @@ Return Value:
         // since we just received an open handle request, cancel idle req.
         //
         if(deviceExtension->SSEnable) {
-        
+
             CancelSelectSuspend(deviceExtension);
         }
 
         goto BulkUsb_DispatchCreate_Exit;
     }
-    
+
     pipeContext = BulkUsb_PipeWithName(DeviceObject, &fileObject->FileName);
 
     if(pipeContext == NULL) {
@@ -145,7 +145,7 @@ Return Value:
             BulkUsb_DbgPrint(3, ("open pipe %d\n", i));
 
             fileObject->FsContext = &interface->Pipes[i];
-            
+
             ASSERT(fileObject->FsContext);
 
             pipeContext->PipeOpen = TRUE;
@@ -176,7 +176,7 @@ BulkUsb_DispatchCreate_Exit:
     IoCompleteRequest(Irp, IO_NO_INCREMENT);
 
     BulkUsb_DbgPrint(3, ("BulkUsb_DispatchCreate - ends\n"));
-    
+
     return ntStatus;
 }
 
@@ -186,7 +186,7 @@ BulkUsb_DispatchClose(
     IN PIRP           Irp
     )
 /*++
- 
+
 Routine Description:
 
     Dispatch routine for close.
@@ -208,7 +208,7 @@ Return Value:
     PIO_STACK_LOCATION     irpStack;
     PBULKUSB_PIPE_CONTEXT  pipeContext;
     PUSBD_PIPE_INFORMATION pipeInformation;
-    
+
     PAGED_CODE();
 
     //
@@ -228,18 +228,18 @@ Return Value:
 
         if(0 != fileObject->FileName.Length) {
 
-            pipeContext = BulkUsb_PipeWithName(DeviceObject, 
+            pipeContext = BulkUsb_PipeWithName(DeviceObject,
                                                &fileObject->FileName);
         }
 
         if(pipeContext && pipeContext->PipeOpen) {
-            
+
             pipeContext->PipeOpen = FALSE;
         }
     }
 
     //
-    // set ntStatus to STATUS_SUCCESS 
+    // set ntStatus to STATUS_SUCCESS
     //
     ntStatus = STATUS_SUCCESS;
 
@@ -261,7 +261,7 @@ BulkUsb_DispatchDevCtrl(
     IN PIRP Irp
     )
 /*++
- 
+
 Routine Description:
 
     Dispatch routine for IRP_MJ_DEVICE_CONTROL
@@ -320,17 +320,17 @@ Return Value:
     // is signalled.
     //
     BulkUsb_DbgPrint(3, ("Waiting on the IdleReqPendEvent\n"));
-    
+
     //
     // make sure that the selective suspend request has been completed.
     //
 
     if(deviceExtension->SSEnable) {
 
-        KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent, 
-                              Executive, 
-                              KernelMode, 
-                              FALSE, 
+        KeWaitForSingleObject(&deviceExtension->NoIdleReqPendEvent,
+                              Executive,
+                              KernelMode,
+                              FALSE,
                               NULL);
     }
 
@@ -365,7 +365,7 @@ Return Value:
             ntStatus = STATUS_INVALID_PARAMETER;
         }
         else {
-            
+
             ntStatus = BulkUsb_ResetPipe(DeviceObject, pipe);
         }
 
@@ -391,12 +391,12 @@ Return Value:
                 ntStatus = STATUS_SUCCESS;
             }
             else {
-                
+
                 ntStatus = STATUS_BUFFER_TOO_SMALL;
             }
         }
         else {
-            
+
             ntStatus = STATUS_UNSUCCESSFUL;
         }
 
@@ -404,7 +404,7 @@ Return Value:
     }
 
     case IOCTL_BULKUSB_RESET_DEVICE:
-        
+
         ntStatus = BulkUsb_ResetDevice(DeviceObject);
 
         break;
@@ -433,7 +433,7 @@ BulkUsb_ResetPipe(
     IN PUSBD_PIPE_INFORMATION PipeInfo
     )
 /*++
- 
+
 Routine Description:
 
     This routine synchronously submits a URB_FUNCTION_RESET_PIPE
@@ -463,7 +463,7 @@ Return Value:
     deviceExtension = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
 
 
-    urb = ExAllocatePool(NonPagedPool, 
+    urb = ExAllocatePool(NonPagedPool,
                          sizeof(struct _URB_PIPE_REQUEST));
 
     if(urb) {
@@ -482,7 +482,7 @@ Return Value:
     }
 
     if(NT_SUCCESS(ntStatus)) {
-    
+
         BulkUsb_DbgPrint(3, ("BulkUsb_ResetPipe - success\n"));
         ntStatus = STATUS_SUCCESS;
     }
@@ -499,7 +499,7 @@ BulkUsb_ResetDevice(
     IN PDEVICE_OBJECT DeviceObject
     )
 /*++
- 
+
 Routine Description:
 
     This routine invokes BulkUsb_ResetParentPort to reset the device
@@ -539,7 +539,7 @@ BulkUsb_GetPortStatus(
     IN OUT PULONG     PortStatus
     )
 /*++
- 
+
 Routine Description:
 
     This routine retrieves the status value
@@ -618,7 +618,7 @@ BulkUsb_ResetParentPort(
     IN PDEVICE_OBJECT DeviceObject
     )
 /*++
- 
+
 Routine Description:
 
     This routine sends an IOCTL_INTERNAL_USB_RESET_PORT
@@ -691,7 +691,7 @@ SubmitIdleRequestIrp(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine builds an idle request irp with an associated callback routine
@@ -716,7 +716,7 @@ Return Value:
     //
     // initialize variables
     //
-    
+
     irp = NULL;
     idleCallbackInfo = NULL;
 
@@ -745,14 +745,14 @@ Return Value:
     }
 
     //
-    // clear the NoIdleReqPendEvent because we are about 
+    // clear the NoIdleReqPendEvent because we are about
     // to submit an idle request. Since we are so early
     // to clear this event, make sure that if we fail this
     // request we set back the event.
     //
     KeClearEvent(&DeviceExtension->NoIdleReqPendEvent);
 
-    idleCallbackInfo = ExAllocatePool(NonPagedPool, 
+    idleCallbackInfo = ExAllocatePool(NonPagedPool,
                                       sizeof(struct _USB_IDLE_CALLBACK_INFO));
 
     if(idleCallbackInfo) {
@@ -766,7 +766,7 @@ Return Value:
         DeviceExtension->IdleCallbackInfo = idleCallbackInfo;
 
         //
-        // we use IoAllocateIrp to create an irp to selectively suspend the 
+        // we use IoAllocateIrp to create an irp to selectively suspend the
         // device. This irp lies pending with the hub driver. When appropriate
         // the hub driver will invoked callback, where we power down. The completion
         // routine is invoked when we power back.
@@ -795,10 +795,10 @@ Return Value:
 
         nextStack = IoGetNextIrpStackLocation(irp);
 
-        nextStack->MajorFunction = 
+        nextStack->MajorFunction =
                     IRP_MJ_INTERNAL_DEVICE_CONTROL;
 
-        nextStack->Parameters.DeviceIoControl.IoControlCode = 
+        nextStack->Parameters.DeviceIoControl.IoControlCode =
                     IOCTL_INTERNAL_USB_SUBMIT_IDLE_NOTIFICATION;
 
         nextStack->Parameters.DeviceIoControl.Type3InputBuffer =
@@ -808,11 +808,11 @@ Return Value:
                     sizeof(struct _USB_IDLE_CALLBACK_INFO);
 
 
-        IoSetCompletionRoutine(irp, 
+        IoSetCompletionRoutine(irp,
                                IdleNotificationRequestComplete,
-                               DeviceExtension, 
-                               TRUE, 
-                               TRUE, 
+                               DeviceExtension,
+                               TRUE,
+                               TRUE,
                                TRUE);
 
         DeviceExtension->PendingIdleIrp = irp;
@@ -821,9 +821,9 @@ Return Value:
         // we initialize the count to 2.
         // The reason is, if the CancelSelectSuspend routine manages
         // to grab the irp from the device extension, then the last of the
-        // CancelSelectSuspend routine/IdleNotificationRequestComplete routine 
+        // CancelSelectSuspend routine/IdleNotificationRequestComplete routine
         // to execute will free this irp. We need to have this schema so that
-        // 1. completion routine does not attempt to touch the irp freed by 
+        // 1. completion routine does not attempt to touch the irp freed by
         //    CancelSelectSuspend routine.
         // 2. CancelSelectSuspend routine doesnt wait for ever for the completion
         //    routine to complete!
@@ -834,7 +834,7 @@ Return Value:
 
         //
         // check if the device is idle.
-        // A check here ensures that a race condition did not 
+        // A check here ensures that a race condition did not
         // completely reverse the call sequence of SubmitIdleRequestIrp
         // and CancelSelectiveSuspend
         //
@@ -844,10 +844,10 @@ Return Value:
 
             //
             // IRPs created using IoBuildDeviceIoControlRequest should be
-            // completed by calling IoCompleteRequest and not merely 
+            // completed by calling IoCompleteRequest and not merely
             // deallocated.
             //
-     
+
             BulkUsb_DbgPrint(1, ("Device is not idle\n"));
 
             KeAcquireSpinLock(&DeviceExtension->IdleReqStateLock, &oldIrql);
@@ -873,7 +873,7 @@ Return Value:
             // it is still safe to touch the local variable "irp" here.
             // the irp has not been passed down the stack, the irp has
             // no cancellation routine. The worse position is that the
-            // CancelSelectSuspend has run after we released the spin 
+            // CancelSelectSuspend has run after we released the spin
             // lock above. It is still essential to free the irp.
             //
             if(irp) {
@@ -930,7 +930,7 @@ IdleNotificationCallback(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
   "A pointer to a callback function in your driver is passed down the stack with
@@ -938,7 +938,7 @@ Routine Description:
    safe for your device to power down."
 
   "When the callback in your driver is called, all you really need to do is to
-   to first ensure that a WaitWake Irp has been submitted for your device, if 
+   to first ensure that a WaitWake Irp has been submitted for your device, if
    remote wake is possible for your device and then request a SetD2 (or DeviceWake)"
 
 Arguments:
@@ -982,7 +982,7 @@ Return Value:
     // power down the device
     //
 
-    irpContext = (PIRP_COMPLETION_CONTEXT) 
+    irpContext = (PIRP_COMPLETION_CONTEXT)
                  ExAllocatePool(NonPagedPool,
                                 sizeof(IRP_COMPLETION_CONTEXT));
 
@@ -995,9 +995,9 @@ Return Value:
 
         //
         // increment the count. In the HoldIoRequestWorkerRoutine, the
-        // count is decremented twice (one for the system Irp and the 
-        // other for the device Irp. An increment here compensates for 
-        // the sytem irp..The decrement corresponding to this increment 
+        // count is decremented twice (one for the system Irp and the
+        // other for the device Irp. An increment here compensates for
+        // the sytem irp..The decrement corresponding to this increment
         // is in the completion function
         //
 
@@ -1012,11 +1012,11 @@ Return Value:
         irpContext->Event = &irpCompletionEvent;
 
         ntStatus = PoRequestPowerIrp(
-                          DeviceExtension->PhysicalDeviceObject, 
-                          IRP_MN_SET_POWER, 
-                          powerState, 
+                          DeviceExtension->PhysicalDeviceObject,
+                          IRP_MN_SET_POWER,
+                          powerState,
                           (PREQUEST_POWER_COMPLETE) PoIrpCompletionFunc,
-                          irpContext, 
+                          irpContext,
                           NULL);
 
         if(STATUS_PENDING == ntStatus) {
@@ -1031,7 +1031,7 @@ Return Value:
                                   NULL);
         }
     }
-    
+
     if(!NT_SUCCESS(ntStatus)) {
 
         if(irpContext) {
@@ -1051,7 +1051,7 @@ IdleNotificationRequestComplete(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
   Completion routine for idle notification irp
@@ -1090,7 +1090,7 @@ Return Value:
         BulkUsb_DbgPrint(1, ("Idle irp completes with error::"));
 
         switch(ntStatus) {
-            
+
         case STATUS_INVALID_DEVICE_REQUEST:
 
             BulkUsb_DbgPrint(1, ("STATUS_INVALID_DEVICE_REQUEST\n"));
@@ -1132,15 +1132,15 @@ Return Value:
         powerState.DeviceState = PowerDeviceD0;
 
         ntStatus = PoRequestPowerIrp(
-                          DeviceExtension->PhysicalDeviceObject, 
-                          IRP_MN_SET_POWER, 
-                          powerState, 
-                          (PREQUEST_POWER_COMPLETE) PoIrpAsyncCompletionFunc, 
-                          DeviceExtension, 
+                          DeviceExtension->PhysicalDeviceObject,
+                          IRP_MN_SET_POWER,
+                          powerState,
+                          (PREQUEST_POWER_COMPLETE) PoIrpAsyncCompletionFunc,
+                          DeviceExtension,
                           NULL);
 
         if(!NT_SUCCESS(ntStatus)) {
-    
+
             BulkUsb_DbgPrint(1, ("PoRequestPowerIrp failed\n"));
         }
 
@@ -1168,9 +1168,9 @@ IdleNotificationRequestComplete_Exit:
     }
 
     //
-    // since the irp was created using IoAllocateIrp, 
+    // since the irp was created using IoAllocateIrp,
     // the Irp needs to be freed using IoFreeIrp.
-    // Also return STATUS_MORE_PROCESSING_REQUIRED so that 
+    // Also return STATUS_MORE_PROCESSING_REQUIRED so that
     // the kernel does not reference this in the near future.
     //
 
@@ -1185,7 +1185,7 @@ IdleNotificationRequestComplete_Exit:
     else {
 
         //
-        // The CancelSelectiveSuspend routine has grabbed the Irp from the device 
+        // The CancelSelectiveSuspend routine has grabbed the Irp from the device
         // extension. Now the last one to decrement the FreeIdleIrpCount should
         // free the irp.
         //
@@ -1206,7 +1206,7 @@ IdleNotificationRequestComplete_Exit:
 
         dueTime.QuadPart = -10000 * IDLE_INTERVAL;               // 5000 ms
 
-        KeSetTimerEx(&DeviceExtension->Timer, 
+        KeSetTimerEx(&DeviceExtension->Timer,
                      dueTime,
                      IDLE_INTERVAL,                              // 5000 ms
                      &DeviceExtension->DeferredProcCall);
@@ -1222,7 +1222,7 @@ CancelSelectSuspend(
     IN PDEVICE_EXTENSION DeviceExtension
     )
 /*++
- 
+
 Routine Description:
 
     This routine is invoked to cancel selective suspend request.
@@ -1249,9 +1249,9 @@ Return Value:
     if(!CanDeviceSuspend(DeviceExtension))
     {
         BulkUsb_DbgPrint(3, ("Device is not idle\n"));
-    
+
         irp = (PIRP) InterlockedExchangePointer(
-                            &DeviceExtension->PendingIdleIrp, 
+                            &DeviceExtension->PendingIdleIrp,
                             NULL);
     }
 
@@ -1260,7 +1260,7 @@ Return Value:
     //
     // since we have a valid Irp ptr,
     // we can call IoCancelIrp on it,
-    // without the fear of the irp 
+    // without the fear of the irp
     // being freed underneath us.
     //
     if(irp) {
@@ -1269,8 +1269,8 @@ Return Value:
         // This routine has the irp pointer.
         // It is safe to call IoCancelIrp because we know that
         // the compleiton routine will not free this irp unless...
-        // 
-        //        
+        //
+        //
         if(IoCancelIrp(irp)) {
 
             BulkUsb_DbgPrint(3, ("IoCancelIrp returns TRUE\n"));
@@ -1281,7 +1281,7 @@ Return Value:
 
         //
         // ....we decrement the FreeIdleIrpCount from 2 to 1.
-        // if completion routine runs ahead of us, then this routine 
+        // if completion routine runs ahead of us, then this routine
         // decrements the FreeIdleIrpCount from 1 to 0 and hence shall
         // free the irp.
         //
@@ -1310,10 +1310,10 @@ PoIrpCompletionFunc(
     IN PIO_STATUS_BLOCK IoStatus
     )
 /*++
- 
+
 Routine Description:
 
-    Completion routine for power irp PoRequested in 
+    Completion routine for power irp PoRequested in
     IdleNotificationCallback.
 
 Arguments:
@@ -1331,7 +1331,7 @@ Return Value:
 --*/
 {
     PIRP_COMPLETION_CONTEXT irpContext;
-    
+
     //
     // initialize variables
     //
@@ -1367,7 +1367,7 @@ PoIrpAsyncCompletionFunc(
     IN PIO_STATUS_BLOCK IoStatus
     )
 /*++
- 
+
 Routine Description:
 
     Completion routine for power irp PoRequested in IdleNotification
@@ -1388,7 +1388,7 @@ Return Value:
 --*/
 {
     PDEVICE_EXTENSION DeviceExtension;
-    
+
     //
     // initialize variables
     //
@@ -1397,7 +1397,7 @@ Return Value:
     //
     // all we do is decrement the count
     //
-    
+
     BulkUsb_DbgPrint(3, ("PoIrpAsyncCompletionFunc::"));
     BulkUsb_IoDecrement(DeviceExtension);
 
@@ -1413,7 +1413,7 @@ WWIrpCompletionFunc(
     IN PIO_STATUS_BLOCK IoStatus
     )
 /*++
- 
+
 Routine Description:
 
     Completion routine for PoRequest wait wake irp
@@ -1424,7 +1424,7 @@ Arguments:
     MinorFunciton - minor function for the irp.
     PowerState - irp power state
     Context - context passed to the completion function
-    IoStatus - status block.    
+    IoStatus - status block.
 
 Return Value:
 
@@ -1433,7 +1433,7 @@ Return Value:
 --*/
 {
     PDEVICE_EXTENSION DeviceExtension;
-    
+
     //
     // initialize variables
     //
@@ -1442,7 +1442,7 @@ Return Value:
     //
     // all we do is decrement the count
     //
-    
+
     BulkUsb_DbgPrint(3, ("WWIrpCompletionFunc::"));
     BulkUsb_IoDecrement(DeviceExtension);
 

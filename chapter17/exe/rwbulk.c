@@ -319,7 +319,7 @@ Return Value:
                 printf("Failed to open (%s) = %d", completeDeviceName, GetLastError());
         } else {
                 printf("DeviceName = (%s)\n", completeDeviceName);
-    }           
+    }
 
         return hDEV;
 }
@@ -356,11 +356,11 @@ Return Value:
 
     strcat (completeDeviceName,
                         "\\"
-                        );                      
+                        );
 
     strcat (completeDeviceName,
                         filename
-                        );                                      
+                        );
 
         printf("completeDeviceName = (%s)\n", completeDeviceName);
 
@@ -377,7 +377,7 @@ Return Value:
                 success = 0;
         } else {
                         NOISY(("Opened successfully.\n"));
-    }           
+    }
 
         return h;
 }
@@ -596,26 +596,26 @@ Return Value:
 
         case USB_CONFIGURATION_DESCRIPTOR_TYPE:
                 return "USB_CONFIGURATION_DESCRIPTOR_TYPE";
-                
+
 
         case USB_STRING_DESCRIPTOR_TYPE:
                 return "USB_STRING_DESCRIPTOR_TYPE";
-                
+
 
         case USB_INTERFACE_DESCRIPTOR_TYPE:
                 return "USB_INTERFACE_DESCRIPTOR_TYPE";
-                
+
 
         case USB_ENDPOINT_DESCRIPTOR_TYPE:
                 return "USB_ENDPOINT_DESCRIPTOR_TYPE";
-                
+
 
 #ifdef USB_POWER_DESCRIPTOR_TYPE // this is the older definintion which is actually obsolete
     // workaround for temporary bug in 98ddk, older USB100.h file
         case USB_POWER_DESCRIPTOR_TYPE:
                 return "USB_POWER_DESCRIPTOR_TYPE";
 #endif
-                
+
 #ifdef USB_RESERVED_DESCRIPTOR_TYPE  // this is the current version of USB100.h as in NT5DDK
 
         case USB_RESERVED_DESCRIPTOR_TYPE:
@@ -629,7 +629,7 @@ Return Value:
 #endif // for current nt5ddk version of USB100.h
 
         default:
-                return "??? UNKNOWN!!"; 
+                return "??? UNKNOWN!!";
         }
 }
 
@@ -659,16 +659,16 @@ Return Value:
                 return "USB_ENDPOINT_TYPE_INTERRUPT";
 
         case USB_ENDPOINT_TYPE_BULK:
-                return "USB_ENDPOINT_TYPE_BULK";        
+                return "USB_ENDPOINT_TYPE_BULK";
 
         case USB_ENDPOINT_TYPE_ISOCHRONOUS:
-                return "USB_ENDPOINT_TYPE_ISOCHRONOUS"; 
-                
+                return "USB_ENDPOINT_TYPE_ISOCHRONOUS";
+
         case USB_ENDPOINT_TYPE_CONTROL:
-                return "USB_ENDPOINT_TYPE_CONTROL";     
-                
+                return "USB_ENDPOINT_TYPE_CONTROL";
+
         default:
-                return "??? UNKNOWN!!"; 
+                return "??? UNKNOWN!!";
         }
 }
 
@@ -700,13 +700,13 @@ Return Value:
 
         case USB_CONFIG_SELF_POWERED:
                 return "USB_CONFIG_SELF_POWERED";
-                
+
         case USB_CONFIG_REMOTE_WAKEUP:
                 return "USB_CONFIG_REMOTE_WAKEUP";
 
-                
+
         default:
-                return "??? UNKNOWN!!"; 
+                return "??? UNKNOWN!!";
         }
 }
 
@@ -904,7 +904,7 @@ Return Value:
                 NOISY(("DEV not open"));
                 return;
         }
-        
+
         success = DeviceIoControl(hDEV,
                         IOCTL_BULKUSB_GET_CONFIG_DESCRIPTOR,
                         buf,
@@ -915,7 +915,7 @@ Return Value:
                         NULL);
 
         NOISY(("request complete, success = %d nBytes = %d\n", success, nBytes));
-        
+
         if (success) {
         ULONG i;
                 UINT  j, n;
@@ -949,7 +949,7 @@ Return Value:
         } while (i<cd->wTotalLength);
 
         }
-        
+
         return;
 
 }
@@ -1041,7 +1041,7 @@ Return Value:
                         }
 
             hRead = open_file( inPipe);
-        
+
                 pinBuf = malloc(ReadLen);
 
             }
@@ -1109,7 +1109,7 @@ Return Value:
 
                                         if( fDumpReadData ) {
                                                 printf("Dumping read buffer\n");
-                                                dump( pinBuf, nBytesRead );     
+                                                dump( pinBuf, nBytesRead );
                                                 printf("Dumping write buffer\n");
                                                 dump( poutBuf, nBytesRead );
 
@@ -1125,7 +1125,7 @@ Return Value:
                     assert(nBytesWrite == WriteLen);
                 }
                 }
-        
+
         }
 
 
@@ -1144,7 +1144,7 @@ Return Value:
                 if(hWrite != INVALID_HANDLE_VALUE)
                         CloseHandle(hWrite);
 
-    }           
+    }
 
         return 0;
 }

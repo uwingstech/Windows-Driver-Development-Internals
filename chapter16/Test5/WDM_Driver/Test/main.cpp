@@ -18,7 +18,7 @@ int main()
 		return 1;
 	}
 
-	//调用function.h中提供的各个函数
+	//璋冪敤function.h涓彁渚涚殑鍚勪釜鍑芥暟
 
 	CloseHandle(hDevice);
 	return 0;

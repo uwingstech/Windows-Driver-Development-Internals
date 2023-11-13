@@ -1,89 +1,89 @@
 /************************************************************************
-* ÎÄ¼þÃû³Æ:Driver.cpp                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.cpp
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #include "Driver.h"
 
 #pragma INITCODE
-VOID StringInitTest() 
+VOID StringInitTest()
 {
-	//(1)ÓÃRtlInitAnsiString³õÊ¼»¯×Ö·û´®
+	//(1)ç”¨RtlInitAnsiStringåˆå§‹åŒ–å­—ç¬¦ä¸²
 	ANSI_STRING  AnsiString1;
 	CHAR * string1= "hello";
-	//³õÊ¼»¯ANSI_STRING×Ö·û´®
+	//åˆå§‹åŒ–ANSI_STRINGå­—ç¬¦ä¸²
 	RtlInitAnsiString(&AnsiString1,string1);
-	KdPrint(("AnsiString1:%Z\n",&AnsiString1));//´òÓ¡hello
+	KdPrint(("AnsiString1:%Z\n",&AnsiString1));//æ‰“å°hello
 
 	string1[0]='H';
 	string1[1]='E';
 	string1[2]='L';
 	string1[3]='L';
 	string1[4]='O';
-	//¸Ä±ästring1£¬AnsiString1Í¬Ñù»áµ¼ÖÂ±ä»¯
-	KdPrint(("AnsiString1:%Z\n",&AnsiString1));//´òÓ¡HELLO
+	//æ”¹å˜string1ï¼ŒAnsiString1åŒæ ·ä¼šå¯¼è‡´å˜åŒ–
+	KdPrint(("AnsiString1:%Z\n",&AnsiString1));//æ‰“å°HELLO
 
-	//(2)³ÌÐòÔ±×Ô¼º³õÊ¼»¯×Ö·û´®
+	//(2)ç¨‹åºå‘˜è‡ªå·±åˆå§‹åŒ–å­—ç¬¦ä¸²
 #define BUFFER_SIZE 1024
 	UNICODE_STRING UnicodeString1 = {0};
-	//ÉèÖÃ»º³åÇø´óÐ¡
+	//è®¾ç½®ç¼“å†²åŒºå¤§å°
 	UnicodeString1.MaximumLength = BUFFER_SIZE;
-	//·ÖÅäÄÚ´æ
+	//åˆ†é…å†…å­˜
 	UnicodeString1.Buffer = (PWSTR)ExAllocatePool(PagedPool,BUFFER_SIZE);
 	WCHAR* wideString = L"hello";
 
-	//ÉèÖÃ×Ö·û³¤¶È,ÒòÎªÊÇ¿í×Ö·û£¬ËùÒÔÊÇ×Ö·û³¤¶ÈµÄ2±¶
+	//è®¾ç½®å­—ç¬¦é•¿åº¦,å› ä¸ºæ˜¯å®½å­—ç¬¦ï¼Œæ‰€ä»¥æ˜¯å­—ç¬¦é•¿åº¦çš„2å€
 	UnicodeString1.Length = 2*wcslen(wideString);
 
-	//±£Ö¤»º³åÇø×ã¹»´ó£¬·ñÔò³ÌÐòÖÕÖ¹
+	//ä¿è¯ç¼“å†²åŒºè¶³å¤Ÿå¤§ï¼Œå¦åˆ™ç¨‹åºç»ˆæ­¢
 	ASSERT(UnicodeString1.MaximumLength>=UnicodeString1.Length);
-	//ÄÚ´æ¿½±´£¬
+	//å†…å­˜æ‹·è´ï¼Œ
 	RtlCopyMemory(UnicodeString1.Buffer,wideString,UnicodeString1.Length);
-	//ÉèÖÃ×Ö·û³¤¶È
+	//è®¾ç½®å­—ç¬¦é•¿åº¦
 	UnicodeString1.Length = 2*wcslen(wideString);
 
 	KdPrint(("UnicodeString:%wZ\n",&UnicodeString1));
 
-	//ÇåÀíÄÚ´æ
+	//æ¸…ç†å†…å­˜
 	ExFreePool(UnicodeString1.Buffer);
 	UnicodeString1.Buffer = NULL;
 	UnicodeString1.Length = UnicodeString1.MaximumLength = 0;
 }
 
 #pragma INITCODE
-VOID StringCopyTest() 
+VOID StringCopyTest()
 {
-	//³õÊ¼»¯UnicodeString1
+	//åˆå§‹åŒ–UnicodeString1
 	UNICODE_STRING UnicodeString1;
 	RtlInitUnicodeString(&UnicodeString1,L"Hello World");
 
-	//³õÊ¼»¯UnicodeString2
+	//åˆå§‹åŒ–UnicodeString2
 	UNICODE_STRING UnicodeString2={0};
 	UnicodeString2.Buffer = (PWSTR)ExAllocatePool(PagedPool,BUFFER_SIZE);
 	UnicodeString2.MaximumLength = BUFFER_SIZE;
 
-	//½«³õÊ¼»¯UnicodeString2¿½±´µ½UnicodeString1
+	//å°†åˆå§‹åŒ–UnicodeString2æ‹·è´åˆ°UnicodeString1
 	RtlCopyUnicodeString(&UnicodeString2,&UnicodeString1);
 
-	//·Ö±ðÏÔÊ¾UnicodeString1ºÍUnicodeString2
+	//åˆ†åˆ«æ˜¾ç¤ºUnicodeString1å’ŒUnicodeString2
 	KdPrint(("UnicodeString1:%wZ\n",&UnicodeString1));
 	KdPrint(("UnicodeString2:%wZ\n",&UnicodeString2));
 
-	//Ïú»ÙUnicodeString2
-	//×¢Òâ!!UnicodeString1²»ÓÃÏú»Ù
+	//é”€æ¯UnicodeString2
+	//æ³¨æ„!!UnicodeString1ä¸ç”¨é”€æ¯
 	RtlFreeUnicodeString(&UnicodeString2);
-		
+
 }
 
 #pragma INITCODE
-VOID StringCompareTest() 
+VOID StringCompareTest()
 {
-	//³õÊ¼»¯UnicodeString1
+	//åˆå§‹åŒ–UnicodeString1
 	UNICODE_STRING UnicodeString1;
 	RtlInitUnicodeString(&UnicodeString1,L"Hello World");
 
-	//³õÊ¼»¯UnicodeString2
+	//åˆå§‹åŒ–UnicodeString2
 	UNICODE_STRING UnicodeString2;
 	RtlInitUnicodeString(&UnicodeString1,L"Hello");
 
@@ -98,27 +98,27 @@ VOID StringCompareTest()
 }
 
 #pragma INITCODE
-VOID StringToUpperTest() 
+VOID StringToUpperTest()
 {
-	//³õÊ¼»¯UnicodeString1
+	//åˆå§‹åŒ–UnicodeString1
 	UNICODE_STRING UnicodeString1;
 	RtlInitUnicodeString(&UnicodeString1,L"Hello World");
 
-	//±ä»¯Ç°
+	//å˜åŒ–å‰
 	KdPrint(("UnicodeString1:%wZ\n",&UnicodeString1));
 
-	//±ä´óÐ´
+	//å˜å¤§å†™
 	RtlUpcaseUnicodeString(&UnicodeString1,&UnicodeString1,FALSE);
 
-	//±ä»¯ºó
+	//å˜åŒ–åŽ
 	KdPrint(("UnicodeString1:%wZ\n",&UnicodeString1));
 }
 
 #pragma INITCODE
-VOID StringToIntegerTest() 
+VOID StringToIntegerTest()
 {
-	//(1)×Ö·û´®×ª»»³ÉÊý×Ö
-	//³õÊ¼»¯UnicodeString1
+	//(1)å­—ç¬¦ä¸²è½¬æ¢æˆæ•°å­—
+	//åˆå§‹åŒ–UnicodeString1
 	UNICODE_STRING UnicodeString1;
 	RtlInitUnicodeString(&UnicodeString1,L"-100");
 
@@ -133,8 +133,8 @@ VOID StringToIntegerTest()
 		KdPrint(("Conver to integer unsuccessfully!\n"));
 	}
 
-	//(2)Êý×Ö×ª»»³É×Ö·û´®
-	//³õÊ¼»¯UnicodeString2
+	//(2)æ•°å­—è½¬æ¢æˆå­—ç¬¦ä¸²
+	//åˆå§‹åŒ–UnicodeString2
 	UNICODE_STRING UnicodeString2={0};
 	UnicodeString2.Buffer = (PWSTR)ExAllocatePool(PagedPool,BUFFER_SIZE);
 	UnicodeString2.MaximumLength = BUFFER_SIZE;
@@ -149,23 +149,23 @@ VOID StringToIntegerTest()
 		KdPrint(("Conver to string unsuccessfully!\n"));
 	}
 
-	//Ïú»ÙUnicodeString2
-	//×¢Òâ!!UnicodeString1²»ÓÃÏú»Ù
+	//é”€æ¯UnicodeString2
+	//æ³¨æ„!!UnicodeString1ä¸ç”¨é”€æ¯
 	RtlFreeUnicodeString(&UnicodeString2);
 
 }
 
 #pragma INITCODE
-VOID StringConverTest() 
+VOID StringConverTest()
 {
-	//(1)½«UNICODE_STRING×Ö·û´®×ª»»³ÉANSI_STRING×Ö·û´®
-	//³õÊ¼»¯UnicodeString1
+	//(1)å°†UNICODE_STRINGå­—ç¬¦ä¸²è½¬æ¢æˆANSI_STRINGå­—ç¬¦ä¸²
+	//åˆå§‹åŒ–UnicodeString1
 	UNICODE_STRING UnicodeString1;
 	RtlInitUnicodeString(&UnicodeString1,L"Hello World");
 
 	ANSI_STRING AnsiString1;
 	NTSTATUS nStatus = RtlUnicodeStringToAnsiString(&AnsiString1,&UnicodeString1,TRUE);
-	
+
 	if ( NT_SUCCESS(nStatus))
 	{
 		KdPrint(("Conver succussfully!\n"));
@@ -175,17 +175,17 @@ VOID StringConverTest()
 		KdPrint(("Conver unsuccessfully!\n"));
 	}
 
- 	//Ïú»ÙAnsiString1
+ 	//é”€æ¯AnsiString1
 	RtlFreeAnsiString(&AnsiString1);
 
-	//(2)½«ANSI_STRING×Ö·û´®×ª»»³ÉUNICODE_STRING×Ö·û´®
-	//³õÊ¼»¯AnsiString2
+	//(2)å°†ANSI_STRINGå­—ç¬¦ä¸²è½¬æ¢æˆUNICODE_STRINGå­—ç¬¦ä¸²
+	//åˆå§‹åŒ–AnsiString2
 	ANSI_STRING AnsiString2;
 	RtlInitString(&AnsiString2,"Hello World");
 
 	UNICODE_STRING UnicodeString2;
 	nStatus = RtlAnsiStringToUnicodeString(&UnicodeString2,&AnsiString2,TRUE);
-	
+
 	if ( NT_SUCCESS(nStatus))
 	{
 		KdPrint(("Conver succussfully!\n"));
@@ -195,57 +195,57 @@ VOID StringConverTest()
 		KdPrint(("Conver unsuccessfully!\n"));
 	}
 
- 	//Ïú»ÙUnicodeString2
+ 	//é”€æ¯UnicodeString2
 	RtlFreeUnicodeString(&UnicodeString2);
 }
 
 
 VOID StringTest()
 {
-	//×Ö·û´®³õÊ¼»¯ÊµÑé
+	//å­—ç¬¦ä¸²åˆå§‹åŒ–å®žéªŒ
 //	StringInitTest();
 
-	//×Ö·û´®¿½±´ÊµÑé
+	//å­—ç¬¦ä¸²æ‹·è´å®žéªŒ
 //	StringCopyTest();
 
-	//×Ö·û´®±È½ÏÊµÑé
+	//å­—ç¬¦ä¸²æ¯”è¾ƒå®žéªŒ
 //	StringCompareTest();
 
-	//×Ö·û´®±ä´óÐ´ÊµÑé
+	//å­—ç¬¦ä¸²å˜å¤§å†™å®žéªŒ
 //	StringToUpperTest();
 
-	//×Ö·û´®ÓëÕûÐÍÏà»¥×ª»¯ÊµÑé
+	//å­—ç¬¦ä¸²ä¸Žæ•´åž‹ç›¸äº’è½¬åŒ–å®žéªŒ
 //	StringToIntegerTest();
 
-	//ANSI_STRING×Ö·û´®ÓëUNICODE_STRING×Ö·û´®Ïà»¥×ª»»ÊµÑé
+	//ANSI_STRINGå­—ç¬¦ä¸²ä¸ŽUNICODE_STRINGå­—ç¬¦ä¸²ç›¸äº’è½¬æ¢å®žéªŒ
 	StringConverTest();
 
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:DriverEntry
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Çý¶¯³ÌÐò£¬¶¨Î»ºÍÉêÇëÓ²¼þ×ÊÔ´£¬´´½¨ÄÚºË¶ÔÏó
-* ²ÎÊýÁÐ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÇý¶¯¶ÔÏó
-      pRegistryPath:Çý¶¯³ÌÐòÔÚ×¢²á±íµÄÖÐµÄÂ·¾¶
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯Çý¶¯×´Ì¬
+* å‡½æ•°åç§°:DriverEntry
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–é©±åŠ¨ç¨‹åºï¼Œå®šä½å’Œç”³è¯·ç¡¬ä»¶èµ„æºï¼Œåˆ›å»ºå†…æ ¸å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      pRegistryPath:é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨çš„ä¸­çš„è·¯å¾„
+* è¿”å›ž å€¼:è¿”å›žåˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 extern "C" NTSTATUS DriverEntry (
 			IN PDRIVER_OBJECT pDriverObject,
-			IN PUNICODE_STRING pRegistryPath	) 
+			IN PUNICODE_STRING pRegistryPath	)
 {
 	NTSTATUS status;
 	KdPrint(("Enter DriverEntry\n"));
 
-	//×¢²áÆäËûÇý¶¯µ÷ÓÃº¯ÊýÈë¿Ú
+	//æ³¨å†Œå…¶ä»–é©±åŠ¨è°ƒç”¨å‡½æ•°å…¥å£
 	pDriverObject->DriverUnload = HelloDDKUnload;
 	pDriverObject->MajorFunction[IRP_MJ_CREATE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_CLOSE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_WRITE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_READ] = HelloDDKDispatchRoutine;
-	
-	//´´½¨Çý¶¯Éè±¸¶ÔÏó
+
+	//åˆ›å»ºé©±åŠ¨è®¾å¤‡å¯¹è±¡
 	status = CreateDevice(pDriverObject);
 
 	StringTest();
@@ -255,25 +255,25 @@ extern "C" NTSTATUS DriverEntry (
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:CreateDevice
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Éè±¸¶ÔÏó
-* ²ÎÊýÁÐ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÇý¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯×´Ì¬
+* å‡½æ•°åç§°:CreateDevice
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–è®¾å¤‡å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+* è¿”å›ž å€¼:è¿”å›žåˆå§‹åŒ–çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 NTSTATUS CreateDevice (
-		IN PDRIVER_OBJECT	pDriverObject) 
+		IN PDRIVER_OBJECT	pDriverObject)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT pDevObj;
 	PDEVICE_EXTENSION pDevExt;
-	
-	//´´½¨Éè±¸Ãû³Æ
+
+	//åˆ›å»ºè®¾å¤‡åç§°
 	UNICODE_STRING devName;
 	RtlInitUnicodeString(&devName,L"\\Device\\MyDDKDevice");
-	
-	//´´½¨Éè±¸
+
+	//åˆ›å»ºè®¾å¤‡
 	status = IoCreateDevice( pDriverObject,
 						sizeof(DEVICE_EXTENSION),
 						&(UNICODE_STRING)devName,
@@ -287,12 +287,12 @@ NTSTATUS CreateDevice (
 	pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
 	pDevExt->pDevice = pDevObj;
 	pDevExt->ustrDeviceName = devName;
-	//´´½¨·ûºÅÁ´½Ó
+	//åˆ›å»ºç¬¦å·é“¾æŽ¥
 	UNICODE_STRING symLinkName;
 	RtlInitUnicodeString(&symLinkName,L"\\??\\HelloDDK");
 	pDevExt->ustrSymLinkName = symLinkName;
 	status = IoCreateSymbolicLink( &symLinkName,&devName );
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		IoDeleteDevice( pDevObj );
 		return status;
@@ -301,24 +301,24 @@ NTSTATUS CreateDevice (
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloDDKUnload
-* ¹¦ÄÜÃèÊö:¸ºÔðÇý¶¯³ÌÐòµÄÐ¶ÔØ²Ù×÷
-* ²ÎÊýÁÐ±í:
-      pDriverObject:Çý¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKUnload
+* åŠŸèƒ½æè¿°:è´Ÿè´£é©±åŠ¨ç¨‹åºçš„å¸è½½æ“ä½œ
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:é©±åŠ¨å¯¹è±¡
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
-VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject) 
+VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 {
 	PDEVICE_OBJECT	pNextObj;
 	KdPrint(("Enter DriverUnload\n"));
 	pNextObj = pDriverObject->DeviceObject;
-	while (pNextObj != NULL) 
+	while (pNextObj != NULL)
 	{
 		PDEVICE_EXTENSION pDevExt = (PDEVICE_EXTENSION)
 			pNextObj->DeviceExtension;
 
-		//É¾³ý·ûºÅÁ´½Ó
+		//åˆ é™¤ç¬¦å·é“¾æŽ¥
 		UNICODE_STRING pLinkName = pDevExt->ustrSymLinkName;
 		IoDeleteSymbolicLink(&pLinkName);
 		pNextObj = pNextObj->NextDevice;
@@ -327,20 +327,20 @@ VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloDDKDispatchRoutine
-* ¹¦ÄÜÃèÊö:¶Ô¶ÁIRP½øÐÐ´¦Àí
-* ²ÎÊýÁÐ±í:
-      pDevObj:¹¦ÄÜÉè±¸¶ÔÏó
-      pIrp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKDispatchRoutine
+* åŠŸèƒ½æè¿°:å¯¹è¯»IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      pDevObj:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      pIrp:ä»ŽIOè¯·æ±‚åŒ…
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloDDKDispatchRoutine(IN PDEVICE_OBJECT pDevObj,
-								 IN PIRP pIrp) 
+								 IN PIRP pIrp)
 {
 	KdPrint(("Enter HelloDDKDispatchRoutine\n"));
 	NTSTATUS status = STATUS_SUCCESS;
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = 0;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );

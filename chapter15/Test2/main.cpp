@@ -5,19 +5,19 @@
 
 int main()
 {
-	//´ò¿ªWinIOÇı¶¯
+	//æ‰“å¼€WinIOé©±åŠ¨
 	bool bRet = InitializeWinIo();
 	if (bRet)
 	{
 		printf("Load Dirver successfully!\n");
 
-		//¶Ô0x378¶Ë¿Ú½øĞĞÊä³ö²Ù×÷,8Î»²Ù×÷
+		//å¯¹0x378ç«¯å£è¿›è¡Œè¾“å‡ºæ“ä½œ,8ä½æ“ä½œ
 		SetPortVal(0x378,0,1);
 
-		//¹Ø±ÕWinIOÇı¶¯
+		//å…³é—­WinIOé©±åŠ¨
 		ShutdownWinIo();
 	}
 
-	
+
 	return 0;
 }

@@ -40,23 +40,23 @@
 // DriverEntry
 //
 // Installable driver initialization. Here we just set ourselves up.
-// 
+//
 // Called: NT4, WIN2K
 //
 //----------------------------------------------------------------------
 NTSTATUS DriverEntry(
     IN PDRIVER_OBJECT  DriverObject,
-    IN PUNICODE_STRING RegistryPath 
+    IN PUNICODE_STRING RegistryPath
     )
 {
     ULONG                  i;
 
     DbgPrint (("Ctrl2cap.SYS: entering DriverEntry\n"));
 
-    // 
+    //
     // Fill in all the dispatch entry points with the pass through function
     // and the explicitly fill in the functions we are going to intercept
-    // 
+    //
     for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) {
 
         DriverObject->MajorFunction[i] = Ctrl2capDispatchGeneral;
@@ -70,7 +70,7 @@ NTSTATUS DriverEntry(
 #if WIN2K
     //
     // Power IRPs are the only ones we have to handle specially under
-    // Win2k since they require the special PoCallDriver and 
+    // Win2k since they require the special PoCallDriver and
     // PoStartNextPowerIrp function calls.
     //
     DriverObject->MajorFunction [IRP_MJ_POWER]  = Ctrl2capPower;
@@ -82,7 +82,7 @@ NTSTATUS DriverEntry(
     DriverObject->MajorFunction [IRP_MJ_PNP]  = Ctrl2capPnP;
 
     //
-    // Under Win2K we get told about the presence of keyboard 
+    // Under Win2K we get told about the presence of keyboard
     // devices through our AddDevice entry point.
     //
     DriverObject->DriverUnload = Ctrl2capUnload;
@@ -93,7 +93,7 @@ NTSTATUS DriverEntry(
 #else  // WIN2K
 
     //
-    // Under NT 4 we go out and hook the keyboard class device for 
+    // Under NT 4 we go out and hook the keyboard class device for
     // keyboard 0.
     //
     return Ctrl2capInit( DriverObject );
@@ -106,14 +106,14 @@ NTSTATUS DriverEntry(
 // Ctrl2capInit
 //
 // Hook onto the keyboard's path. Why does this routine return
-// status success even if there's a problem? I've found that if it 
+// status success even if there's a problem? I've found that if it
 // doesn't, the keyboard won't respond!
-// 
+//
 // Called: NT4
 //
 //----------------------------------------------------------------------
-NTSTATUS Ctrl2capInit( 
-    IN PDRIVER_OBJECT DriverObject 
+NTSTATUS Ctrl2capInit(
+    IN PDRIVER_OBJECT DriverObject
     )
 {
     CCHAR		      ntNameBuffer[64];
@@ -154,7 +154,7 @@ NTSTATUS Ctrl2capInit(
     RtlZeroMemory(device->DeviceExtension, sizeof(DEVICE_EXTENSION));
 
     devExt = (PDEVICE_EXTENSION) device->DeviceExtension;
-   
+
     //
     // Keyboard uses buffered I/O so we must as well.
     //
@@ -182,7 +182,7 @@ NTSTATUS Ctrl2capInit(
 
     //
     // This line simply demonstrates how a driver can print
-    // stuff to the bluescreen during system initialization. 
+    // stuff to the bluescreen during system initialization.
     //
     RtlInitUnicodeString (&messageUnicodeString,
                           messageBuffer );
@@ -215,17 +215,17 @@ Ctrl2capAddDevice(
 
     //
     // Create a filter device and attach it to the device stack.
-    
+
     //
-    
+
     DbgPrint(("Ctrl2capAddDevice\n"));
-    status = IoCreateDevice(Driver,                   
-                            sizeof(DEVICE_EXTENSION), 
-                            NULL,                    
-                            FILE_DEVICE_KEYBOARD,   
-                            0,                     
-                            FALSE,                
-                            &device              
+    status = IoCreateDevice(Driver,
+                            sizeof(DEVICE_EXTENSION),
+                            NULL,
+                            FILE_DEVICE_KEYBOARD,
+                            0,
+                            FALSE,
+                            &device
                             );
 
     if (!NT_SUCCESS(status)) {
@@ -258,21 +258,21 @@ Ctrl2capAddDevice(
 //----------------------------------------------------------------------
 NTSTATUS Ctrl2capPnP(
     IN PDEVICE_OBJECT DeviceObject,
-    IN PIRP           Irp 
+    IN PIRP           Irp
     )
 {
-    PDEVICE_EXTENSION           devExt; 
+    PDEVICE_EXTENSION           devExt;
     PIO_STACK_LOCATION          irpStack;
     NTSTATUS                    status = STATUS_SUCCESS;
     KIRQL                       oldIrql;
-    KEVENT                      event;        
+    KEVENT                      event;
 
     devExt = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
     irpStack = IoGetCurrentIrpStackLocation(Irp);
 
     switch (irpStack->MinorFunction) {
     case IRP_MN_REMOVE_DEVICE:
-        
+
         //
         // Detach from the target device after passing the IRP
         // down the devnode stack.
@@ -280,7 +280,7 @@ NTSTATUS Ctrl2capPnP(
         IoSkipCurrentIrpStackLocation(Irp);
         IoCallDriver(devExt->TopOfStack, Irp);
 
-        IoDetachDevice(devExt->TopOfStack); 
+        IoDetachDevice(devExt->TopOfStack);
         IoDeleteDevice(DeviceObject);
 
         status = STATUS_SUCCESS;
@@ -295,12 +295,12 @@ NTSTATUS Ctrl2capPnP(
         status = IoCallDriver(devExt->TopOfStack, Irp);
         break;
 
-    case IRP_MN_START_DEVICE: 
+    case IRP_MN_START_DEVICE:
     case IRP_MN_QUERY_REMOVE_DEVICE:
     case IRP_MN_QUERY_STOP_DEVICE:
     case IRP_MN_CANCEL_REMOVE_DEVICE:
     case IRP_MN_CANCEL_STOP_DEVICE:
-    case IRP_MN_FILTER_RESOURCE_REQUIREMENTS: 
+    case IRP_MN_FILTER_RESOURCE_REQUIREMENTS:
     case IRP_MN_STOP_DEVICE:
     case IRP_MN_QUERY_DEVICE_RELATIONS:
     case IRP_MN_QUERY_INTERFACE:
@@ -338,29 +338,29 @@ NTSTATUS Ctrl2capPnP(
 //----------------------------------------------------------------------
 NTSTATUS Ctrl2capPower(
     IN PDEVICE_OBJECT DeviceObject,
-    IN PIRP           Irp 
+    IN PIRP           Irp
     )
 {
     PDEVICE_EXTENSION   devExt;
-    
+
     devExt = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
 
     //
     // Let the next power IRP out of the gate
-    // 
+    //
     PoStartNextPowerIrp( Irp );
-    
+
     //
     // Pass this power IRP to the keyboard class driver
     //
     IoSkipCurrentIrpStackLocation( Irp );
-    
+
     return PoCallDriver( devExt->TopOfStack, Irp );
 }
 
 
 //----------------------------------------------------------------------
-// 
+//
 // Ctrl2capUnload
 //
 // Our Win2K PnP unload function. We don't need to do anything.
@@ -381,7 +381,7 @@ Ctrl2capUnload(
 
 
 //----------------------------------------------------------------------
-// 
+//
 // Ctrl2capReadComplete
 //
 // Gets control after a read operation has completed.
@@ -389,10 +389,10 @@ Ctrl2capUnload(
 // Called: WIN2K, NT4
 //
 //----------------------------------------------------------------------
-NTSTATUS Ctrl2capReadComplete( 
-    IN PDEVICE_OBJECT DeviceObject, 
+NTSTATUS Ctrl2capReadComplete(
+    IN PDEVICE_OBJECT DeviceObject,
     IN PIRP Irp,
-    IN PVOID Context 
+    IN PVOID Context
     )
 {
     PIO_STACK_LOCATION        IrpSp;
@@ -409,7 +409,7 @@ NTSTATUS Ctrl2capReadComplete(
         // Do caps-lock down and caps-lock up. Note that
         // just frobbing the MakeCode handles both the up-key
         // and down-key cases since the up/down information is specified
-        // seperately in the Flags field of the keyboard input data 
+        // seperately in the Flags field of the keyboard input data
         // (0 means key-down, 1 means key-up).
         //
         KeyData = Irp->AssociatedIrp.SystemBuffer;
@@ -423,7 +423,7 @@ NTSTATUS Ctrl2capReadComplete(
             if( KeyData[i].MakeCode == CAPS_LOCK) {
 
                 KeyData[i].MakeCode = LCONTROL;
-            } 
+            }
         }
     }
 
@@ -448,8 +448,8 @@ NTSTATUS Ctrl2capReadComplete(
 // Called: WIN2K, NT4
 //
 //----------------------------------------------------------------------
-NTSTATUS Ctrl2capDispatchRead( 
-    IN PDEVICE_OBJECT DeviceObject, 
+NTSTATUS Ctrl2capDispatchRead(
+    IN PDEVICE_OBJECT DeviceObject,
     IN PIRP Irp )
 {
     PDEVICE_EXTENSION   devExt;
@@ -461,17 +461,17 @@ NTSTATUS Ctrl2capDispatchRead(
     //
     devExt = (PDEVICE_EXTENSION) DeviceObject->DeviceExtension;
     currentIrpStack = IoGetCurrentIrpStackLocation(Irp);
-    nextIrpStack = IoGetNextIrpStackLocation(Irp);    
+    nextIrpStack = IoGetNextIrpStackLocation(Irp);
 
     //
     // Push params down for keyboard class driver.
     //
     *nextIrpStack = *currentIrpStack;
 
-    //  
+    //
     // Set the completion callback, so we can "frob" the keyboard data.
-    //	    
-    IoSetCompletionRoutine( Irp, Ctrl2capReadComplete, 
+    //
+    IoSetCompletionRoutine( Irp, Ctrl2capReadComplete,
                             DeviceObject, TRUE, TRUE, TRUE );
 
     //
@@ -485,15 +485,15 @@ NTSTATUS Ctrl2capDispatchRead(
 //
 // Ctrl2capDispatchGeneral
 //
-// This handles several functions we are not interested in 
-// along to the keyboard class driver. 
+// This handles several functions we are not interested in
+// along to the keyboard class driver.
 //
 // Called: WIN2K, NT4
 //
 //----------------------------------------------------------------------
 NTSTATUS Ctrl2capDispatchGeneral(
     IN PDEVICE_OBJECT DeviceObject,
-    IN PIRP           Irp 
+    IN PIRP           Irp
     )
 {
     //

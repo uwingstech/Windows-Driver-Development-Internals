@@ -1001,7 +1001,7 @@ VideoGetProperty(
     else if (IsEqualGUID (&PROPSETID_VIDCAP_DROPPEDFRAMES, &pSPD->Property->Set)) {
         VideoStreamGetDroppedFramesProperty (pSrb);
     }
-	
+
     else if (IsEqualGUID (&KSPROPSETID_Clock, &pSPD->Property->Set)) {
         KdPrint(("KSPROPSETID_Clock!!!\n"));
     }
@@ -1026,7 +1026,7 @@ VideoGetProperty(
     else if (IsEqualGUID (&KSPROPSETID_Topology, &pSPD->Property->Set)) {
         KdPrint(("KSPROPSETID_Topology!!!\n"));
     }
-	
+
     else {
        pSrb->Status = STATUS_NOT_IMPLEMENTED;
     }
@@ -1165,8 +1165,8 @@ VideoCaptureRoutine(
         }
 
 #ifdef CREATE_A_FLURRY_OF_TIMING_SPEW
-        DbgLogTrace(("TestCap: Time=%6d mS at SystemTime=%I64d\n", 
-                     (LONG) ((LONGLONG) TimeContext.Time / 10000), 
+        DbgLogTrace(("TestCap: Time=%6d mS at SystemTime=%I64d\n",
+                     (LONG) ((LONGLONG) TimeContext.Time / 10000),
                      TimeContext.SystemTime));
 #endif
     }
@@ -1267,8 +1267,8 @@ VideoCaptureRoutine(
 
                 // Output a frame count every 100th frame in Debug mode
                 if (pStrmEx->FrameInfo.PictureNumber % 100 == 0) {
-                   DbgLogInfo(("TestCap: Picture %u, Stream=%d\n", 
-                               (unsigned int)pStrmEx->FrameInfo.PictureNumber, 
+                   DbgLogInfo(("TestCap: Picture %u, Stream=%d\n",
+                               (unsigned int)pStrmEx->FrameInfo.PictureNumber,
                                StreamNumber));
                 }
 

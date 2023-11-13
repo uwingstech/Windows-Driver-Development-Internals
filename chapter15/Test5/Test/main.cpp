@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-//Ê¹ÓÃCTL_CODE±ØĞë¼ÓÈëwinioctl.h
+//ä½¿ç”¨CTL_CODEå¿…é¡»åŠ å…¥winioctl.h
 #include <winioctl.h>
 #include "..\NT_Driver\Ioctls.h"
 
@@ -12,7 +12,7 @@ UCHAR In_8 (PUCHAR Port)
 		mov edx, Port
 		in al, dx
 		mov Value, al
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -29,7 +29,7 @@ USHORT In_16 (PUSHORT Port)
 		mov edx, Port
 		in ax, dx
 		mov Value, ax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -44,7 +44,7 @@ ULONG In_32 (PULONG Port)
 		mov edx, Port
 		in eax, dx
 		mov Value, eax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -58,7 +58,7 @@ void Out_32(PULONG Port,ULONG Value)
 		mov edx, Port
 		mov eax, Value
 		out dx,eax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -70,7 +70,7 @@ void Out_16 (PUSHORT Port,USHORT Value)
 		mov edx, Port
 		mov ax, Value
 		out dx,ax
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -83,7 +83,7 @@ void Out_8 (PUCHAR Port,UCHAR Value)
 		mov edx, Port
 		mov al, Value
 		out dx,al
-		//²åÈë¼¸¸ö¿ÕÖ¸Áî
+		//æ’å…¥å‡ ä¸ªç©ºæŒ‡ä»¤
 		nop
 		nop
 	}
@@ -91,14 +91,14 @@ void Out_8 (PUCHAR Port,UCHAR Value)
 
 void KernelModeFunction()
 {
-	//ÔËĞĞÔÚring0
-	//ËùÒÔÄÜÖ´ĞĞIO²Ù×÷
+	//è¿è¡Œåœ¨ring0
+	//æ‰€ä»¥èƒ½æ‰§è¡ŒIOæ“ä½œ
 	Out_8((PUCHAR)0x378,0);
 }
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					0,		// share mode none
@@ -117,9 +117,9 @@ int main()
 
 	DWORD dwOutput ;
 
-	//ÀàËÆÓÚOut_8((PUCHAR)0x378,0);
+	//ç±»ä¼¼äºOut_8((PUCHAR)0x378,0);
 	DWORD Function_Address = (DWORD)KernelModeFunction;
-	//½«KernelModeFunctionº¯ÊıµÄº¯ÊıµØÖ·´«ÈëÇı¶¯
+	//å°†KernelModeFunctionå‡½æ•°çš„å‡½æ•°åœ°å€ä¼ å…¥é©±åŠ¨
 	DeviceIoControl(hDevice, IOCTL_KERNEL_FUNCTION, &Function_Address, 4, NULL, 0, &dwOutput, NULL);
 
 	CloseHandle(hDevice);

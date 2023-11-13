@@ -1,123 +1,123 @@
-#include <windows.h>  
-#include <winsvc.h>  
-#include <conio.h>  
+#include <windows.h>
+#include <winsvc.h>
+#include <conio.h>
 #include <stdio.h>
 
 #define DRIVER_NAME "HelloDDK"
 #define DRIVER_PATH "..\\MyDriver\\MyDriver_Check\\HelloDDK.sys"
 
-//×°ÔØNTÇı¶¯³ÌĞò
+//è£…è½½NTé©±åŠ¨ç¨‹åº
 BOOL LoadNTDriver(char* lpszDriverName,char* lpszDriverPath)
 {
 	char szDriverImagePath[256];
-	//µÃµ½ÍêÕûµÄÇı¶¯Â·¾¶
+	//å¾—åˆ°å®Œæ•´çš„é©±åŠ¨è·¯å¾„
 	GetFullPathName(lpszDriverPath, 256, szDriverImagePath, NULL);
 
 	BOOL bRet = FALSE;
 
-	SC_HANDLE hServiceMgr=NULL;//SCM¹ÜÀíÆ÷µÄ¾ä±ú
-	SC_HANDLE hServiceDDK=NULL;//NTÇı¶¯³ÌĞòµÄ·şÎñ¾ä±ú
+	SC_HANDLE hServiceMgr=NULL;//SCMç®¡ç†å™¨çš„å¥æŸ„
+	SC_HANDLE hServiceDDK=NULL;//NTé©±åŠ¨ç¨‹åºçš„æœåŠ¡å¥æŸ„
 
-	//´ò¿ª·şÎñ¿ØÖÆ¹ÜÀíÆ÷
+	//æ‰“å¼€æœåŠ¡æ§åˆ¶ç®¡ç†å™¨
 	hServiceMgr = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS );
 
-	if( hServiceMgr == NULL )  
+	if( hServiceMgr == NULL )
 	{
-		//OpenSCManagerÊ§°Ü
+		//OpenSCManagerå¤±è´¥
 		printf( "OpenSCManager() Faild %d ! \n", GetLastError() );
 		bRet = FALSE;
 		goto BeforeLeave;
 	}
 	else
 	{
-		////OpenSCManager³É¹¦
-		printf( "OpenSCManager() ok ! \n" );  
+		////OpenSCManageræˆåŠŸ
+		printf( "OpenSCManager() ok ! \n" );
 	}
 
-	//´´½¨Çı¶¯Ëù¶ÔÓ¦µÄ·şÎñ
+	//åˆ›å»ºé©±åŠ¨æ‰€å¯¹åº”çš„æœåŠ¡
 	hServiceDDK = CreateService( hServiceMgr,
-		lpszDriverName, //Çı¶¯³ÌĞòµÄÔÚ×¢²á±íÖĞµÄÃû×Ö  
-		lpszDriverName, // ×¢²á±íÇı¶¯³ÌĞòµÄ DisplayName Öµ  
-		SERVICE_ALL_ACCESS, // ¼ÓÔØÇı¶¯³ÌĞòµÄ·ÃÎÊÈ¨ÏŞ  
-		SERVICE_KERNEL_DRIVER,// ±íÊ¾¼ÓÔØµÄ·şÎñÊÇÇı¶¯³ÌĞò  
-		SERVICE_DEMAND_START, // ×¢²á±íÇı¶¯³ÌĞòµÄ Start Öµ  
-		SERVICE_ERROR_IGNORE, // ×¢²á±íÇı¶¯³ÌĞòµÄ ErrorControl Öµ  
-		szDriverImagePath, // ×¢²á±íÇı¶¯³ÌĞòµÄ ImagePath Öµ  
-		NULL,  
-		NULL,  
-		NULL,  
-		NULL,  
-		NULL);  
+		lpszDriverName, //é©±åŠ¨ç¨‹åºçš„åœ¨æ³¨å†Œè¡¨ä¸­çš„åå­—
+		lpszDriverName, // æ³¨å†Œè¡¨é©±åŠ¨ç¨‹åºçš„ DisplayName å€¼
+		SERVICE_ALL_ACCESS, // åŠ è½½é©±åŠ¨ç¨‹åºçš„è®¿é—®æƒé™
+		SERVICE_KERNEL_DRIVER,// è¡¨ç¤ºåŠ è½½çš„æœåŠ¡æ˜¯é©±åŠ¨ç¨‹åº
+		SERVICE_DEMAND_START, // æ³¨å†Œè¡¨é©±åŠ¨ç¨‹åºçš„ Start å€¼
+		SERVICE_ERROR_IGNORE, // æ³¨å†Œè¡¨é©±åŠ¨ç¨‹åºçš„ ErrorControl å€¼
+		szDriverImagePath, // æ³¨å†Œè¡¨é©±åŠ¨ç¨‹åºçš„ ImagePath å€¼
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL);
 
 	DWORD dwRtn;
-	//ÅĞ¶Ï·şÎñÊÇ·ñÊ§°Ü
-	if( hServiceDDK == NULL )  
-	{  
+	//åˆ¤æ–­æœåŠ¡æ˜¯å¦å¤±è´¥
+	if( hServiceDDK == NULL )
+	{
 		dwRtn = GetLastError();
-		if( dwRtn != ERROR_IO_PENDING && dwRtn != ERROR_SERVICE_EXISTS )  
-		{  
-			//ÓÉÓÚÆäËûÔ­Òò´´½¨·şÎñÊ§°Ü
-			printf( "CrateService() Faild %d ! \n", dwRtn );  
+		if( dwRtn != ERROR_IO_PENDING && dwRtn != ERROR_SERVICE_EXISTS )
+		{
+			//ç”±äºå…¶ä»–åŸå› åˆ›å»ºæœåŠ¡å¤±è´¥
+			printf( "CrateService() Faild %d ! \n", dwRtn );
 			bRet = FALSE;
 			goto BeforeLeave;
-		}  
-		else  
+		}
+		else
 		{
-			//·şÎñ´´½¨Ê§°Ü£¬ÊÇÓÉÓÚ·şÎñÒÑ¾­´´Á¢¹ı
-			printf( "CrateService() Faild Service is ERROR_IO_PENDING or ERROR_SERVICE_EXISTS! \n" );  
+			//æœåŠ¡åˆ›å»ºå¤±è´¥ï¼Œæ˜¯ç”±äºæœåŠ¡å·²ç»åˆ›ç«‹è¿‡
+			printf( "CrateService() Faild Service is ERROR_IO_PENDING or ERROR_SERVICE_EXISTS! \n" );
 		}
 
-		// Çı¶¯³ÌĞòÒÑ¾­¼ÓÔØ£¬Ö»ĞèÒª´ò¿ª  
-		hServiceDDK = OpenService( hServiceMgr, lpszDriverName, SERVICE_ALL_ACCESS );  
-		if( hServiceDDK == NULL )  
+		// é©±åŠ¨ç¨‹åºå·²ç»åŠ è½½ï¼Œåªéœ€è¦æ‰“å¼€
+		hServiceDDK = OpenService( hServiceMgr, lpszDriverName, SERVICE_ALL_ACCESS );
+		if( hServiceDDK == NULL )
 		{
-			//Èç¹û´ò¿ª·şÎñÒ²Ê§°Ü£¬ÔòÒâÎ¶´íÎó
-			dwRtn = GetLastError();  
-			printf( "OpenService() Faild %d ! \n", dwRtn );  
+			//å¦‚æœæ‰“å¼€æœåŠ¡ä¹Ÿå¤±è´¥ï¼Œåˆ™æ„å‘³é”™è¯¯
+			dwRtn = GetLastError();
+			printf( "OpenService() Faild %d ! \n", dwRtn );
 			bRet = FALSE;
 			goto BeforeLeave;
-		}  
-		else 
+		}
+		else
 		{
 			printf( "OpenService() ok ! \n" );
 		}
-	}  
-	else  
+	}
+	else
 	{
 		printf( "CrateService() ok ! \n" );
 	}
 
-	//¿ªÆô´ËÏî·şÎñ
-	bRet= StartService( hServiceDDK, NULL, NULL );  
-	if( !bRet )  
-	{  
-		DWORD dwRtn = GetLastError();  
-		if( dwRtn != ERROR_IO_PENDING && dwRtn != ERROR_SERVICE_ALREADY_RUNNING )  
-		{  
-			printf( "StartService() Faild %d ! \n", dwRtn );  
+	//å¼€å¯æ­¤é¡¹æœåŠ¡
+	bRet= StartService( hServiceDDK, NULL, NULL );
+	if( !bRet )
+	{
+		DWORD dwRtn = GetLastError();
+		if( dwRtn != ERROR_IO_PENDING && dwRtn != ERROR_SERVICE_ALREADY_RUNNING )
+		{
+			printf( "StartService() Faild %d ! \n", dwRtn );
 			bRet = FALSE;
 			goto BeforeLeave;
-		}  
-		else  
-		{  
-			if( dwRtn == ERROR_IO_PENDING )  
-			{  
-				//Éè±¸±»¹Ò×¡
+		}
+		else
+		{
+			if( dwRtn == ERROR_IO_PENDING )
+			{
+				//è®¾å¤‡è¢«æŒ‚ä½
 				printf( "StartService() Faild ERROR_IO_PENDING ! \n");
 				bRet = FALSE;
 				goto BeforeLeave;
-			}  
-			else  
-			{  
-				//·şÎñÒÑ¾­¿ªÆô
+			}
+			else
+			{
+				//æœåŠ¡å·²ç»å¼€å¯
 				printf( "StartService() Faild ERROR_SERVICE_ALREADY_RUNNING ! \n");
 				bRet = TRUE;
 				goto BeforeLeave;
-			}  
-		}  
+			}
+		}
 	}
 	bRet = TRUE;
-//Àë¿ªÇ°¹Ø±Õ¾ä±ú
+//ç¦»å¼€å‰å…³é—­å¥æŸ„
 BeforeLeave:
 	if(hServiceDDK)
 	{
@@ -130,65 +130,65 @@ BeforeLeave:
 	return bRet;
 }
 
-//Ğ¶ÔØÇı¶¯³ÌĞò  
-BOOL UnloadNTDriver( char * szSvrName )  
+//å¸è½½é©±åŠ¨ç¨‹åº
+BOOL UnloadNTDriver( char * szSvrName )
 {
 	BOOL bRet = FALSE;
-	SC_HANDLE hServiceMgr=NULL;//SCM¹ÜÀíÆ÷µÄ¾ä±ú
-	SC_HANDLE hServiceDDK=NULL;//NTÇı¶¯³ÌĞòµÄ·şÎñ¾ä±ú
+	SC_HANDLE hServiceMgr=NULL;//SCMç®¡ç†å™¨çš„å¥æŸ„
+	SC_HANDLE hServiceDDK=NULL;//NTé©±åŠ¨ç¨‹åºçš„æœåŠ¡å¥æŸ„
 	SERVICE_STATUS SvrSta;
-	//´ò¿ªSCM¹ÜÀíÆ÷
-	hServiceMgr = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS );  
-	if( hServiceMgr == NULL )  
+	//æ‰“å¼€SCMç®¡ç†å™¨
+	hServiceMgr = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS );
+	if( hServiceMgr == NULL )
 	{
-		//´ø¿ªSCM¹ÜÀíÆ÷Ê§°Ü
-		printf( "OpenSCManager() Faild %d ! \n", GetLastError() );  
+		//å¸¦å¼€SCMç®¡ç†å™¨å¤±è´¥
+		printf( "OpenSCManager() Faild %d ! \n", GetLastError() );
 		bRet = FALSE;
 		goto BeforeLeave;
-	}  
-	else  
-	{
-		//´ø¿ªSCM¹ÜÀíÆ÷Ê§°Ü³É¹¦
-		printf( "OpenSCManager() ok ! \n" );  
 	}
-	//´ò¿ªÇı¶¯Ëù¶ÔÓ¦µÄ·şÎñ
-	hServiceDDK = OpenService( hServiceMgr, szSvrName, SERVICE_ALL_ACCESS );  
-
-	if( hServiceDDK == NULL )  
+	else
 	{
-		//´ò¿ªÇı¶¯Ëù¶ÔÓ¦µÄ·şÎñÊ§°Ü
-		printf( "OpenService() Faild %d ! \n", GetLastError() );  
+		//å¸¦å¼€SCMç®¡ç†å™¨å¤±è´¥æˆåŠŸ
+		printf( "OpenSCManager() ok ! \n" );
+	}
+	//æ‰“å¼€é©±åŠ¨æ‰€å¯¹åº”çš„æœåŠ¡
+	hServiceDDK = OpenService( hServiceMgr, szSvrName, SERVICE_ALL_ACCESS );
+
+	if( hServiceDDK == NULL )
+	{
+		//æ‰“å¼€é©±åŠ¨æ‰€å¯¹åº”çš„æœåŠ¡å¤±è´¥
+		printf( "OpenService() Faild %d ! \n", GetLastError() );
 		bRet = FALSE;
 		goto BeforeLeave;
-	}  
-	else  
-	{  
-		printf( "OpenService() ok ! \n" );  
-	}  
-	//Í£Ö¹Çı¶¯³ÌĞò£¬Èç¹ûÍ£Ö¹Ê§°Ü£¬Ö»ÓĞÖØĞÂÆô¶¯²ÅÄÜ£¬ÔÙ¶¯Ì¬¼ÓÔØ¡£  
-	if( !ControlService( hServiceDDK, SERVICE_CONTROL_STOP , &SvrSta ) )  
-	{  
-		printf( "ControlService() Faild %d !\n", GetLastError() );  
-	}  
-	else  
+	}
+	else
 	{
-		//´ò¿ªÇı¶¯Ëù¶ÔÓ¦µÄÊ§°Ü
-		printf( "ControlService() ok !\n" );  
-	}  
-	//¶¯Ì¬Ğ¶ÔØÇı¶¯³ÌĞò¡£  
-	if( !DeleteService( hServiceDDK ) )  
+		printf( "OpenService() ok ! \n" );
+	}
+	//åœæ­¢é©±åŠ¨ç¨‹åºï¼Œå¦‚æœåœæ­¢å¤±è´¥ï¼Œåªæœ‰é‡æ–°å¯åŠ¨æ‰èƒ½ï¼Œå†åŠ¨æ€åŠ è½½ã€‚
+	if( !ControlService( hServiceDDK, SERVICE_CONTROL_STOP , &SvrSta ) )
 	{
-		//Ğ¶ÔØÊ§°Ü
-		printf( "DeleteSrevice() Faild %d !\n", GetLastError() );  
-	}  
-	else  
-	{  
-		//Ğ¶ÔØ³É¹¦
-		printf( "DelServer:eleteSrevice() ok !\n" );  
-	}  
+		printf( "ControlService() Faild %d !\n", GetLastError() );
+	}
+	else
+	{
+		//æ‰“å¼€é©±åŠ¨æ‰€å¯¹åº”çš„å¤±è´¥
+		printf( "ControlService() ok !\n" );
+	}
+	//åŠ¨æ€å¸è½½é©±åŠ¨ç¨‹åºã€‚
+	if( !DeleteService( hServiceDDK ) )
+	{
+		//å¸è½½å¤±è´¥
+		printf( "DeleteSrevice() Faild %d !\n", GetLastError() );
+	}
+	else
+	{
+		//å¸è½½æˆåŠŸ
+		printf( "DelServer:eleteSrevice() ok !\n" );
+	}
 	bRet = TRUE;
 BeforeLeave:
-//Àë¿ªÇ°¹Ø±Õ´ò¿ªµÄ¾ä±ú
+//ç¦»å¼€å‰å…³é—­æ‰“å¼€çš„å¥æŸ„
 	if(hServiceDDK)
 	{
 		CloseServiceHandle(hServiceDDK);
@@ -197,51 +197,51 @@ BeforeLeave:
 	{
 		CloseServiceHandle(hServiceMgr);
 	}
-	return bRet;	
-} 
+	return bRet;
+}
 
 void TestDriver()
 {
-	//²âÊÔÇı¶¯³ÌĞò  
-	HANDLE hDevice = CreateFile("\\\\.\\HelloDDK",  
-		GENERIC_WRITE | GENERIC_READ,  
-		0,  
-		NULL,  
-		OPEN_EXISTING,  
-		0,  
-		NULL);  
-	if( hDevice != INVALID_HANDLE_VALUE )  
+	//æµ‹è¯•é©±åŠ¨ç¨‹åº
+	HANDLE hDevice = CreateFile("\\\\.\\HelloDDK",
+		GENERIC_WRITE | GENERIC_READ,
+		0,
+		NULL,
+		OPEN_EXISTING,
+		0,
+		NULL);
+	if( hDevice != INVALID_HANDLE_VALUE )
 	{
-		printf( "Create Device ok ! \n" );  
+		printf( "Create Device ok ! \n" );
 	}
-	else  
+	else
 	{
-		printf( "Create Device faild %d ! \n", GetLastError() );  
+		printf( "Create Device faild %d ! \n", GetLastError() );
 	}
 	CloseHandle( hDevice );
-} 
+}
 
-int main(int argc, char* argv[])  
+int main(int argc, char* argv[])
 {
-	//¼ÓÔØÇı¶¯
+	//åŠ è½½é©±åŠ¨
 	BOOL bRet = LoadNTDriver(DRIVER_NAME,DRIVER_PATH);
 	if (!bRet)
 	{
 		printf("LoadNTDriver error\n");
 		return 0;
 	}
-	//¼ÓÔØ³É¹¦
+	//åŠ è½½æˆåŠŸ
 
-	printf( "press any to create device!\n" );  
-	getch();  
+	printf( "press any to create device!\n" );
+	getch();
 
 	TestDriver();
 
-	//ÕâÊ±ºòÄã¿ÉÒÔÍ¨¹ı×¢²á±í£¬»òÆäËû²é¿´·ûºÅÁ¬½ÓµÄÈí¼şÑéÖ¤¡£  
-	printf( "press any to unload the driver!\n" );  
-	getch();  
+	//è¿™æ—¶å€™ä½ å¯ä»¥é€šè¿‡æ³¨å†Œè¡¨ï¼Œæˆ–å…¶ä»–æŸ¥çœ‹ç¬¦å·è¿æ¥çš„è½¯ä»¶éªŒè¯ã€‚
+	printf( "press any to unload the driver!\n" );
+	getch();
 
-	//Ğ¶ÔØÇı¶¯
+	//å¸è½½é©±åŠ¨
 	UnloadNTDriver(DRIVER_NAME);
 	if (!bRet)
 	{
@@ -249,6 +249,6 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	return 0;  
-}  
+	return 0;
+}
 

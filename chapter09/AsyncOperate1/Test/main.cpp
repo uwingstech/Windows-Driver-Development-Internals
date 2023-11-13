@@ -2,21 +2,21 @@
 #include <stdio.h>
 
 #define BUFFER_SIZE	512
-//¼ÙÉè¸ÃÎÄ¼þ´óÓÚ»òµÈÓÚBUFFER_SIZE
+//å‡è®¾è¯¥æ–‡ä»¶å¤§äºŽæˆ–ç­‰äºŽBUFFER_SIZE
 
 #define DEVICE_NAME	"test.dat"
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("test.dat",
 					GENERIC_READ | GENERIC_WRITE,
 					0,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//´Ë´¦ÉèÖÃFILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//æ­¤å¤„è®¾ç½®FILE_FLAG_OVERLAPPED
 					NULL );
 
-	if (hDevice == INVALID_HANDLE_VALUE) 
+	if (hDevice == INVALID_HANDLE_VALUE)
 	{
 		printf("Read Error\n");
 		return 1;
@@ -25,18 +25,18 @@ int main()
 	UCHAR buffer[BUFFER_SIZE];
 	DWORD dwRead;
 
-	//³õÊ¼»¯overlapÊ¹ÆäÄÚ²¿È«²¿ÎªÁã
+	//åˆå§‹åŒ–overlapä½¿å…¶å†…éƒ¨å…¨éƒ¨ä¸ºé›¶
 	OVERLAPPED overlap={0};
 
-	//´´½¨overlapÊÂ¼þ
+	//åˆ›å»ºoverlapäº‹ä»¶
 	overlap.hEvent = CreateEvent(NULL,FALSE,FALSE,NULL);
 
-	//ÕâÀïÃ»ÓÐÉèÖÃOVERLAP²ÎÊý£¬Òò´ËÊÇÒì²½²Ù×÷
+	//è¿™é‡Œæ²¡æœ‰è®¾ç½®OVERLAPå‚æ•°ï¼Œå› æ­¤æ˜¯å¼‚æ­¥æ“ä½œ
 	ReadFile(hDevice,buffer,BUFFER_SIZE,&dwRead,&overlap);
 
-	//×öÒ»Ð©ÆäËû²Ù×÷£¬ÕâÐ©²Ù×÷»áÓë¶ÁÉè±¸²¢ÐÐÖ´ÐÐ
+	//åšä¸€äº›å…¶ä»–æ“ä½œï¼Œè¿™äº›æ“ä½œä¼šä¸Žè¯»è®¾å¤‡å¹¶è¡Œæ‰§è¡Œ
 
-	//µÈ´ý¶ÁÉè±¸½áÊø
+	//ç­‰å¾…è¯»è®¾å¤‡ç»“æŸ
 	WaitForSingleObject(overlap.hEvent,INFINITE);
 
 	CloseHandle(hDevice);

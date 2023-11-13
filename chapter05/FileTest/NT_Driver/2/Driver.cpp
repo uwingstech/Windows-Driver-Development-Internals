@@ -1,43 +1,43 @@
 /************************************************************************
-* ÎÄ¼þÃû³Æ:Driver.cpp                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:Driver.cpp
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 
 #include "Driver.h"
 
 #pragma INITCODE
-VOID CreateFileTest() 
+VOID CreateFileTest()
 {
 	OBJECT_ATTRIBUTES objectAttributes;
 	IO_STATUS_BLOCK iostatus;
 	HANDLE hfile;
 	UNICODE_STRING logFileUnicodeString;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &logFileUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &logFileUnicodeString,
 		L"\\??\\C:\\1.log");
-	//»òÕßÐ´³É "\\Device\\HarddiskVolume1\\1.LOG"
+	//æˆ–è€…å†™æˆ "\\Device\\HarddiskVolume1\\1.LOG"
 
 
-	//³õÊ¼»¯objectAttributes
-	InitializeObjectAttributes(&objectAttributes, 
+	//åˆå§‹åŒ–objectAttributes
+	InitializeObjectAttributes(&objectAttributes,
 							&logFileUnicodeString,
-							OBJ_CASE_INSENSITIVE, 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,
+							NULL,
 							NULL );
 
-	//´´½¨ÎÄ¼þ
-	NTSTATUS ntStatus = ZwCreateFile( &hfile, 
+	//åˆ›å»ºæ–‡ä»¶
+	NTSTATUS ntStatus = ZwCreateFile( &hfile,
 							GENERIC_WRITE,
-							&objectAttributes, 
-							&iostatus, 
+							&objectAttributes,
+							&iostatus,
 							NULL,
-							FILE_ATTRIBUTE_NORMAL, 
+							FILE_ATTRIBUTE_NORMAL,
 							FILE_SHARE_READ,
-							FILE_OPEN_IF,//¼´Ê¹´æÔÚ¸ÃÎÄ¼þ£¬Ò²´´½¨ 
-							FILE_SYNCHRONOUS_IO_NONALERT, 
-							NULL, 
+							FILE_OPEN_IF,//å³ä½¿å­˜åœ¨è¯¥æ–‡ä»¶ï¼Œä¹Ÿåˆ›å»º
+							FILE_SYNCHRONOUS_IO_NONALERT,
+							NULL,
 							0 );
 	if ( NT_SUCCESS(ntStatus))
 	{
@@ -47,40 +47,40 @@ VOID CreateFileTest()
 		KdPrint(("Create file  unsuccessfully!\n"));
 	}
 
-	//ÎÄ¼þ²Ù×÷
+	//æ–‡ä»¶æ“ä½œ
 	//.......
 
-	//¹Ø±ÕÎÄ¼þ¾ä±ú
+	//å…³é—­æ–‡ä»¶å¥æŸ„
 	ZwClose(hfile);
 }
 
 
 #pragma INITCODE
-VOID OpenFileTest2() 
+VOID OpenFileTest2()
 {
 	OBJECT_ATTRIBUTES objectAttributes;
 	IO_STATUS_BLOCK iostatus;
 	HANDLE hfile;
 	UNICODE_STRING logFileUnicodeString;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &logFileUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &logFileUnicodeString,
 		L"\\??\\C:\\1.log");
-	//»òÕßÐ´³É "\\Device\\HarddiskVolume1\\1.LOG"
+	//æˆ–è€…å†™æˆ "\\Device\\HarddiskVolume1\\1.LOG"
 
 
-	//³õÊ¼»¯objectAttributes
-	InitializeObjectAttributes(&objectAttributes, 
+	//åˆå§‹åŒ–objectAttributes
+	InitializeObjectAttributes(&objectAttributes,
 							&logFileUnicodeString,
-							OBJ_CASE_INSENSITIVE, 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,
+							NULL,
 							NULL );
 
-	//´´½¨ÎÄ¼þ
-	NTSTATUS ntStatus = ZwOpenFile( &hfile, 
+	//åˆ›å»ºæ–‡ä»¶
+	NTSTATUS ntStatus = ZwOpenFile( &hfile,
 							GENERIC_ALL,
-							&objectAttributes, 
-							&iostatus, 
+							&objectAttributes,
+							&iostatus,
 							FILE_SHARE_READ|FILE_SHARE_WRITE,
 							FILE_SYNCHRONOUS_IO_NONALERT);
 	if ( NT_SUCCESS(ntStatus))
@@ -91,45 +91,45 @@ VOID OpenFileTest2()
 		KdPrint(("Create file  unsuccessfully!\n"));
 	}
 
-	//ÎÄ¼þ²Ù×÷
+	//æ–‡ä»¶æ“ä½œ
 	//.......
 
-	//¹Ø±ÕÎÄ¼þ¾ä±ú
+	//å…³é—­æ–‡ä»¶å¥æŸ„
 	ZwClose(hfile);
 }
 
 
 #pragma INITCODE
-VOID OpenFileTest1() 
+VOID OpenFileTest1()
 {
 	OBJECT_ATTRIBUTES objectAttributes;
 	IO_STATUS_BLOCK iostatus;
 	HANDLE hfile;
 	UNICODE_STRING logFileUnicodeString;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &logFileUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &logFileUnicodeString,
 		L"\\??\\C:\\1.log");
-	//»òÕßÐ´³É "\\Device\\HarddiskVolume1\\1.LOG"
+	//æˆ–è€…å†™æˆ "\\Device\\HarddiskVolume1\\1.LOG"
 
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&logFileUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óÐ¡Ð´Ãô¸Ð 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
 
-	//´´½¨ÎÄ¼þ
-	NTSTATUS ntStatus = ZwCreateFile( &hfile, 
+	//åˆ›å»ºæ–‡ä»¶
+	NTSTATUS ntStatus = ZwCreateFile( &hfile,
 							GENERIC_READ,
-							&objectAttributes, 
-							&iostatus, 
+							&objectAttributes,
+							&iostatus,
 							NULL,
-							FILE_ATTRIBUTE_NORMAL, 
+							FILE_ATTRIBUTE_NORMAL,
 							FILE_SHARE_WRITE,
-							FILE_OPEN,//¶ÔÎÄ¼þ´ò¿ª£¬Èç¹û²»´æÔÚÔò·µ»Ø´íÎó 
-							FILE_SYNCHRONOUS_IO_NONALERT, 
-							NULL, 
+							FILE_OPEN,//å¯¹æ–‡ä»¶æ‰“å¼€ï¼Œå¦‚æžœä¸å­˜åœ¨åˆ™è¿”å›žé”™è¯¯
+							FILE_SYNCHRONOUS_IO_NONALERT,
+							NULL,
 							0 );
 	if ( NT_SUCCESS(ntStatus))
 	{
@@ -139,45 +139,45 @@ VOID OpenFileTest1()
 		KdPrint(("Open file  unsuccessfully!\n"));
 	}
 
-	//ÎÄ¼þ²Ù×÷
+	//æ–‡ä»¶æ“ä½œ
 	//.......
 
-	//¹Ø±ÕÎÄ¼þ¾ä±ú
+	//å…³é—­æ–‡ä»¶å¥æŸ„
 	ZwClose(hfile);
 }
 
 
 #pragma INITCODE
-VOID FileAttributeTest() 
+VOID FileAttributeTest()
 {
 	OBJECT_ATTRIBUTES objectAttributes;
 	IO_STATUS_BLOCK iostatus;
 	HANDLE hfile;
 	UNICODE_STRING logFileUnicodeString;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &logFileUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &logFileUnicodeString,
 		L"\\??\\C:\\1.log");
-	//»òÕßÐ´³É "\\Device\\HarddiskVolume1\\1.LOG"
+	//æˆ–è€…å†™æˆ "\\Device\\HarddiskVolume1\\1.LOG"
 
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&logFileUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óÐ¡Ð´Ãô¸Ð 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
 
-	//´´½¨ÎÄ¼þ
-	NTSTATUS ntStatus = ZwCreateFile( &hfile, 
+	//åˆ›å»ºæ–‡ä»¶
+	NTSTATUS ntStatus = ZwCreateFile( &hfile,
 							GENERIC_READ,
-							&objectAttributes, 
-							&iostatus, 
+							&objectAttributes,
+							&iostatus,
 							NULL,
-							FILE_ATTRIBUTE_NORMAL, 
+							FILE_ATTRIBUTE_NORMAL,
 							0,
-							FILE_OPEN,//¶ÔÎÄ¼þ´ò¿ª£¬Èç¹û²»´æÔÚÔò·µ»Ø´íÎó 
-							FILE_SYNCHRONOUS_IO_NONALERT, 
-							NULL, 
+							FILE_OPEN,//å¯¹æ–‡ä»¶æ‰“å¼€ï¼Œå¦‚æžœä¸å­˜åœ¨åˆ™è¿”å›žé”™è¯¯
+							FILE_SYNCHRONOUS_IO_NONALERT,
+							NULL,
 							0 );
 	if (NT_SUCCESS(ntStatus))
 	{
@@ -185,7 +185,7 @@ VOID FileAttributeTest()
 	}
 
 	FILE_STANDARD_INFORMATION fsi;
-	//¶ÁÈ¡ÎÄ¼þ³¤¶È
+	//è¯»å–æ–‡ä»¶é•¿åº¦
 	ntStatus = ZwQueryInformationFile(hfile,
 									&iostatus,
 									&fsi,
@@ -195,8 +195,8 @@ VOID FileAttributeTest()
 	{
 		KdPrint(("file length:%u\n",fsi.EndOfFile.QuadPart));
 	}
-	
-	//ÐÞ¸Äµ±Ç°ÎÄ¼þÖ¸Õë
+
+	//ä¿®æ”¹å½“å‰æ–‡ä»¶æŒ‡é’ˆ
 	FILE_POSITION_INFORMATION fpi;
 	fpi.CurrentByteOffset.QuadPart = 100i64;
 	ntStatus = ZwSetInformationFile(hfile,
@@ -209,101 +209,101 @@ VOID FileAttributeTest()
 		KdPrint(("update the file pointer successfully.\n"));
 	}
 
-	//¹Ø±ÕÎÄ¼þ¾ä±ú
+	//å…³é—­æ–‡ä»¶å¥æŸ„
 	ZwClose(hfile);
 }
 
 
 #pragma INITCODE
-VOID WriteFileTest() 
+VOID WriteFileTest()
 {
 	OBJECT_ATTRIBUTES objectAttributes;
 	IO_STATUS_BLOCK iostatus;
 	HANDLE hfile;
 	UNICODE_STRING logFileUnicodeString;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &logFileUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &logFileUnicodeString,
 		L"\\??\\C:\\1.log");
-	//»òÕßÐ´³É "\\Device\\HarddiskVolume1\\1.LOG"
+	//æˆ–è€…å†™æˆ "\\Device\\HarddiskVolume1\\1.LOG"
 
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&logFileUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óÐ¡Ð´Ãô¸Ð 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
 
-	//´´½¨ÎÄ¼þ
-	NTSTATUS ntStatus = ZwCreateFile( &hfile, 
+	//åˆ›å»ºæ–‡ä»¶
+	NTSTATUS ntStatus = ZwCreateFile( &hfile,
 							GENERIC_WRITE,
-							&objectAttributes, 
-							&iostatus, 
+							&objectAttributes,
+							&iostatus,
 							NULL,
-							FILE_ATTRIBUTE_NORMAL, 
+							FILE_ATTRIBUTE_NORMAL,
 							FILE_SHARE_WRITE,
-							FILE_OPEN_IF,//¼´Ê¹´æÔÚ¸ÃÎÄ¼þ£¬Ò²´´½¨ 
-							FILE_SYNCHRONOUS_IO_NONALERT, 
-							NULL, 
+							FILE_OPEN_IF,//å³ä½¿å­˜åœ¨è¯¥æ–‡ä»¶ï¼Œä¹Ÿåˆ›å»º
+							FILE_SYNCHRONOUS_IO_NONALERT,
+							NULL,
 							0 );
 #define BUFFER_SIZE 1024
 	PUCHAR pBuffer = (PUCHAR)ExAllocatePool(PagedPool,BUFFER_SIZE);
-	//¹¹ÔìÒªÌî³äµÄÊý¾Ý
+	//æž„é€ è¦å¡«å……çš„æ•°æ®
 	RtlFillMemory(pBuffer,BUFFER_SIZE,0xAA);
 
 	KdPrint(("The program will write %d bytes\n",BUFFER_SIZE));
-	//Ð´ÎÄ¼þ
+	//å†™æ–‡ä»¶
 	ZwWriteFile(hfile,NULL,NULL,NULL,&iostatus,pBuffer,BUFFER_SIZE,NULL,NULL);
 	KdPrint(("The program really wrote %d bytes\n",iostatus.Information));
 
 
-	//¹¹ÔìÒªÌî³äµÄÊý¾Ý
+	//æž„é€ è¦å¡«å……çš„æ•°æ®
 	RtlFillMemory(pBuffer,BUFFER_SIZE,0xBB);
 
 	KdPrint(("The program will append %d bytes\n",BUFFER_SIZE));
-	//×·¼ÓÊý¾Ý
+	//è¿½åŠ æ•°æ®
 	LARGE_INTEGER number;
-	number.QuadPart = 1024i64;//ÉèÖÃÎÄ¼þÖ¸Õë
-	//¶ÔÎÄ¼þ½øÐÐ¸½¼ÓÐ´
+	number.QuadPart = 1024i64;//è®¾ç½®æ–‡ä»¶æŒ‡é’ˆ
+	//å¯¹æ–‡ä»¶è¿›è¡Œé™„åŠ å†™
 	ZwWriteFile(hfile,NULL,NULL,NULL,&iostatus,pBuffer,BUFFER_SIZE,&number,NULL);
 	KdPrint(("The program really appended %d bytes\n",iostatus.Information));
 
-	//¹Ø±ÕÎÄ¼þ¾ä±ú
+	//å…³é—­æ–‡ä»¶å¥æŸ„
 	ZwClose(hfile);
 
 	ExFreePool(pBuffer);
 }
 #pragma INITCODE
-VOID ReadFileTest() 
+VOID ReadFileTest()
 {
 	OBJECT_ATTRIBUTES objectAttributes;
 	IO_STATUS_BLOCK iostatus;
 	HANDLE hfile;
 	UNICODE_STRING logFileUnicodeString;
 
-	//³õÊ¼»¯UNICODE_STRING×Ö·û´®
-	RtlInitUnicodeString( &logFileUnicodeString, 
+	//åˆå§‹åŒ–UNICODE_STRINGå­—ç¬¦ä¸²
+	RtlInitUnicodeString( &logFileUnicodeString,
 		L"\\??\\C:\\1.log");
-	//»òÕßÐ´³É "\\Device\\HarddiskVolume1\\1.LOG"
+	//æˆ–è€…å†™æˆ "\\Device\\HarddiskVolume1\\1.LOG"
 
-	//³õÊ¼»¯objectAttributes
+	//åˆå§‹åŒ–objectAttributes
 	InitializeObjectAttributes(&objectAttributes,
 							&logFileUnicodeString,
-							OBJ_CASE_INSENSITIVE,//¶Ô´óÐ¡Ð´Ãô¸Ð 
-							NULL, 
+							OBJ_CASE_INSENSITIVE,//å¯¹å¤§å°å†™æ•æ„Ÿ
+							NULL,
 							NULL );
 
-	//´´½¨ÎÄ¼þ
-	NTSTATUS ntStatus = ZwCreateFile( &hfile, 
+	//åˆ›å»ºæ–‡ä»¶
+	NTSTATUS ntStatus = ZwCreateFile( &hfile,
 							GENERIC_READ,
-							&objectAttributes, 
-							&iostatus, 
+							&objectAttributes,
+							&iostatus,
 							NULL,
-							FILE_ATTRIBUTE_NORMAL, 
+							FILE_ATTRIBUTE_NORMAL,
 							FILE_SHARE_READ,
-							FILE_OPEN,//¼´Ê¹´æÔÚ¸ÃÎÄ¼þ£¬Ò²´´½¨ 
-							FILE_SYNCHRONOUS_IO_NONALERT, 
-							NULL, 
+							FILE_OPEN,//å³ä½¿å­˜åœ¨è¯¥æ–‡ä»¶ï¼Œä¹Ÿåˆ›å»º
+							FILE_SYNCHRONOUS_IO_NONALERT,
+							NULL,
 							0 );
 
 	if (!NT_SUCCESS(ntStatus))
@@ -313,7 +313,7 @@ VOID ReadFileTest()
 	}
 
 	FILE_STANDARD_INFORMATION fsi;
-	//¶ÁÈ¡ÎÄ¼þ³¤¶È
+	//è¯»å–æ–‡ä»¶é•¿åº¦
 	ntStatus = ZwQueryInformationFile(hfile,
 									&iostatus,
 									&fsi,
@@ -322,11 +322,11 @@ VOID ReadFileTest()
 
 	KdPrint(("The program want to read %d bytes\n",fsi.EndOfFile.QuadPart));
 
-	//Îª¶ÁÈ¡µÄÎÄ¼þ·ÖÅä»º³åÇø
+	//ä¸ºè¯»å–çš„æ–‡ä»¶åˆ†é…ç¼“å†²åŒº
  	PUCHAR pBuffer = (PUCHAR)ExAllocatePool(PagedPool,
 								(LONG)fsi.EndOfFile.QuadPart);
 
-	//¶ÁÈ¡ÎÄ¼þ
+	//è¯»å–æ–‡ä»¶
 	ZwReadFile(hfile,NULL,
 				NULL,NULL,
 				&iostatus,
@@ -334,25 +334,25 @@ VOID ReadFileTest()
 				(LONG)fsi.EndOfFile.QuadPart,
 				NULL,NULL);
 	KdPrint(("The program really read %d bytes\n",iostatus.Information));
-	//¹Ø±ÕÎÄ¼þ¾ä±ú
+	//å…³é—­æ–‡ä»¶å¥æŸ„
 	ZwClose(hfile);
 
-	//ÊÍ·Å»º³åÇø
+	//é‡Šæ”¾ç¼“å†²åŒº
 	ExFreePool(pBuffer);
 }
 #pragma INITCODE
-VOID FileTest() 
+VOID FileTest()
 {
-	//´´½¨ÎÄ¼þÊµÑé
+	//åˆ›å»ºæ–‡ä»¶å®žéªŒ
 //	CreateFileTest();
 
-	//´ò¿ªÎÄ¼þÊµÑé
+	//æ‰“å¼€æ–‡ä»¶å®žéªŒ
 //	OpenFileTest1();
 	OpenFileTest2();
 
 //	FileAttributeTest();
 
-	//Ð´ÎÄ¼þ¡¢×·¼ÓÎÄ¼þÊµÑé
+	//å†™æ–‡ä»¶ã€è¿½åŠ æ–‡ä»¶å®žéªŒ
 //	WriteFileTest();
 
 //	ReadFileTest();
@@ -360,29 +360,29 @@ VOID FileTest()
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:DriverEntry
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Çý¶¯³ÌÐò£¬¶¨Î»ºÍÉêÇëÓ²¼þ×ÊÔ´£¬´´½¨ÄÚºË¶ÔÏó
-* ²ÎÊýÁÐ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÇý¶¯¶ÔÏó
-      pRegistryPath:Çý¶¯³ÌÐòÔÚ×¢²á±íµÄÖÐµÄÂ·¾¶
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯Çý¶¯×´Ì¬
+* å‡½æ•°åç§°:DriverEntry
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–é©±åŠ¨ç¨‹åºï¼Œå®šä½å’Œç”³è¯·ç¡¬ä»¶èµ„æºï¼Œåˆ›å»ºå†…æ ¸å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      pRegistryPath:é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨çš„ä¸­çš„è·¯å¾„
+* è¿”å›ž å€¼:è¿”å›žåˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 extern "C" NTSTATUS DriverEntry (
 			IN PDRIVER_OBJECT pDriverObject,
-			IN PUNICODE_STRING pRegistryPath	) 
+			IN PUNICODE_STRING pRegistryPath	)
 {
 	NTSTATUS status;
 	KdPrint(("Enter DriverEntry\n"));
 
-	//×¢²áÆäËûÇý¶¯µ÷ÓÃº¯ÊýÈë¿Ú
+	//æ³¨å†Œå…¶ä»–é©±åŠ¨è°ƒç”¨å‡½æ•°å…¥å£
 	pDriverObject->DriverUnload = HelloDDKUnload;
 	pDriverObject->MajorFunction[IRP_MJ_CREATE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_CLOSE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_WRITE] = HelloDDKDispatchRoutine;
 	pDriverObject->MajorFunction[IRP_MJ_READ] = HelloDDKDispatchRoutine;
-	
-	//´´½¨Çý¶¯Éè±¸¶ÔÏó
+
+	//åˆ›å»ºé©±åŠ¨è®¾å¤‡å¯¹è±¡
 	status = CreateDevice(pDriverObject);
 
 	FileTest();
@@ -392,25 +392,25 @@ extern "C" NTSTATUS DriverEntry (
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:CreateDevice
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Éè±¸¶ÔÏó
-* ²ÎÊýÁÐ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÇý¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯×´Ì¬
+* å‡½æ•°åç§°:CreateDevice
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–è®¾å¤‡å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+* è¿”å›ž å€¼:è¿”å›žåˆå§‹åŒ–çŠ¶æ€
 *************************************************************************/
 #pragma INITCODE
 NTSTATUS CreateDevice (
-		IN PDRIVER_OBJECT	pDriverObject) 
+		IN PDRIVER_OBJECT	pDriverObject)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT pDevObj;
 	PDEVICE_EXTENSION pDevExt;
-	
-	//´´½¨Éè±¸Ãû³Æ
+
+	//åˆ›å»ºè®¾å¤‡åç§°
 	UNICODE_STRING devName;
 	RtlInitUnicodeString(&devName,L"\\Device\\MyDDKDevice");
-	
-	//´´½¨Éè±¸
+
+	//åˆ›å»ºè®¾å¤‡
 	status = IoCreateDevice( pDriverObject,
 						sizeof(DEVICE_EXTENSION),
 						&(UNICODE_STRING)devName,
@@ -424,12 +424,12 @@ NTSTATUS CreateDevice (
 	pDevExt = (PDEVICE_EXTENSION)pDevObj->DeviceExtension;
 	pDevExt->pDevice = pDevObj;
 	pDevExt->ustrDeviceName = devName;
-	//´´½¨·ûºÅÁ´½Ó
+	//åˆ›å»ºç¬¦å·é“¾æŽ¥
 	UNICODE_STRING symLinkName;
 	RtlInitUnicodeString(&symLinkName,L"\\??\\HelloDDK");
 	pDevExt->ustrSymLinkName = symLinkName;
 	status = IoCreateSymbolicLink( &symLinkName,&devName );
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		IoDeleteDevice( pDevObj );
 		return status;
@@ -438,24 +438,24 @@ NTSTATUS CreateDevice (
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloDDKUnload
-* ¹¦ÄÜÃèÊö:¸ºÔðÇý¶¯³ÌÐòµÄÐ¶ÔØ²Ù×÷
-* ²ÎÊýÁÐ±í:
-      pDriverObject:Çý¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKUnload
+* åŠŸèƒ½æè¿°:è´Ÿè´£é©±åŠ¨ç¨‹åºçš„å¸è½½æ“ä½œ
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:é©±åŠ¨å¯¹è±¡
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
-VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject) 
+VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 {
 	PDEVICE_OBJECT	pNextObj;
 	KdPrint(("Enter DriverUnload\n"));
 	pNextObj = pDriverObject->DeviceObject;
-	while (pNextObj != NULL) 
+	while (pNextObj != NULL)
 	{
 		PDEVICE_EXTENSION pDevExt = (PDEVICE_EXTENSION)
 			pNextObj->DeviceExtension;
 
-		//É¾³ý·ûºÅÁ´½Ó
+		//åˆ é™¤ç¬¦å·é“¾æŽ¥
 		UNICODE_STRING pLinkName = pDevExt->ustrSymLinkName;
 		IoDeleteSymbolicLink(&pLinkName);
 		pNextObj = pNextObj->NextDevice;
@@ -464,20 +464,20 @@ VOID HelloDDKUnload (IN PDRIVER_OBJECT pDriverObject)
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloDDKDispatchRoutine
-* ¹¦ÄÜÃèÊö:¶Ô¶ÁIRP½øÐÐ´¦Àí
-* ²ÎÊýÁÐ±í:
-      pDevObj:¹¦ÄÜÉè±¸¶ÔÏó
-      pIrp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloDDKDispatchRoutine
+* åŠŸèƒ½æè¿°:å¯¹è¯»IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      pDevObj:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      pIrp:ä»ŽIOè¯·æ±‚åŒ…
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloDDKDispatchRoutine(IN PDEVICE_OBJECT pDevObj,
-								 IN PIRP pIrp) 
+								 IN PIRP pIrp)
 {
 	KdPrint(("Enter HelloDDKDispatchRoutine\n"));
 	NTSTATUS status = STATUS_SUCCESS;
-	// Íê³ÉIRP
+	// å®ŒæˆIRP
 	pIrp->IoStatus.Status = status;
 	pIrp->IoStatus.Information = 0;	// bytes xfered
 	IoCompleteRequest( pIrp, IO_NO_INCREMENT );

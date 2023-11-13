@@ -68,7 +68,7 @@ DEFINE_KSPROPERTY_TABLE(VideoStreamDroppedFramesProperties)
 DEFINE_KSPROPERTY_SET_TABLE(VideoStreamProperties)
 {
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &KSPROPSETID_Connection,                        // Set
         SIZEOF_ARRAY(VideoStreamConnectionProperties),  // PropertiesCount
         VideoStreamConnectionProperties,                // PropertyItem
@@ -76,7 +76,7 @@ DEFINE_KSPROPERTY_SET_TABLE(VideoStreamProperties)
         NULL                                            // FastIoTable
     ),
     DEFINE_KSPROPERTY_SET
-    ( 
+    (
         &PROPSETID_VIDCAP_DROPPEDFRAMES,                // Set
         SIZEOF_ARRAY(VideoStreamDroppedFramesProperties),  // PropertiesCount
         VideoStreamDroppedFramesProperties,             // PropertyItem
@@ -96,10 +96,10 @@ DEFINE_KSPROPERTY_SET_TABLE(VideoStreamProperties)
 #define D_X 320
 #define D_Y 240
 
-static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture = 
+static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture =
 {
     // KSDATARANGE
-    {   
+    {
         sizeof (KS_DATARANGE_VIDEO),            // FormatSize
         0,                                      // Flags
         D_X * D_Y * 3,                          // SampleSize
@@ -115,7 +115,7 @@ static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture =
     0,                  // Reserved (was StreamDescriptionFlags)
     0,                  // Reserved (was MemoryAllocationFlags   (KS_VIDEO_ALLOC_*))
 
-    // _KS_VIDEO_STREAM_CONFIG_CAPS  
+    // _KS_VIDEO_STREAM_CONFIG_CAPS
     {
         STATIC_KSDATAFORMAT_SPECIFIER_VIDEOINFO, // GUID
         KS_AnalogVideo_NTSC_M |
@@ -126,7 +126,7 @@ static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture =
         720,480,        // MaxCroppingSize, largest  rcSrc cropping rect allowed
         8,              // CropGranularityX, granularity of cropping size
         1,              // CropGranularityY
-        8,              // CropAlignX, alignment of cropping rect 
+        8,              // CropAlignX, alignment of cropping rect
         1,              // CropAlignY;
         160, 120,       // MinOutputSize, smallest bitmap stream can produce
         720, 480,       // MaxOutputSize, largest  bitmap stream can produce
@@ -134,21 +134,21 @@ static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture =
         1,              // OutputGranularityY;
         0,              // StretchTapsX  (0 no stretch, 1 pix dup, 2 interp...)
         0,              // StretchTapsY
-        0,              // ShrinkTapsX 
-        0,              // ShrinkTapsY 
+        0,              // ShrinkTapsX
+        0,              // ShrinkTapsY
         333667,         // MinFrameInterval, 100 nS units
         640000000,      // MaxFrameInterval, 100 nS units
         8 * 3 * 30 * 160 * 120,  // MinBitsPerSecond;
         8 * 3 * 30 * 720 * 480   // MaxBitsPerSecond;
-    }, 
-        
+    },
+
     // KS_VIDEOINFOHEADER (default format)
     {
-        0,0,0,0,                            // RECT  rcSource; 
-        0,0,0,0,                            // RECT  rcTarget; 
+        0,0,0,0,                            // RECT  rcSource;
+        0,0,0,0,                            // RECT  rcTarget;
         D_X * D_Y * 3 * 30,                 // DWORD dwBitRate;
-        0L,                                 // DWORD dwBitErrorRate; 
-        333667,                             // REFERENCE_TIME  AvgTimePerFrame;   
+        0L,                                 // DWORD dwBitErrorRate;
+        333667,                             // REFERENCE_TIME  AvgTimePerFrame;
 
         sizeof (KS_BITMAPINFOHEADER),       // DWORD biSize;
         D_X,                                // LONG  biWidth;
@@ -162,7 +162,7 @@ static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture =
         0,                                  // DWORD biClrUsed;
         0                                   // DWORD biClrImportant;
     }
-}; 
+};
 
 #undef D_X
 #undef D_Y
@@ -171,10 +171,10 @@ static  KS_DATARANGE_VIDEO StreamFormatRGB24Bpp_Capture =
 #define D_Y 240
 
 
-static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture = 
+static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture =
 {
     // KSDATARANGE
-    {   
+    {
         sizeof (KS_DATARANGE_VIDEO),            // FormatSize
         0,                                      // Flags
         D_X * D_Y * 2,                          // SampleSize
@@ -190,7 +190,7 @@ static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture =
     0,                  // Reserved (was StreamDescriptionFlags)
     0,                  // Reserved (was MemoryAllocationFlags   (KS_VIDEO_ALLOC_*))
 
-    // _KS_VIDEO_STREAM_CONFIG_CAPS  
+    // _KS_VIDEO_STREAM_CONFIG_CAPS
     {
         STATIC_KSDATAFORMAT_SPECIFIER_VIDEOINFO, // GUID
         KS_AnalogVideo_NTSC_M |
@@ -201,7 +201,7 @@ static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture =
         720,480,        // MaxCroppingSize, largest  rcSrc cropping rect allowed
         8,              // CropGranularityX, granularity of cropping size
         1,              // CropGranularityY
-        8,              // CropAlignX, alignment of cropping rect 
+        8,              // CropAlignX, alignment of cropping rect
         1,              // CropAlignY;
         160, 120,       // MinOutputSize, smallest bitmap stream can produce
         720, 480,       // MaxOutputSize, largest  bitmap stream can produce
@@ -209,21 +209,21 @@ static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture =
         1,              // OutputGranularityY;
         0,              // StretchTapsX  (0 no stretch, 1 pix dup, 2 interp...)
         0,              // StretchTapsY
-        0,              // ShrinkTapsX 
-        0,              // ShrinkTapsY 
+        0,              // ShrinkTapsX
+        0,              // ShrinkTapsY
         333667,         // MinFrameInterval, 100 nS units
         640000000,      // MaxFrameInterval, 100 nS units
         8 * 2 * 30 * 160 * 120,  // MinBitsPerSecond;
         8 * 2 * 30 * 720 * 480   // MaxBitsPerSecond;
-    }, 
-        
+    },
+
     // KS_VIDEOINFOHEADER (default format)
     {
-        0,0,0,0,                            // RECT  rcSource; 
-        0,0,0,0,                            // RECT  rcTarget; 
+        0,0,0,0,                            // RECT  rcSource;
+        0,0,0,0,                            // RECT  rcTarget;
         D_X * D_Y * 2 * 30,                 // DWORD dwBitRate;
-        0L,                                 // DWORD dwBitErrorRate; 
-        333667,                             // REFERENCE_TIME  AvgTimePerFrame;   
+        0L,                                 // DWORD dwBitErrorRate;
+        333667,                             // REFERENCE_TIME  AvgTimePerFrame;
 
         sizeof (KS_BITMAPINFOHEADER),       // DWORD biSize;
         D_X,                                // LONG  biWidth;
@@ -237,8 +237,8 @@ static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture =
         0,                                  // DWORD biClrUsed;
         0                                   // DWORD biClrImportant;
     }
-}; 
-    
+};
+
 #undef D_X
 #undef D_Y
 
@@ -249,7 +249,7 @@ static  KS_DATARANGE_VIDEO StreamFormatUYU2_Capture =
 //  STREAM_Capture Formats
 //---------------------------------------------------------------------------
 
-static  PKSDATAFORMAT StreamCaptureFormats[] = 
+static  PKSDATAFORMAT StreamCaptureFormats[] =
 {
     (PKSDATAFORMAT) &StreamFormatRGB24Bpp_Capture,
     (PKSDATAFORMAT) &StreamFormatUYU2_Capture,
@@ -260,7 +260,7 @@ static  PKSDATAFORMAT StreamCaptureFormats[] =
 //  STREAM_Preview Formats
 //---------------------------------------------------------------------------
 
-static  PKSDATAFORMAT StreamPreviewFormats[] = 
+static  PKSDATAFORMAT StreamPreviewFormats[] =
 {
     (PKSDATAFORMAT) &StreamFormatRGB24Bpp_Capture,
     (PKSDATAFORMAT) &StreamFormatUYU2_Capture,
@@ -278,7 +278,7 @@ typedef struct _ALL_STREAM_INFO {
 
 // Warning:  The StreamNumber element of the HW_STREAM_OBJECT below MUST be
 //           the same as its position in the Streams[] array.
-static  ALL_STREAM_INFO Streams [] = 
+static  ALL_STREAM_INFO Streams [] =
 {
   // -----------------------------------------------------------------
   // STREAM_Capture
@@ -305,7 +305,7 @@ static  ALL_STREAM_INFO Streams [] =
     &StandardMedium,                        // Mediums
     FALSE,                                  // BridgeStream
     },
-           
+
     // HW_STREAM_OBJECT ------------------------------------------------
     {
     sizeof (HW_STREAM_OBJECT),              // SizeOfThisPacket
@@ -318,11 +318,11 @@ static  ALL_STREAM_INFO Streams [] =
     TRUE,                                   // Pio
     NULL,                                   // HwDeviceExtension
     sizeof (KS_FRAME_INFO),                 // StreamHeaderMediaSpecific
-    0,                                      // StreamHeaderWorkspace 
-    FALSE,                                  // Allocator 
+    0,                                      // StreamHeaderWorkspace
+    FALSE,                                  // Allocator
     NULL,                                   // HwEventRoutine
     { 0, 0 },                               // Reserved[2]
-    },            
+    },
  },
  // -----------------------------------------------------------------
  // STREAM_Preview
@@ -349,7 +349,7 @@ static  ALL_STREAM_INFO Streams [] =
     &StandardMedium,                        // Mediums
     FALSE,                                  // BridgeStream
     },
-           
+
     // HW_STREAM_OBJECT ------------------------------------------------
     {
     sizeof (HW_STREAM_OBJECT),              // SizeOfThisPacket
@@ -362,8 +362,8 @@ static  ALL_STREAM_INFO Streams [] =
     TRUE,                                   // Pio
     0,                                      // HwDeviceExtension
     sizeof (KS_FRAME_INFO),                 // StreamHeaderMediaSpecific
-    0,                                      // StreamHeaderWorkspace 
-    FALSE,                                  // Allocator 
+    0,                                      // StreamHeaderWorkspace
+    FALSE,                                  // Allocator
     NULL,                                   // HwEventRoutine
     { 0, 0 },                               // Reserved[2]
     },
@@ -404,7 +404,7 @@ static KSTOPOLOGY Topology = {
 // The Main stream header
 //---------------------------------------------------------------------------
 
-static HW_STREAM_HEADER StreamHeader = 
+static HW_STREAM_HEADER StreamHeader =
 {
     DRIVER_STREAM_COUNT,                // NumberOfStreams
     sizeof (HW_STREAM_INFORMATION),     // Future proofing

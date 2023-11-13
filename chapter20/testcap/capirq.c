@@ -31,13 +31,13 @@
 ** Side Effects:  none
 */
 
-BOOLEAN 
-HwInterrupt( 
+BOOLEAN
+HwInterrupt(
     IN PHW_DEVICE_EXTENSION  pHwDevEx
     )
 {
 
-    BOOLEAN fMyIRQ = FALSE; 
+    BOOLEAN fMyIRQ = FALSE;
 
     if (pHwDevEx->IRQExpected)
     {

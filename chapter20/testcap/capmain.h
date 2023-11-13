@@ -30,7 +30,7 @@ typedef enum {
     STREAM_NABTS,
     STREAM_AnalogVideoInput,
     MAX_TESTCAP_STREAMS         // This entry MUST be last; it's the size
-}; 
+};
 
 // ------------------------------------------------------------------------
 //  Other misc stuff
@@ -40,12 +40,12 @@ typedef enum {
 #define FIELDOFFSET(type, field)        ((LONG_PTR)(&((type *)1)->field)-1)
 #endif
 
-#ifndef mmioFOURCC    
+#ifndef mmioFOURCC
 #define mmioFOURCC( ch0, ch1, ch2, ch3 )                \
         ( (DWORD)(BYTE)(ch0) | ( (DWORD)(BYTE)(ch1) << 8 ) |    \
         ( (DWORD)(BYTE)(ch2) << 16 ) | ( (DWORD)(BYTE)(ch3) << 24 ) )
 #endif
-  
+
 #define FOURCC_YUV422       mmioFOURCC('U', 'Y', 'V', 'Y')
 
 typedef struct _STREAMX;
@@ -101,13 +101,13 @@ typedef struct _HW_DEVICE_EXTENSION {
     LONG                     ContrastFlags;
     LONG                     ColorEnable;
     LONG                     ColorEnableFlags;
-    
+
     // CameraControl settings
     LONG                     Focus;
     LONG                     FocusFlags;
     LONG                     Zoom;
     LONG                     ZoomFlags;
-    
+
     // VideoControl settings (these are set if a pin is not opened,
     // otherwise, the STREAMEX values are used.
     LONG                     VideoControlMode;
@@ -127,7 +127,7 @@ typedef struct _HW_DEVICE_EXTENSION {
 // is opened, the stream class driver will allocate whatever extension size
 // is specified in the HwInitData.PerStreamExtensionSize.
 //
- 
+
 typedef struct _STREAMEX {
     PHW_DEVICE_EXTENSION        pHwDevExt;          // For timer use
     PHW_STREAM_OBJECT           pStreamObject;      // For timer use
@@ -139,7 +139,7 @@ typedef struct _STREAMEX {
     KSSTATE                     KSState;            // Run, Stop, Pause
     UCHAR                       LineBuffer[720 * 3];// working buffer (RGB24)
 
-    // Clock 
+    // Clock
     HANDLE                      hMasterClock;       // Master clock to use
     REFERENCE_TIME              QST_Now;            // KeQuerySystemTime currently
     REFERENCE_TIME              QST_NextFrame;      // When to capture the next frame
@@ -147,11 +147,11 @@ typedef struct _STREAMEX {
 
     REFERENCE_TIME              AvgTimePerFrame;    // Extracted from pVideoInfoHeader
 
-    // Compressor settings (note these are duplicated in the 
+    // Compressor settings (note these are duplicated in the
     // HW_DEVICE_EXTENSION to allow setting these before a pin is created)
     COMPRESSION_SETTINGS        CompressionSettings;
 
-    // VideoControl settings (note these are duplicated in the 
+    // VideoControl settings (note these are duplicated in the
     // HW_DEVICE_EXTENSION to allow setting these before a pin is created)
     LONG                        VideoControlMode;
 
@@ -181,7 +181,7 @@ typedef struct _SRB_EXTENSION {
 //
 // Adapter level prototypes
 //
-// These functions affect the device as a whole, as opposed to 
+// These functions affect the device as a whole, as opposed to
 // affecting individual streams.
 //
 // -------------------------------------------------------------------
@@ -285,18 +285,18 @@ VOID STREAMAPI AdapterSetProperty(IN PHW_STREAM_REQUEST_BLOCK pSrb);
 VOID STREAMAPI AdapterGetProperty(IN PHW_STREAM_REQUEST_BLOCK pSrb);
 
 BOOL
-STREAMAPI 
+STREAMAPI
 AdapterVerifyFormat(
-        PKSDATAFORMAT pKSDataFormatToVerify, 
+        PKSDATAFORMAT pKSDataFormatToVerify,
         int StreamNumber);
 
 BOOL
-STREAMAPI 
+STREAMAPI
 AdapterFormatFromRange(
         IN PHW_STREAM_REQUEST_BLOCK pSrb);
 
 VOID
-STREAMAPI 
+STREAMAPI
 CompleteDeviceSRB (
          IN PHW_STREAM_REQUEST_BLOCK pSrb
         );
@@ -306,7 +306,7 @@ CompleteDeviceSRB (
 //
 
 BOOL
-STREAMAPI 
+STREAMAPI
 AddToListIfBusy (
     IN PHW_STREAM_REQUEST_BLOCK pSrb,
     IN KSPIN_LOCK              *SpinLock,
@@ -315,7 +315,7 @@ AddToListIfBusy (
     );
 
 BOOL
-STREAMAPI 
+STREAMAPI
 RemoveFromListIfAvailable (
     IN OUT PHW_STREAM_REQUEST_BLOCK *pSrb,
     IN KSPIN_LOCK                   *SpinLock,
@@ -338,26 +338,26 @@ RemoveFromListIfAvailable (
 //
 
 VOID
-STREAMAPI 
+STREAMAPI
 VideoQueueAddSRB (
     IN PHW_STREAM_REQUEST_BLOCK pSrb
     );
 
-PHW_STREAM_REQUEST_BLOCK 
-STREAMAPI 
+PHW_STREAM_REQUEST_BLOCK
+STREAMAPI
 VideoQueueRemoveSRB (
     PHW_DEVICE_EXTENSION pHwDevExt,
     int StreamNumber
     );
 
 VOID
-STREAMAPI 
+STREAMAPI
 VideoQueueCancelAllSRBs (
     PSTREAMEX pStrmEx
     );
 
 BOOL
-STREAMAPI 
+STREAMAPI
 VideoQueueCancelOneSRB (
     PSTREAMEX pStrmEx,
     PHW_STREAM_REQUEST_BLOCK pSrbToCancel
@@ -392,18 +392,18 @@ VOID STREAMAPI VideoGetProperty(PHW_STREAM_REQUEST_BLOCK pSrb);
 VOID STREAMAPI VideoStreamGetConnectionProperty (PHW_STREAM_REQUEST_BLOCK pSrb);
 VOID STREAMAPI VideoStreamGetDroppedFramesProperty(PHW_STREAM_REQUEST_BLOCK pSrb);
 
-// 
+//
 // stream clock functions
 //
-VOID 
-STREAMAPI 
+VOID
+STREAMAPI
 VideoIndicateMasterClock (PHW_STREAM_REQUEST_BLOCK pSrb);
 
 //
 // The point of it all
-// 
-VOID 
-STREAMAPI 
+//
+VOID
+STREAMAPI
 VideoCaptureRoutine(
     IN PSTREAMEX pStrmEx
     );

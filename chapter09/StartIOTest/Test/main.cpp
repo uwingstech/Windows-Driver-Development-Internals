@@ -5,15 +5,15 @@
 UINT WINAPI Thread(LPVOID context)
 {
 	printf("Enter Thread\n");
-	//µÈ´ı5Ãë
+	//ç­‰å¾…5ç§’
 	OVERLAPPED overlap={0};
 	overlap.hEvent = CreateEvent(NULL,FALSE,FALSE,NULL);
 	UCHAR buffer[10];
 	ULONG ulRead;
-	
+
 	BOOL bRead = ReadFile(*(PHANDLE)context,buffer,10,&ulRead,&overlap);
 
-	//¿ÉÒÔÊÔÑéÈ¡ÏûÀı³Ì
+	//å¯ä»¥è¯•éªŒå–æ¶ˆä¾‹ç¨‹
 	//CancelIo(*(PHANDLE)context);
 	WaitForSingleObject(overlap.hEvent,INFINITE);
 	return 0;
@@ -21,13 +21,13 @@ UINT WINAPI Thread(LPVOID context)
 
 int main()
 {
-	HANDLE hDevice = 
+	HANDLE hDevice =
 		CreateFile("\\\\.\\HelloDDK",
 					GENERIC_READ | GENERIC_WRITE,
 					FILE_SHARE_READ,
 					NULL,
 					OPEN_EXISTING,
-					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//´Ë´¦ÉèÖÃFILE_FLAG_OVERLAPPED
+					FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,//æ­¤å¤„è®¾ç½®FILE_FLAG_OVERLAPPED
 					NULL );
 
 	if (hDevice == INVALID_HANDLE_VALUE)
@@ -40,10 +40,10 @@ int main()
 	hThread[0] = (HANDLE) _beginthreadex (NULL,0,Thread,&hDevice,0,NULL);
 	hThread[1] = (HANDLE) _beginthreadex (NULL,0,Thread,&hDevice,0,NULL);
 
-	//Ö÷Ïß³ÌµÈ´ıÁ½¸ö×ÓÏß³Ì½áÊø
+	//ä¸»çº¿ç¨‹ç­‰å¾…ä¸¤ä¸ªå­çº¿ç¨‹ç»“æŸ
 	WaitForMultipleObjects(2,hThread,TRUE,INFINITE);
-	
-	//´´½¨IRP_MJ_CLEANUP IRP
+
+	//åˆ›å»ºIRP_MJ_CLEANUP IRP
 	CloseHandle(hDevice);
 
 	return 0;

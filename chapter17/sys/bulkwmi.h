@@ -14,7 +14,7 @@ Environment:
 
 Notes:
 
-  	Copyright (c) 2000 Microsoft Corporation.  
+  	Copyright (c) 2000 Microsoft Corporation.
     All Rights Reserved.
 
 --*/
@@ -45,7 +45,7 @@ BulkUsb_QueryWmiRegInfo(
     OUT PUNICODE_STRING InstanceName,
     OUT PUNICODE_STRING *RegistryPath,
     OUT PUNICODE_STRING MofResourceName,
-    OUT PDEVICE_OBJECT *Pdo	    
+    OUT PDEVICE_OBJECT *Pdo
     );
 
 NTSTATUS

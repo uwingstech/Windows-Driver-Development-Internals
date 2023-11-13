@@ -1,19 +1,19 @@
 /************************************************************************
-* ÎÄ¼þÃû³Æ:HelloWDM.cpp                                                 
-* ×÷    Õß:ÕÅ·«
-* Íê³ÉÈÕÆÚ:2007-11-1
+* æ–‡ä»¶åç§°:HelloWDM.cpp
+* ä½œ    è€…:å¼ å¸†
+* å®Œæˆæ—¥æœŸ:2007-11-1
 *************************************************************************/
 #include "HelloWDM.h"
 
 /************************************************************************
-* º¯ÊýÃû³Æ:DriverEntry
-* ¹¦ÄÜÃèÊö:³õÊ¼»¯Çý¶¯³ÌÐò£¬¶¨Î»ºÍÉêÇëÓ²¼þ×ÊÔ´£¬´´½¨ÄÚºË¶ÔÏó
-* ²ÎÊýÁÐ±í:
-      pDriverObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÇý¶¯¶ÔÏó
-      pRegistryPath:Çý¶¯³ÌÐòÔÚ×¢²á±íµÄÖÐµÄÂ·¾¶
-* ·µ»Ø Öµ:·µ»Ø³õÊ¼»¯Çý¶¯×´Ì¬
+* å‡½æ•°åç§°:DriverEntry
+* åŠŸèƒ½æè¿°:åˆå§‹åŒ–é©±åŠ¨ç¨‹åºï¼Œå®šä½å’Œç”³è¯·ç¡¬ä»¶èµ„æºï¼Œåˆ›å»ºå†…æ ¸å¯¹è±¡
+* å‚æ•°åˆ—è¡¨:
+      pDriverObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      pRegistryPath:é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨çš„ä¸­çš„è·¯å¾„
+* è¿”å›ž å€¼:è¿”å›žåˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 *************************************************************************/
-#pragma INITCODE 
+#pragma INITCODE
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject,
 								IN PUNICODE_STRING pRegistryPath)
 {
@@ -33,17 +33,17 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject,
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloWDMAddDevice
-* ¹¦ÄÜÃèÊö:Ìí¼ÓÐÂÉè±¸
-* ²ÎÊýÁÐ±í:
-      DriverObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÇý¶¯¶ÔÏó
-      PhysicalDeviceObject:´ÓI/O¹ÜÀíÆ÷ÖÐ´«½øÀ´µÄÎïÀíÉè±¸¶ÔÏó
-* ·µ»Ø Öµ:·µ»ØÌí¼ÓÐÂÉè±¸×´Ì¬
+* å‡½æ•°åç§°:HelloWDMAddDevice
+* åŠŸèƒ½æè¿°:æ·»åŠ æ–°è®¾å¤‡
+* å‚æ•°åˆ—è¡¨:
+      DriverObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+      PhysicalDeviceObject:ä»ŽI/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„ç‰©ç†è®¾å¤‡å¯¹è±¡
+* è¿”å›ž å€¼:è¿”å›žæ·»åŠ æ–°è®¾å¤‡çŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloWDMAddDevice(IN PDRIVER_OBJECT DriverObject,
                            IN PDEVICE_OBJECT PhysicalDeviceObject)
-{ 
+{
 	PAGED_CODE();
 	KdPrint(("Enter HelloWDMAddDevice\n"));
 
@@ -97,9 +97,9 @@ NTSTATUS HelloWDMCreate(IN PDEVICE_OBJECT fdo,
 	KdPrint(("HelloWDMCreate()\n"));
 
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
-	
+
 	// Init the device extension
-	
+
 	pdx->BaudRate = 1200;
 	pdx->RTSstate = 0;
 	pdx->DTRstate = 0;
@@ -132,13 +132,13 @@ NTSTATUS HelloWDMCreate(IN PDEVICE_OBJECT fdo,
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:DefaultPnpHandler
-* ¹¦ÄÜÃèÊö:¶ÔPNP IRP½øÐÐÈ±Ê¡´¦Àí
-* ²ÎÊýÁÐ±í:
-      pdx:Éè±¸¶ÔÏóµÄÀ©Õ¹
-      Irp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
-*************************************************************************/ 
+* å‡½æ•°åç§°:DefaultPnpHandler
+* åŠŸèƒ½æè¿°:å¯¹PNP IRPè¿›è¡Œç¼ºçœå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      pdx:è®¾å¤‡å¯¹è±¡çš„æ‰©å±•
+      Irp:ä»ŽIOè¯·æ±‚åŒ…
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
+*************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS DefaultPnpHandler(PDEVICE_EXTENSION pdx, PIRP Irp)
 {
@@ -150,12 +150,12 @@ NTSTATUS DefaultPnpHandler(PDEVICE_EXTENSION pdx, PIRP Irp)
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HandleRemoveDevice
-* ¹¦ÄÜÃèÊö:¶ÔIRP_MN_REMOVE_DEVICE IRP½øÐÐ´¦Àí
-* ²ÎÊýÁÐ±í:
-      fdo:¹¦ÄÜÉè±¸¶ÔÏó
-      Irp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HandleRemoveDevice
+* åŠŸèƒ½æè¿°:å¯¹IRP_MN_REMOVE_DEVICE IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      fdo:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      Irp:ä»ŽIOè¯·æ±‚åŒ…
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HandleRemoveDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
@@ -167,23 +167,23 @@ NTSTATUS HandleRemoveDevice(PDEVICE_EXTENSION pdx, PIRP Irp)
 	NTSTATUS status = DefaultPnpHandler(pdx, Irp);
 	IoDeleteSymbolicLink(&(UNICODE_STRING)pdx->ustrSymLinkName);
 
-    //µ÷ÓÃIoDetachDevice()°Ñfdo´ÓÉè±¸Õ»ÖÐÍÑ¿ª£º
+    //è°ƒç”¨IoDetachDevice()æŠŠfdoä»Žè®¾å¤‡æ ˆä¸­è„±å¼€ï¼š
     if (pdx->NextStackDevice)
         IoDetachDevice(pdx->NextStackDevice);
-	
-    //É¾³ýfdo£º
+
+    //åˆ é™¤fdoï¼š
     IoDeleteDevice(pdx->fdo);
 	KdPrint(("Leave HandleRemoveDevice\n"));
 	return status;
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloWDMPnp
-* ¹¦ÄÜÃèÊö:¶Ô¼´²å¼´ÓÃIRP½øÐÐ´¦Àí
-* ²ÎÊýÁÐ±í:
-      fdo:¹¦ÄÜÉè±¸¶ÔÏó
-      Irp:´ÓIOÇëÇó°ü
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloWDMPnp
+* åŠŸèƒ½æè¿°:å¯¹å³æ’å³ç”¨IRPè¿›è¡Œå¤„ç†
+* å‚æ•°åˆ—è¡¨:
+      fdo:åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+      Irp:ä»ŽIOè¯·æ±‚åŒ…
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
@@ -195,7 +195,7 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 	NTSTATUS status = STATUS_SUCCESS;
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-	static NTSTATUS (*fcntab[])(PDEVICE_EXTENSION pdx, PIRP Irp) = 
+	static NTSTATUS (*fcntab[])(PDEVICE_EXTENSION pdx, PIRP Irp) =
 	{
 		DefaultPnpHandler,		// IRP_MN_START_DEVICE
 		DefaultPnpHandler,		// IRP_MN_QUERY_REMOVE_DEVICE
@@ -211,7 +211,7 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 		DefaultPnpHandler,		// IRP_MN_QUERY_RESOURCE_REQUIREMENTS
 		DefaultPnpHandler,		// IRP_MN_QUERY_DEVICE_TEXT
 		DefaultPnpHandler,		// IRP_MN_FILTER_RESOURCE_REQUIREMENTS
-		DefaultPnpHandler,		// 
+		DefaultPnpHandler,		//
 		DefaultPnpHandler,		// IRP_MN_READ_CONFIG
 		DefaultPnpHandler,		// IRP_MN_WRITE_CONFIG
 		DefaultPnpHandler,		// IRP_MN_EJECT
@@ -225,13 +225,13 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 
 	ULONG fcn = stack->MinorFunction;
 	if (fcn >= arraysize(fcntab))
-	{						// Î´ÖªµÄ×Ó¹¦ÄÜ´úÂë
+	{						// æœªçŸ¥çš„å­åŠŸèƒ½ä»£ç 
 		status = DefaultPnpHandler(pdx, Irp); // some function we don't know about
 		return status;
-	}						
+	}
 
 #if DBG
-	static char* fcnname[] = 
+	static char* fcnname[] =
 	{
 		"IRP_MN_START_DEVICE",
 		"IRP_MN_QUERY_REMOVE_DEVICE",
@@ -268,11 +268,11 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT fdo,
 }
 
 /************************************************************************
-* º¯ÊýÃû³Æ:HelloWDMUnload
-* ¹¦ÄÜÃèÊö:¸ºÔðÇý¶¯³ÌÐòµÄÐ¶ÔØ²Ù×÷
-* ²ÎÊýÁÐ±í:
-      DriverObject:Çý¶¯¶ÔÏó
-* ·µ»Ø Öµ:·µ»Ø×´Ì¬
+* å‡½æ•°åç§°:HelloWDMUnload
+* åŠŸèƒ½æè¿°:è´Ÿè´£é©±åŠ¨ç¨‹åºçš„å¸è½½æ“ä½œ
+* å‚æ•°åˆ—è¡¨:
+      DriverObject:é©±åŠ¨å¯¹è±¡
+* è¿”å›ž å€¼:è¿”å›žçŠ¶æ€
 *************************************************************************/
 #pragma PAGEDCODE
 void HelloWDMUnload(IN PDRIVER_OBJECT DriverObject)
@@ -400,7 +400,7 @@ void PrintIoControlCode(ULONG code)
 
 		default:
 			KdPrint(("IOCTL code: unkown\n"));
-			
+
 		}
 }
 VOID DriverCancelWaitIrp(IN PDEVICE_OBJECT DeviceObject, IN PIRP Irp)
@@ -413,7 +413,7 @@ VOID DriverCancelWaitIrp(IN PDEVICE_OBJECT DeviceObject, IN PIRP Irp)
 
     KeAcquireSpinLock(&pExtension->IoctlSpinLock, &OldIrql);
 
-    pExtension->pWaitIrp = NULL;        
+    pExtension->pWaitIrp = NULL;
 
     KeReleaseSpinLock(&pExtension->IoctlSpinLock, OldIrql);
 
@@ -434,14 +434,14 @@ VOID DriverCheckEvent(IN PDEVICE_EXTENSION pExtension, IN ULONG events)
 
     events &= pExtension->EventMask;
 
-	//Ïàµ±ÓÚÉèÖÃ´¥·¢ÊÂ¼þ
+	//ç›¸å½“äºŽè®¾ç½®è§¦å‘äº‹ä»¶
     if ((pExtension->pWaitIrp != NULL) && (events != 0))
     {
         pOldWaitIrp = pExtension->pWaitIrp;
 
         pOldCancelRoutine = IoSetCancelRoutine(pOldWaitIrp, NULL);
 
-        //ÊÇ·ñÒÑ¾­±»cancelµô?
+        //æ˜¯å¦å·²ç»è¢«cancelæŽ‰?
         if (pOldCancelRoutine != NULL)
         {
             // Nein, also Request beenden
@@ -455,7 +455,7 @@ VOID DriverCheckEvent(IN PDEVICE_EXTENSION pExtension, IN ULONG events)
         }
         else
         {
-			//Èç¹ûcancelµô£¬¾Í²»ÓÃIoCompleteRequestÁË
+			//å¦‚æžœcancelæŽ‰ï¼Œå°±ä¸ç”¨IoCompleteRequestäº†
             pOldWaitIrp = NULL;
         }
     }
@@ -469,7 +469,7 @@ VOID DriverCheckEvent(IN PDEVICE_EXTENSION pExtension, IN ULONG events)
 	}
 }
 #pragma PAGEDCODE
-NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo, 
+NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
 										PIRP Irp)
 {
 	PAGED_CODE();
@@ -489,16 +489,16 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
     switch ( irpSp->Parameters.DeviceIoControl.IoControlCode )
 
      {
-        case IOCTL_SERIAL_SET_BAUD_RATE: 
+        case IOCTL_SERIAL_SET_BAUD_RATE:
 		{
-			
+
 			pdx->BaudRate = ((PSERIAL_BAUD_RATE)(Irp->AssociatedIrp.SystemBuffer))->BaudRate;
 
 			Irp->IoStatus.Information = 0;
 			break;
 		}
 
-        case IOCTL_SERIAL_GET_BAUD_RATE: 
+        case IOCTL_SERIAL_GET_BAUD_RATE:
 		{
             PSERIAL_BAUD_RATE Br = (PSERIAL_BAUD_RATE)Irp->AssociatedIrp.SystemBuffer;
 			Br->BaudRate = pdx->BaudRate;
@@ -513,7 +513,7 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
 			break;
 		}
 
-        case IOCTL_SERIAL_CLR_RTS: 
+        case IOCTL_SERIAL_CLR_RTS:
 		{
 			pdx->RTSstate = 0;
 			break;
@@ -525,20 +525,20 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
 			break;
 		}
 
-        case IOCTL_SERIAL_CLR_DTR: 
+        case IOCTL_SERIAL_CLR_DTR:
 		{
 			pdx->DTRstate = 0;
 			break;
 		}
 
-        case IOCTL_SERIAL_GET_DTRRTS: 
+        case IOCTL_SERIAL_GET_DTRRTS:
 		{
             ULONG ModemControl;
             ModemControl = pdx->DTRstate + (pdx->RTSstate<<1);
-            
+
 			*(PULONG)Irp->AssociatedIrp.SystemBuffer = ModemControl;
             Irp->IoStatus.Information = sizeof(ULONG);
-			
+
 			break;
 		}
 
@@ -546,33 +546,33 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
 		{
 			ULONG Cts, Dsr, Dcd;
 
-			Cts = 1; //¶Ô·½´«ËÍÇëÇó				//pdx->pOther->RTSstate;
-			Dsr = 1; //¶Ô·½Êý¾ÝÖÕ¶ËÊÇ·ñ×¼±¸ºÃ	//pdx->pOther->DTRstate;
+			Cts = 1; //å¯¹æ–¹ä¼ é€è¯·æ±‚				//pdx->pOther->RTSstate;
+			Dsr = 1; //å¯¹æ–¹æ•°æ®ç»ˆç«¯æ˜¯å¦å‡†å¤‡å¥½	//pdx->pOther->DTRstate;
 
-			Dcd = 1; //¶Ô·½Éè±¸ÊÇ·ñ´ò¿ª	//pdx->pOther->IsOpen;
+			Dcd = 1; //å¯¹æ–¹è®¾å¤‡æ˜¯å¦æ‰“å¼€	//pdx->pOther->IsOpen;
 
-			*(PULONG)Irp->AssociatedIrp.SystemBuffer = 
-				(Cts ? SERIAL_CTS_STATE : 0) | (Dsr ? SERIAL_DSR_STATE : 0) | 
+			*(PULONG)Irp->AssociatedIrp.SystemBuffer =
+				(Cts ? SERIAL_CTS_STATE : 0) | (Dsr ? SERIAL_DSR_STATE : 0) |
 				(Dcd ? SERIAL_DCD_STATE : 0);
             Irp->IoStatus.Information = sizeof(ULONG);
 
 			break;
 		}
 
-        case IOCTL_SERIAL_SET_TIMEOUTS: 
+        case IOCTL_SERIAL_SET_TIMEOUTS:
 		{
 			pdx->Timeouts = *((PSERIAL_TIMEOUTS)(Irp->AssociatedIrp.SystemBuffer));
 			break;
 		}
 
-        case IOCTL_SERIAL_GET_TIMEOUTS: 
+        case IOCTL_SERIAL_GET_TIMEOUTS:
 		{
             *((PSERIAL_TIMEOUTS)Irp->AssociatedIrp.SystemBuffer) = pdx->Timeouts;
             Irp->IoStatus.Information = sizeof(SERIAL_TIMEOUTS);
 			break;
 		}
 
-        case IOCTL_SERIAL_RESET_DEVICE: 
+        case IOCTL_SERIAL_RESET_DEVICE:
 		{
 			break;
 		}
@@ -582,13 +582,13 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
 			break;
 		}
 
-        case IOCTL_SERIAL_SET_LINE_CONTROL: 
+        case IOCTL_SERIAL_SET_LINE_CONTROL:
 		{
 			pdx->Lc = *((PSERIAL_LINE_CONTROL)(Irp->AssociatedIrp.SystemBuffer));
 			break;
 		}
 
-        case IOCTL_SERIAL_GET_LINE_CONTROL: 
+        case IOCTL_SERIAL_GET_LINE_CONTROL:
 		{
 			*((PSERIAL_LINE_CONTROL)(Irp->AssociatedIrp.SystemBuffer)) = pdx->Lc;
 
@@ -610,7 +610,7 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
             {
                 pOldCancelRoutine = IoSetCancelRoutine(pOldWaitIrp, NULL);
 
-				//¶ÔÒÔÇ°Ã»ÓÐ½øÐÐÍê³ÉÀý³ÌµÄµÈ´ýirp£¬½øÐÐÍê³É
+				//å¯¹ä»¥å‰æ²¡æœ‰è¿›è¡Œå®Œæˆä¾‹ç¨‹çš„ç­‰å¾…irpï¼Œè¿›è¡Œå®Œæˆ
                 if (pOldCancelRoutine != NULL)
                 {
                     pOldWaitIrp->IoStatus.Information = sizeof(ULONG);
@@ -643,14 +643,14 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
             Irp->IoStatus.Information = sizeof(ULONG);
 			break;
 		}
-		
+
 		case IOCTL_SERIAL_WAIT_ON_MASK:
 		{
 			PDRIVER_CANCEL  pOldCancelRoutine;
 
 			KeAcquireSpinLock(&pdx->IoctlSpinLock, &OldIrql);
 
-			//µÈ´ýirpÒ»¶¨±»Çå³ý£¬ÇÒeventMaskÒ»¶¨²»Îª0
+			//ç­‰å¾…irpä¸€å®šè¢«æ¸…é™¤ï¼Œä¸”eventMaskä¸€å®šä¸ä¸º0
 			if ((pdx->pWaitIrp != NULL) || (pdx->EventMask == 0))
 				ntStatus = STATUS_INVALID_PARAMETER;
 			else if ((pdx->EventMask & pdx->HistoryEvents) != 0)
@@ -730,7 +730,7 @@ NTSTATUS HelloWDMDispatchControlp(PDEVICE_OBJECT fdo,
 		{
 			break;
 		}
-	 
+
 	}
 
     Irp->IoStatus.Status = ntStatus;
@@ -775,7 +775,7 @@ VOID DriverCancelCurrentReadIrp(IN PDEVICE_OBJECT DeviceObject, IN PIRP pIrp)
 
     KeAcquireSpinLock(&pExtension->WriteSpinLock, &OldIrql);
 
-    pExtension->pReadIrp = NULL;        
+    pExtension->pReadIrp = NULL;
 
     KeReleaseSpinLock(&pExtension->WriteSpinLock, OldIrql);
 
@@ -801,7 +801,7 @@ NTSTATUS HelloWDMRead(IN PDEVICE_OBJECT fdo,
     PDRIVER_CANCEL pOldCancelRoutine;
 
 	Irp->IoStatus.Information = 0;
-	
+
 	DbgPrint("DeviceObject:%08X Read\n",fdo);
 
 	if (BufLen == 0)
@@ -847,7 +847,7 @@ NTSTATUS HelloWDMRead(IN PDEVICE_OBJECT fdo,
 		}
 
         KeReleaseSpinLock(&pExtension->WriteSpinLock, OldIrql);
-	
+
 	}
 
     Irp->IoStatus.Status = ntStatus;
@@ -861,7 +861,7 @@ NTSTATUS HelloWDMWrite(IN PDEVICE_OBJECT fdo,
                         IN PIRP Irp)
 {
 	KdPrint(("HelloWDMWrite\n"));
-	
+
     NTSTATUS ntStatus = STATUS_SUCCESS;// Assume success
 
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -869,7 +869,7 @@ NTSTATUS HelloWDMWrite(IN PDEVICE_OBJECT fdo,
     PIO_STACK_LOCATION irpSp = IoGetCurrentIrpStackLocation( Irp );
 
 	ULONG DataLen = irpSp->Parameters.Write.Length;
-	
+
 	PUCHAR pData = (PUCHAR)Irp->AssociatedIrp.SystemBuffer;
 
     KIRQL OldIrql;
@@ -890,7 +890,7 @@ NTSTATUS HelloWDMWrite(IN PDEVICE_OBJECT fdo,
 	else
 	{
 		KdPrint(("Write\n"));
-        
+
 		KeAcquireSpinLock(&pdx->WriteSpinLock, &OldIrql);
 
 		RtlCopyMemory(pdx->Buffer,pData,DataLen);

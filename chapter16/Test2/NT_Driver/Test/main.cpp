@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-//使用CTL_CODE必须加入winioctl.h
+//浣跨敤CTL_CODE蹇呴』鍔犲叆winioctl.h
 #include <winioctl.h>
 #include "..\NT_Driver\Ioctls.h"
 

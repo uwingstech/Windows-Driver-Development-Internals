@@ -3,14 +3,14 @@
 extern "C"
 NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
                      IN PUNICODE_STRING RegistryPath);
-                     
+
 NTSTATUS
 BulkUsb_AddDevice(
 IN PDRIVER_OBJECT DriverObject,
 IN PDEVICE_OBJECT PhysicalDeviceObject
 );
-                     
-                     
+
+
 void
 SdioClientDrv_DriverUnload(
 IN PDRIVER_OBJECT DriverObject
@@ -29,13 +29,13 @@ SdioGetProperty(
                IN PVOID Buffer,
                IN ULONG Length
                );
-               
+
 NTSTATUS
 SdioSetProperty(IN PDEVICE_OBJECT deviceObject,
 				IN SDBUS_PROPERTY Property,
 				IN PVOID Buffer,
-				IN ULONG Length);    
-				
+				IN ULONG Length);
+
 NTSTATUS HelloWDMDeviceIOControl(IN PDEVICE_OBJECT pDevObj,
 								 IN PIRP pIrp);
 
